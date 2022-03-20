@@ -36,6 +36,10 @@ namespace Akot.Database.Analyzer.Cli
                 foreach (var tab in schema.Tables)
                 {
                     storage.InsertTable(tab);
+                    foreach (var col in tab.Columns)
+                    {
+                        storage.InsertColumn(col);
+                    }
                 }
             }
         }

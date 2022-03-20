@@ -33,9 +33,16 @@ namespace Akot.Database.Analyzer.Cli
 
         static Storage()
         {
-            var props = typeof(DatabaseTable).GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            TypeProps[typeof(DatabaseTable)] = props;
+            LoadSqlProperties<DatabaseTable>();
+            LoadSqlProperties<DatabaseColumn>();
         }
+
+        private static void LoadSqlProperties<T>()
+        {
+            var props = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            TypeProps[typeof(T)] = props;
+        }
+
         static IDictionary<Type, PropertyInfo[]> TypeProps { get; } = new Dictionary<Type, PropertyInfo[]>();
 
         private void Migrate()
@@ -44,11 +51,20 @@ namespace Akot.Database.Analyzer.Cli
             var version = Convert.ToInt64(Cmd.ExecuteScalar());
             if (version == 0)
             {
-                var columns = string.Join(",", TypeProps[typeof(DatabaseTable)].Select(p => $"{p.Name} text null"));
-                var sqlTemplate = GetSql("migration-0.sql");
-                Cmd.CommandText = String.Format(sqlTemplate, columns);
-                Cmd.ExecuteNonQuery();
+                CreateTable<DatabaseTable>("target_table");
+                CreateTable<DatabaseColumn>("target_column");
             }
+        }
+
+        private void CreateTable<T>(string tabName)
+        {
+                var columns = string.Join(",", TypeProps[typeof(T)].Select(p => $"\"{p.Name}\" text null"));
+                var sqlTemplate = GetSql("migration-0.template.sql");
+                Cmd.CommandText = String.Format(
+                    sqlTemplate,
+                    $"\"{tabName}\"",
+                    columns);
+                Cmd.ExecuteNonQuery();
         }
 
         private string GetSql(string fileName)
@@ -59,15 +75,28 @@ namespace Akot.Database.Analyzer.Cli
         private SqliteConnection Db { get; }
         private SqliteCommand Cmd { get; }
 
-        internal void InsertTable(DatabaseTable tab)
+        class SqlInsertionMetadata
         {
-            var columns = string.Join(",", TypeProps[typeof(DatabaseTable)].Select(p => $"{p.Name}"));
-            var paramNameList = string.Join(",", TypeProps[typeof(DatabaseTable)].Select(p => $"@{p.Name}"));
-            var parameters = TypeProps[typeof(DatabaseTable)]
+            public string ColumnNameList { get; set; }
+            public string ParameterNameList { get; set; }
+        }
+        SqlInsertionMetadata GetSqlInsertionMetadata<T>()
+        {
+            var columns = string.Join(",", TypeProps[typeof(T)].Select(p => $"\"{p.Name}\""));
+            var paramNameList = string.Join(",", TypeProps[typeof(T)].Select(p => $"@{p.Name}"));
+            return new SqlInsertionMetadata
+            {
+                ColumnNameList = columns,
+                ParameterNameList = paramNameList,
+            };
+        }
+        SqliteParameter[] GetParameters<T>(T instance)
+        {
+            var parameters = TypeProps[typeof(T)]
                 .Select(prop =>
                 {
 
-                    var value = prop.GetGetMethod()?.Invoke(tab, null);
+                    var value = prop.GetGetMethod()?.Invoke(instance, null);
                     var valueType = value?.GetType();
                     if (value is IList && value.GetType().IsGenericType)
                     {
@@ -85,8 +114,25 @@ namespace Akot.Database.Analyzer.Cli
                     }
                 })
                 .ToArray();
-            var sql = $"insert into target_table ({columns}) values ({paramNameList})";
+            return parameters;
+        }
+
+        internal void InsertRecord<T>(T instance, string tabName)
+        {
+            var meta = GetSqlInsertionMetadata<T>();
+            var parameters = GetParameters(instance);
+            var sql = $"insert into {tabName} ({meta.ColumnNameList}) values ({meta.ParameterNameList})";
             DoCommandDirect(sql, parameters);
+        }
+
+        internal void InsertTable(DatabaseTable tab)
+        {
+            InsertRecord(tab, "target_table");
+        }
+
+        internal void InsertColumn(DatabaseColumn col)
+        {
+            InsertRecord(col, "target_column");
         }
 
         private void DoCommandDirect(string sql, params SqliteParameter[] sqliteParameters)
