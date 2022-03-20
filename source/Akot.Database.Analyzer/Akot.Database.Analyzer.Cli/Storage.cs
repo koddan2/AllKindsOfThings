@@ -58,13 +58,13 @@ namespace Akot.Database.Analyzer.Cli
 
         private void CreateTable<T>(string tabName)
         {
-                var columns = string.Join(",", TypeProps[typeof(T)].Select(p => $"\"{p.Name}\" text null"));
-                var sqlTemplate = GetSql("migration-0.template.sql");
-                Cmd.CommandText = String.Format(
-                    sqlTemplate,
-                    $"\"{tabName}\"",
-                    columns);
-                Cmd.ExecuteNonQuery();
+            var columns = string.Join(",", TypeProps[typeof(T)].OrderBy(p => p.Name).Select(p => $"\"{p.Name}\" text null"));
+            var sqlTemplate = GetSql("migration-0.template.sql");
+            Cmd.CommandText = String.Format(
+                sqlTemplate,
+                $"\"{tabName}\"",
+                columns);
+            Cmd.ExecuteNonQuery();
         }
 
         private string GetSql(string fileName)
