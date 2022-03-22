@@ -1,0 +1,22 @@
+{
+  "name": "texture.ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node build.test.js",
+    "test:serve": "http-server test/"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.14.27",
+    "http-server": "^14.1.0"
+  },
+  "dependencies": {
+    "@types/mithril": "^2.0.9",
+    "classnames": "^2.3.1",
+    "hyperscript-helpers": "^3.0.3",
+    "mithril": "^2.0.4"
+  }
+}
