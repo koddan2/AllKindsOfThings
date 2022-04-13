@@ -1,0 +1,15 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "target": "ESNext",
+    "alwaysStrict": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "paths": {
+      "@texture/components/*": ["components/*"],
+      "@texture/helpers/*": ["helpers/*"]
+    }
+  }
+}
