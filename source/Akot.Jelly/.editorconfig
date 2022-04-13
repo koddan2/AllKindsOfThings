@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CSE006: Expression too complex
+dotnet_diagnostic.CSE006.severity = silent

@@ -8,20 +8,36 @@ using System.Globalization;
 
 internal class Application
 {
-    interface IStream<TEventBase> { }
-    abstract record Stream<TEventBase>(Guid Id) : IStream<TEventBase>
+    interface IApplicator<T>
     {
+        void Apply(T entity);
+    }
+    interface IStream<TEntity, TEventBase>
+        where TEventBase : IApplicator<TEntity>
+    {
+    }
+    abstract record Stream<TEntity, TEventBase>(Guid Id) : IStream<TEntity, TEventBase>
+        where TEventBase : IApplicator<TEntity>
+    {
+        protected abstract TEntity Entity { get; }
         protected void Replay(IEnumerable<TEventBase> events)
         {
-
+            foreach (var @event in events)
+            {
+                @event.Apply(Entity);
+            }
         }
     }
-    interface IPersonEvent { }
+    interface IPersonEvent : IApplicator<Person>
+    {
+    }
 
-    record Person : Stream<IPersonEvent>
+    record Person : Stream<Person, IPersonEvent>
     {
         public string? Name { get; set; }
         public string? FavoriteColor { get; set; }
+
+        protected override Person Entity => this;
 
         public Person(Guid Id, IEnumerable<IPersonEvent> events)
             : base(Id)
@@ -40,6 +56,12 @@ internal class Application
             : base(Id, StreamId, SequenceNumber, Payload)
         {
         }
+
+        public void Apply(Person entity)
+        {
+            entity.Name = Payload.Name;
+            entity.FavoriteColor = Payload.FavoriteColor;
+        }
     }
 
     record NameChangedEvent : Event<NameChange>, IPersonEvent
@@ -47,6 +69,11 @@ internal class Application
         public NameChangedEvent(Guid Id, Guid StreamId, uint SequenceNumber, NameChange Payload)
             : base(Id, StreamId, SequenceNumber, Payload)
         {
+        }
+
+        public void Apply(Person entity)
+        {
+            entity.Name = Payload.Name;
         }
     }
 
@@ -67,6 +94,26 @@ internal class Application
             new PersonInitializedEvent(id, streamId, sn, new InitializePerson("Adam", "Red")));
         Update(streamId, (id, sn) =>
             new NameChangedEvent(id, streamId, sn, new NameChange("Barney")));
+
+        var tuples = SingleStream(streamId).OrderBy("sequence_number").Select("*").Get<application_event>();
+
+        var person = new Person(streamId, tuples.Select(tup =>
+        {
+            if (tup.event_type == nameof(PersonInitializedEvent))
+            {
+                return (IPersonEvent)new PersonInitializedEvent(
+                    Guid.Parse(tup.id), Guid.Parse(tup.stream_id), tup.sequence_number, JsonConvert.DeserializeObject<InitializePerson>(tup.payload) ?? throw new ApplicationException());
+            }
+            else if (tup.event_type == nameof(NameChangedEvent))
+            {
+                return (IPersonEvent)new NameChangedEvent(
+                    Guid.Parse(tup.id), Guid.Parse(tup.stream_id), tup.sequence_number, JsonConvert.DeserializeObject<NameChange>(tup.payload) ?? throw new ApplicationException());
+            }
+            else
+            {
+                throw new ApplicationException("Invariant failed.");
+            }
+        }));
     }
 
     private void Update<T>(Guid streamId, Func<Guid, uint, Event<T>> maker)
@@ -79,7 +126,7 @@ internal class Application
 
     void StoreEvent<T>(Event<T> @event, IDbTransaction? dbTransaction = default)
     {
-        Events.Insert(new
+        _ = Events.Insert(new application_event
         {
             id = @event.Id.ToString("D"),
             stream_id = @event.StreamId.ToString("D"),

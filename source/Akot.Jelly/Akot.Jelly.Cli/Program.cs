@@ -17,11 +17,11 @@ Log.Logger = rootLogger;
 try
 {
 
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration(ConfigureAppConfiguration)
-    .ConfigureLogging(ConfigureLogging)
-    .ConfigureServices(ConfigureServices)
-    .Build();
+    var host = Host.CreateDefaultBuilder(args)
+        .ConfigureAppConfiguration(ConfigureAppConfiguration)
+        .ConfigureLogging(ConfigureLogging)
+        .ConfigureServices(ConfigureServices)
+        .Build();
 
     var dbMigrator = host.Services.GetRequiredService<DatabaseMigrator>();
     var app = host.Services.GetRequiredService<Application>();
@@ -41,13 +41,13 @@ finally
 
 void ConfigureLogging(HostBuilderContext hostBuilder, ILoggingBuilder loggingBuilder)
 {
-    loggingBuilder
+    _ = loggingBuilder
         .AddSerilog();
 }
 
 void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
 {
-    services
+    _ = services
         .AddSingleton<SqliteConnection>((context) =>
         {
             var connString = new SqliteConnectionStringBuilder
@@ -57,7 +57,7 @@ void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection
                 ForeignKeys = true,
             };
 
-            var conn= new SqliteConnection(connString.ToString());
+            var conn = new SqliteConnection(connString.ToString());
             conn.Open();
             return conn;
         })
@@ -72,7 +72,7 @@ void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection
 
 void ConfigureAppConfiguration(HostBuilderContext hostBuilderContext, IConfigurationBuilder configBuilder)
 {
-    configBuilder
+    _ = configBuilder
         .AddCommandLine(args)
         .AddEnvironmentVariables()
         .AddUserSecrets(System.Reflection.Assembly.GetExecutingAssembly())

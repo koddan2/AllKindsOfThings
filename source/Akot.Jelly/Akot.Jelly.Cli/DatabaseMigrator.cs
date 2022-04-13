@@ -18,7 +18,7 @@ internal class DatabaseMigrator
         if (userVersion?.ToString() == "0")
         {
             cmd.CommandText = File.ReadAllText(Path.Combine("Sql", "Migrations", "v1.sql"));
-            cmd.ExecuteNonQuery();
+            _ = cmd.ExecuteNonQuery();
         }
         else if (userVersion?.ToString() == "1")
         {
