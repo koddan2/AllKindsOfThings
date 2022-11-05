@@ -1,0 +1,1 @@
+.\DZT.Cli.exe update-ai-patrols --dayz-server-root-dir="C:\Program Files (x86)\Steam\steamapps\common\DayZServer" --source="mpmissions\dayzOffline.chernarusplus\expansion\settings\AIPatrolSettings-ORIG.json" --destination="mpmissions\dayzOffline.chernarusplus\expansion\settings\AIPatrolSettings.json"

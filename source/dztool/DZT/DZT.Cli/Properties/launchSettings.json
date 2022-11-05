@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DZT.Cli (adjust-zombie-numbers)": {
+      "commandName": "Project",
+      "commandLineArgs": "adjust-zombie-numbers --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" --source=\"mpmissions\\dayzOffline.chernarusplus\\env\\zombie_territories-ORIG.xml\" --destination=\"mpmissions\\dayzOffline.chernarusplus\\env\\zombie_territories.xml\""
+    },
+    "DZT.Cli (update-ai-patrols)": {
+      "commandName": "Project",
+      "commandLineArgs": "update-ai-patrols --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" --source=\"mpmissions\\dayzOffline.chernarusplus\\expansion\\settings\\AIPatrolSettings copy.json\" --destination=\"mpmissions\\dayzOffline.chernarusplus\\expansion\\settings\\AIPatrolSettings.json\""
+    }
+  }
+}
