@@ -11,6 +11,8 @@ public class UpdateAiPatrols
     private readonly AiPatrolSettingsRoot _settings;
     private readonly string _rootDir;
 
+    public double BaseExtraSpawnChance { get; set; } = 0.5;
+
     public UpdateAiPatrols(string rootDir, string inputFilePath, string outputFilePath)
     {
         Validators.ValidateDirExists(rootDir);
@@ -38,72 +40,75 @@ public class UpdateAiPatrols
         ////    p.Faction = "Raiders";
         ////});
 
-        _settings.AccuracyMin = 0.20;
+        _settings.AccuracyMin = 0.27;
         _settings.AccuracyMax = 0.72;
-        _settings.DespawnRadius = 3000;
-        _settings.DespawnTime = 40;
+        _settings.DespawnRadius = 2500;
+        _settings.DespawnTime = 120;
         _settings.MinDistRadius = 350;
-        _settings.MaxDistRadius = 2200;
+        _settings.MaxDistRadius = 1700;
 
-        AddObjectPatrol("East", "Land_Village_PoliceStation", p =>
+        AddObjectPatrol("East", new[] { "Land_City_PoliceStation", "Land_Village_PoliceStation" }, p =>
         {
             p.LoadoutFile = "PoliceLoadout";
-            p.Chance = 0.1;
+            p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.1);
         });
-        AddObjectPatrol("East", new[] { "Land_City_Hospital", "Land_Village_HealthCare" }, p =>
+        AddObjectPatrol("East", new[]
+        {
+            "Land_City_Hospital", 
+            "Land_Village_HealthCare", 
+            "Land_Village_store", 
+            "Land_Power_Station",
+            "Land_City_Store",
+            "Land_City_Store_WithStairs", 
+        },
+        p =>
         {
             p.Faction = "Raiders";
             p.LoadoutFile = "BanditLoadout";
-            p.Chance = 0.1;
-        });
-
-        AddObjectPatrol("East", "Land_City_PoliceStation", p =>
-        {
-            p.LoadoutFile = "PoliceLoadout";
-            p.Chance = 0.1;
-        });
-        AddObjectPatrol("East", new[] { "Land_City_Hospital", "Land_Village_HealthCare" }, p =>
-        {
-            p.Faction = "Raiders";
-            p.LoadoutFile = "BanditLoadout";
-            p.Chance = 0.1;
+            p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.1);
         });
 
         AddObjectPatrol("East", new[] { "Land_Mil_Airfield_HQ", "Land_Mil_ATC_Small", "Land_Mil_ATC_Big" }, p =>
         {
             p.Faction = "Raiders";
             p.LoadoutFile = "GorkaLoadout";
-            p.Chance = 0.1;
+            p.Chance = BaseExtraSpawnChance;
         });
 
         AddObjectPatrol("East", new[] { "Land_City_FireStation" }, p =>
         {
             p.Faction = "Raiders";
             p.LoadoutFile = "FireFighterLoadout";
-            p.Chance = 0.3;
+            p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.3);
+        });
+
+        AddObjectPatrol("East", new[] { "Land_City_Stand_Grocery", "Land_House_1B01_Pub" }, p =>
+        {
+            p.Faction = "East";
+            p.LoadoutFile = "SurvivorLoadout";
+            p.Chance = Math.Max(BaseExtraSpawnChance - 0.15, 0.1);
         });
 
         _settings.ObjectPatrols.ToList().ForEach(p =>
         {
             p.NumberOfAI = -5;
             p.UnlimitedReload = 1;
-            ////if (p.LoadoutFile == "" && p.ClassName != "Wreck_UH1Y" && p.ClassName != "Wreck_Mi8_Crashed")
-            if (p.LoadoutFile == "")
-            {
-                //p.LoadoutFile = "PoliceLoadout";
-                p.LoadoutFile = GetRandomLoadout();
-            }
+            ////if (p.LoadoutFile == "" && p.ClassName != "Wreck_UH1Y" && p.ClassName != "Wreck_Mi8_Crashed") // if (p.LoadoutFile == "")
+            ////{
+            ////    p.LoadoutFile = "PoliceLoadout";
+            ////    p.LoadoutFile = GetRandomLoadout();
+            ////}
         });
 
         _settings.Patrols.ToList().ForEach(p =>
         {
             p.NumberOfAI = -5;
             p.UnlimitedReload = 1;
-            if (p.LoadoutFile == "")
-            {
-                //p.LoadoutFile = "PoliceLoadout";
-                p.LoadoutFile = GetRandomLoadout();
-            }
+            ////if (p.LoadoutFile == "")
+            ////{
+            ////    p.LoadoutFile = "PoliceLoadout";
+            ////    p.LoadoutFile = GetRandomLoadout();
+            ////}
         });
 
         using var fs = FileManagement.Writer(_outputFilePath);
