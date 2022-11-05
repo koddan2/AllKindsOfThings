@@ -1,0 +1,56 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Nereid</title>
+</head>
+
+<body>
+    <p>Test</p>
+
+    <script>
+        !(async function () {
+            const listName = "test"
+            try {
+                const response1 = await fetch("/List", {
+                    method: "POST",
+                    body: listName
+                });
+                console.log(response1)
+            } catch (e) {
+                console.error(e)
+            }
+
+            const response2 = await fetch(`/List/${listName}`, {
+                headers: {
+                    // Accept: "application/json; charset=utf-8"
+                }
+            })
+            const response2json = await response2.json();
+            console.log(response2json)
+            const response2ab = await response2.arrayBuffer();
+            const response2str = ab2str(response2ab)
+            console.log(response2ab, response2str)
+
+            function ab2str(buf) {
+                return String.fromCharCode.apply(null, new Uint8Array(buf));
+            }
+
+            function str2ab(str) {
+                var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+                var bufView = new Uint8Array(buf);
+                for (var i = 0, strLen = str.length; i < strLen; i++) {
+                    bufView[i] = str.charCodeAt(i);
+                }
+                return buf;
+            }
+            const response3 = await fetch(`/List/${listName}/Append`, {
+                method: "POST",
+                body: "hello, world"
+            })
+            console.log(response3)
+        }());
+    </script>
+</body>
+
+</html>
