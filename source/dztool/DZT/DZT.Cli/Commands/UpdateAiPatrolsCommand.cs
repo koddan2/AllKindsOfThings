@@ -1,6 +1,5 @@
 ﻿using DZT.Lib;
 using System.CommandLine;
-
 class UpdateAiPatrolsCommand
 {
     internal static void AddToCommand(Command addTo, Option<string> optionRootDir)

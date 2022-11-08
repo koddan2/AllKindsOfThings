@@ -8,5 +8,6 @@ Option<string> globalOptionDayZServerRootDir = new(name: "--dayz-server-root-dir
 rootCommand.Add(globalOptionDayZServerRootDir);
 AdjustZombieNumbersCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 UpdateAiPatrolsCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
+FixExpansionTypesXmlCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 
 return await rootCommand.InvokeAsync(args);

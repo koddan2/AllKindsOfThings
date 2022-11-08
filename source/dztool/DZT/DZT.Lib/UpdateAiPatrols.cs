@@ -89,6 +89,48 @@ public class UpdateAiPatrols
             p.Chance = Math.Max(BaseExtraSpawnChance - 0.15, 0.1);
         });
 
+        AddObjectPatrol("East", new[]
+        {
+            "Land_Mil_Tent_Big1_1",
+            "Land_Mil_Tent_Big1_2",
+            "Land_Mil_Tent_Big1_3",
+            "Land_Mil_Tent_Big1_4",
+            "Land_Mil_Tent_Big1_5",
+            "Land_Mil_Tent_Big2_1",
+            "Land_Mil_Tent_Big2_2",
+            "Land_Mil_Tent_Big2_3",
+            "Land_Mil_Tent_Big2_4",
+            "Land_Mil_Tent_Big2_5",
+            "Land_Mil_Tent_Big3",
+            "Land_Mil_Tent_Big4",
+        }, p =>
+        {
+            p.Faction = "East";
+            p.LoadoutFile = "EastLoadout";
+            p.Chance = 0.01;
+        });
+
+        AddObjectPatrol("West", new[]
+        {
+            "Land_Mil_Tent_Big1_1",
+            "Land_Mil_Tent_Big1_2",
+            "Land_Mil_Tent_Big1_3",
+            "Land_Mil_Tent_Big1_4",
+            "Land_Mil_Tent_Big1_5",
+            "Land_Mil_Tent_Big2_1",
+            "Land_Mil_Tent_Big2_2",
+            "Land_Mil_Tent_Big2_3",
+            "Land_Mil_Tent_Big2_4",
+            "Land_Mil_Tent_Big2_5",
+            "Land_Mil_Tent_Big3",
+            "Land_Mil_Tent_Big4",
+        }, p =>
+        {
+            p.Faction = "West";
+            p.LoadoutFile = "WestLoadout";
+            p.Chance = 0.01;
+        });
+
         _settings.ObjectPatrols.ToList().ForEach(p =>
         {
             p.NumberOfAI = -5;

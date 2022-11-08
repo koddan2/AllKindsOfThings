@@ -17,6 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="_exp-types.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="_ai-patrols.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
