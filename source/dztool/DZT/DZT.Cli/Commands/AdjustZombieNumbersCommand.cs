@@ -10,22 +10,36 @@ class AdjustZombieNumbersCommand
 
         cmd.Add(optionRootDir);
 
-        Option<string> sourceFile = new("--source", description: "The path to the input XML file") { IsRequired = true };
-        sourceFile.AddAlias("-s");
-        cmd.Add(sourceFile);
+        var sourceFile = cmd.AddOption<string>(
+            name: "--source",
+            description: "The path to the input XML file",
+            isRequired: true,
+            aliases: new[] { "-s" });
 
-        Option<string> destFile = new("--destination", description: "The path to the output XML file") { IsRequired = true };
-        sourceFile.AddAlias("-d");
-        cmd.Add(destFile);
+        var destFile = cmd.AddOption<string>(
+            name: "--destination",
+            description: "The path to the output XML file",
+            isRequired: true,
+            aliases: new[] { "-d" });
+
+        var factor = cmd.AddOption<float>(
+            name: "--factor",
+            description: "The factor to multiply with",
+            isRequired: false,
+            getDefaultValue: () => 2f,
+            aliases: new[] { "-f" });
 
         cmd.SetHandler(
-            (inputFilePath, outputFilePath, rootDir) =>
-            {
-                AdjustZombieNumbers impl = new(rootDir, inputFilePath, outputFilePath);
-                impl.Process();
-            },
+            Handler,
             sourceFile,
             destFile,
-            optionRootDir);
+            optionRootDir,
+            factor);
+    }
+
+    static void Handler(string inputFilePath, string outputFilePath, string rootDir, float factor)
+    {
+        AdjustZombieNumbers impl = new(rootDir, inputFilePath, outputFilePath, factor);
+        impl.Process();
     }
 }

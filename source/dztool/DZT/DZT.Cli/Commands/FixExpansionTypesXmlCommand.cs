@@ -1,6 +1,5 @@
 ﻿using DZT.Lib;
 using System.CommandLine;
-
 class FixExpansionTypesXmlCommand
 {
     internal static void AddToCommand(Command addTo, Option<string> optionRootDir)
