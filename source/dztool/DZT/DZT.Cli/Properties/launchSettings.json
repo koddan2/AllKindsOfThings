@@ -7,6 +7,14 @@
     "DZT.Cli (update-ai-patrols)": {
       "commandName": "Project",
       "commandLineArgs": "update-ai-patrols --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" --source=\"mpmissions\\dayzOffline.chernarusplus\\expansion\\settings\\AIPatrolSettings copy.json\" --destination=\"mpmissions\\dayzOffline.chernarusplus\\expansion\\settings\\AIPatrolSettings.json\""
+    },
+    "DZT.Cli (update-searchforloot)": {
+      "commandName": "Project",
+      "commandLineArgs": "update-searchforloot --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\""
+    },
+    "DZT.Cli (fix-expansion-types)": {
+      "commandName": "Project",
+      "commandLineArgs": "fix-expansion-types --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" --file=\"mpmissions\\dayzOffline.chernarusplus\\db\\types.xml\""
     }
   }
 }

@@ -66,7 +66,7 @@ public class FixSearchForLoot
             }
         }
 
-        cfg.Rarity = 50;
+        cfg.Rarity = 99;
         cfg.InitialCooldown = 1;
         cfg.DisableNotifications = 1;
 

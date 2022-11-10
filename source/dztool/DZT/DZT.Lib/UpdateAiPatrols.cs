@@ -27,27 +27,15 @@ public class UpdateAiPatrols
 
     public void Process()
     {
-        ////AddObjectPatrol("East", "StaticObj_Wreck_BRDM_DE");
-        ////AddObjectPatrol("East", "Land_wreck_truck01_aban1_green_DE");
-        ////AddObjectPatrol("East", "Land_Wreck_offroad02_aban2");
-        ////AddObjectPatrol("East", "StaticObj_Wreck_Decal_Small2", p =>
-        ////{
-        ////    p.Faction = "Raiders";
-        ////});
-        ////AddObjectPatrol("East", "Land_Guardhouse", p =>
-        ////{
-        ////    p.Faction = "Raiders";
-        ////});
-
         _settings.MVersion = 11;
         _settings.Enabled = 1;
         _settings.AccuracyMin = 0.27;
         _settings.AccuracyMax = 0.72;
-        _settings.DespawnRadius = 2500;
-        _settings.DespawnTime = 120;
+        _settings.DespawnRadius = 2200;
+        _settings.DespawnTime = 90;
         _settings.MinDistRadius = 350;
         _settings.MaxDistRadius = 1700;
-        _settings.ThreatDistanceLimit = 0.8;
+        _settings.ThreatDistanceLimit = 600;
         _settings.DamageMultiplier = 1.0;
 
         AddObjectPatrol("East", new[] { "Land_City_PoliceStation", "Land_Village_PoliceStation" }, p =>
@@ -66,6 +54,7 @@ public class UpdateAiPatrols
         },
         p =>
         {
+            p.NumberOfAI = -7;
             p.Faction = "Raiders";
             p.LoadoutFile = "BanditLoadout";
             p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.1);
@@ -106,7 +95,7 @@ public class UpdateAiPatrols
             {
                 p.Faction = "Raiders";
                 p.LoadoutFile = "SurvivorLoadout";
-                p.Chance = 0.002;
+                p.Chance = 0.02;
                 p.NumberOfAI = -3;
             });
 
@@ -115,6 +104,7 @@ public class UpdateAiPatrols
             p.Faction = "East";
             p.LoadoutFile = "EastLoadout";
             p.Chance = 0.005;
+            p.NumberOfAI = 2;
         });
 
         AddObjectPatrol("West", structureClassNames["**Military**"].ToArray(), p =>
@@ -122,6 +112,7 @@ public class UpdateAiPatrols
             p.Faction = "West";
             p.LoadoutFile = "WestLoadout";
             p.Chance = 0.005;
+            p.NumberOfAI = 2;
         });
 
         _settings.ObjectPatrols.ToList().ForEach(p =>
@@ -133,8 +124,8 @@ public class UpdateAiPatrols
             ////    p.LoadoutFile = "PoliceLoadout";
             ////    p.LoadoutFile = GetRandomLoadout();
             ////}
-            p.ThreatDistanceLimit = 0.8;
-            p.DamageMultiplier = 1.0;
+            p.ThreatDistanceLimit = -1;
+            p.DamageMultiplier = -1;
         });
 
         _settings.Patrols.ToList().ForEach(p =>
@@ -146,8 +137,8 @@ public class UpdateAiPatrols
             ////    p.LoadoutFile = "PoliceLoadout";
             ////    p.LoadoutFile = GetRandomLoadout();
             ////}
-            p.ThreatDistanceLimit = 0.8;
-            p.DamageMultiplier = 1.0;
+            p.ThreatDistanceLimit = -1;
+            p.DamageMultiplier = -1;
         });
 
         using var fs = FileManagement.Writer(_outputFilePath);
