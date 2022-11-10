@@ -9,13 +9,17 @@ class UpdateAiPatrolsCommand
 
         cmd.Add(optionRootDir);
 
-        Option<string> sourceFile = new("--source", description: "The path to the input JSON file") { IsRequired = true };
-        sourceFile.AddAlias("-s");
-        cmd.Add(sourceFile);
+        var sourceFile = cmd.AddOption<string>(
+            name: "--source",
+            description: "The path to the input JSON file",
+            isRequired: true,
+            aliases: new[] { "-s" });
 
-        Option<string> destFile = new("--destination", description: "The path to the output JSON file") { IsRequired = true };
-        sourceFile.AddAlias("-d");
-        cmd.Add(destFile);
+        var destFile = cmd.AddOption<string>(
+            name: "--destination",
+            description: "The path to the output JSON file",
+            isRequired: true,
+            aliases: new[] { "-d" });
 
         cmd.SetHandler(
             (inputFilePath, outputFilePath, rootDir) =>

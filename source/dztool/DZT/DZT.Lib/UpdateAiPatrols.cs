@@ -1,17 +1,17 @@
 ﻿using DZT.Lib.Models;
+using System.Linq;
 using System.Text.Json;
 
 namespace DZT.Lib;
 public class UpdateAiPatrols
 {
-    private readonly Random _rng = new Random();
+    private readonly Random _rng = new();
     private readonly string _inputFilePath;
     private readonly string _outputFilePath;
     private readonly string _json;
     private readonly AiPatrolSettingsRoot _settings;
-    private readonly string _rootDir;
 
-    public double BaseExtraSpawnChance { get; set; } = 0.5;
+    public double BaseExtraSpawnChance { get; set; } = 0.25;
 
     public UpdateAiPatrols(string rootDir, string inputFilePath, string outputFilePath)
     {
@@ -23,7 +23,6 @@ public class UpdateAiPatrols
         FileManagement.BackupFile(_inputFilePath, overwrite: true);
         _json = File.ReadAllText(_inputFilePath);
         _settings = JsonSerializer.Deserialize<AiPatrolSettingsRoot>(_json)!;
-        _rootDir = rootDir;
     }
 
     public void Process()
@@ -54,12 +53,12 @@ public class UpdateAiPatrols
         });
         AddObjectPatrol("East", new[]
         {
-            "Land_City_Hospital", 
-            "Land_Village_HealthCare", 
-            "Land_Village_store", 
+            "Land_City_Hospital",
+            "Land_Village_HealthCare",
+            "Land_Village_store",
             "Land_Power_Station",
             "Land_City_Store",
-            "Land_City_Store_WithStairs", 
+            "Land_City_Store_WithStairs",
         },
         p =>
         {
@@ -84,30 +83,33 @@ public class UpdateAiPatrols
 
         AddObjectPatrol("East", new[] { "Land_City_Stand_Grocery", "Land_House_1B01_Pub" }, p =>
         {
-            p.Faction = "East";
+            p.Faction = "Raiders";
             p.LoadoutFile = "SurvivorLoadout";
             p.Chance = Math.Max(BaseExtraSpawnChance - 0.15, 0.1);
         });
 
-        AddObjectPatrol("East", new[]
-        {
-            "Land_Mil_Tent_Big1_1",
-            "Land_Mil_Tent_Big1_2",
-            "Land_Mil_Tent_Big1_3",
-            "Land_Mil_Tent_Big1_4",
-            "Land_Mil_Tent_Big1_5",
-            "Land_Mil_Tent_Big2_1",
-            "Land_Mil_Tent_Big2_2",
-            "Land_Mil_Tent_Big2_3",
-            "Land_Mil_Tent_Big2_4",
-            "Land_Mil_Tent_Big2_5",
-            "Land_Mil_Tent_Big3",
-            "Land_Mil_Tent_Big4",
-        }, p =>
+        var structureClassNames = DataHelper.GetStructureClassNames();
+
+        AddObjectPatrol(
+            "East",
+            new[]
+            {
+            structureClassNames["**Residential**"],
+            structureClassNames["**Industrial**"],
+            structureClassNames["**Specific**"],
+            }.SelectMany(x => x).ToArray(),
+            p =>
+            {
+                p.Faction = "Raiders";
+                p.LoadoutFile = "SurvivorLoadout";
+                p.Chance = 0.001;
+            });
+
+        AddObjectPatrol("East", DataHelper.GetStructureClassNames()["**Military**"].ToArray(), p =>
         {
             p.Faction = "East";
             p.LoadoutFile = "EastLoadout";
-            p.Chance = 0.01;
+            p.Chance = 0.005;
         });
 
         AddObjectPatrol("West", new[]
@@ -128,7 +130,7 @@ public class UpdateAiPatrols
         {
             p.Faction = "West";
             p.LoadoutFile = "WestLoadout";
-            p.Chance = 0.01;
+            p.Chance = 0.005;
         });
 
         _settings.ObjectPatrols.ToList().ForEach(p =>
@@ -169,21 +171,21 @@ public class UpdateAiPatrols
 
     private void AddObjectPatrol(string faction, string className, Action<ObjectPatrol>? mutate = null)
     {
-        AddObjectPatrol(faction, new string[] { className }, mutate);
+        var extraPatrol = GetObjectPatrol(faction);
+        extraPatrol.ClassName = className;
+        mutate?.Invoke(extraPatrol);
+        _settings.ObjectPatrols.Add(extraPatrol);
     }
 
     private void AddObjectPatrol(string faction, string[] classNames, Action<ObjectPatrol>? mutate = null)
     {
         foreach (var className in classNames)
         {
-            var extraPatrol = GetObjectPatrol(faction);
-            extraPatrol.ClassName = className;
-            mutate?.Invoke(extraPatrol);
-            _settings.ObjectPatrols.Add(extraPatrol);
+            AddObjectPatrol(faction, className, mutate);
         }
     }
 
-    private string GetRandomLoadout()
+    public string GetRandomLoadout()
     {
         var candidates = new[]
         {

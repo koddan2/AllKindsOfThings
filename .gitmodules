@@ -1,3 +1,6 @@
 [submodule "submodules/Invoke-Build"]
 	path = submodules/Invoke-Build
 	url = https://github.com/nightroman/Invoke-Build.git
+[submodule "submodules/DayZ_SA_ClassName_Dump"]
+	path = submodules/DayZ_SA_ClassName_Dump
+	url = https://github.com/ravmustang/DayZ_SA_ClassName_Dump.git
