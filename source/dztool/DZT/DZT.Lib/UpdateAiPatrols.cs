@@ -39,12 +39,16 @@ public class UpdateAiPatrols
         ////    p.Faction = "Raiders";
         ////});
 
+        _settings.MVersion = 11;
+        _settings.Enabled = 1;
         _settings.AccuracyMin = 0.27;
         _settings.AccuracyMax = 0.72;
         _settings.DespawnRadius = 2500;
         _settings.DespawnTime = 120;
         _settings.MinDistRadius = 350;
         _settings.MaxDistRadius = 1700;
+        _settings.ThreatDistanceLimit = 0.8;
+        _settings.DamageMultiplier = 1.0;
 
         AddObjectPatrol("East", new[] { "Land_City_PoliceStation", "Land_Village_PoliceStation" }, p =>
         {
@@ -102,31 +106,18 @@ public class UpdateAiPatrols
             {
                 p.Faction = "Raiders";
                 p.LoadoutFile = "SurvivorLoadout";
-                p.Chance = 0.001;
+                p.Chance = 0.002;
+                p.NumberOfAI = -3;
             });
 
-        AddObjectPatrol("East", DataHelper.GetStructureClassNames()["**Military**"].ToArray(), p =>
+        AddObjectPatrol("East", structureClassNames["**Military**"].ToArray(), p =>
         {
             p.Faction = "East";
             p.LoadoutFile = "EastLoadout";
             p.Chance = 0.005;
         });
 
-        AddObjectPatrol("West", new[]
-        {
-            "Land_Mil_Tent_Big1_1",
-            "Land_Mil_Tent_Big1_2",
-            "Land_Mil_Tent_Big1_3",
-            "Land_Mil_Tent_Big1_4",
-            "Land_Mil_Tent_Big1_5",
-            "Land_Mil_Tent_Big2_1",
-            "Land_Mil_Tent_Big2_2",
-            "Land_Mil_Tent_Big2_3",
-            "Land_Mil_Tent_Big2_4",
-            "Land_Mil_Tent_Big2_5",
-            "Land_Mil_Tent_Big3",
-            "Land_Mil_Tent_Big4",
-        }, p =>
+        AddObjectPatrol("West", structureClassNames["**Military**"].ToArray(), p =>
         {
             p.Faction = "West";
             p.LoadoutFile = "WestLoadout";
@@ -135,24 +126,28 @@ public class UpdateAiPatrols
 
         _settings.ObjectPatrols.ToList().ForEach(p =>
         {
-            p.NumberOfAI = -5;
+            ////p.NumberOfAI = -5;
             p.UnlimitedReload = 1;
             ////if (p.LoadoutFile == "" && p.ClassName != "Wreck_UH1Y" && p.ClassName != "Wreck_Mi8_Crashed") // if (p.LoadoutFile == "")
             ////{
             ////    p.LoadoutFile = "PoliceLoadout";
             ////    p.LoadoutFile = GetRandomLoadout();
             ////}
+            p.ThreatDistanceLimit = 0.8;
+            p.DamageMultiplier = 1.0;
         });
 
         _settings.Patrols.ToList().ForEach(p =>
         {
-            p.NumberOfAI = -5;
+            ////p.NumberOfAI = -5;
             p.UnlimitedReload = 1;
             ////if (p.LoadoutFile == "")
             ////{
             ////    p.LoadoutFile = "PoliceLoadout";
             ////    p.LoadoutFile = GetRandomLoadout();
             ////}
+            p.ThreatDistanceLimit = 0.8;
+            p.DamageMultiplier = 1.0;
         });
 
         using var fs = FileManagement.Writer(_outputFilePath);

@@ -9,6 +9,12 @@ public class ObjectPatrol
     [JsonPropertyName("Faction")]
     public string Faction { get; set; }
 
+    [JsonPropertyName("ThreatDistanceLimit")]
+    public double ThreatDistanceLimit { get; set; }
+
+    [JsonPropertyName("DamageMultiplier")]
+    public double DamageMultiplier { get; set; }
+
     [JsonPropertyName("Formation")]
     public string Formation { get; set; }
 
@@ -74,6 +80,12 @@ public class Patrol
 {
     [JsonPropertyName("Faction")]
     public string Faction { get; set; }
+
+    [JsonPropertyName("ThreatDistanceLimit")]
+    public double ThreatDistanceLimit { get; set; }
+
+    [JsonPropertyName("DamageMultiplier")]
+    public double DamageMultiplier { get; set; }
 
     [JsonPropertyName("Formation")]
     public string Formation { get; set; }
@@ -167,6 +179,12 @@ public class AiPatrolSettingsRoot
 
     [JsonPropertyName("AccuracyMax")]
     public double AccuracyMax { get; set; }
+
+    [JsonPropertyName("ThreatDistanceLimit")]
+    public double ThreatDistanceLimit { get; set; }
+
+    [JsonPropertyName("DamageMultiplier")]
+    public double DamageMultiplier { get; set; }
 
     [JsonPropertyName("ObjectPatrols")]
     public List<ObjectPatrol> ObjectPatrols { get; set; }
