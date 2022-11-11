@@ -23,15 +23,15 @@ public class FixSearchForLoot
     {
         FileManagement.BackupFile(_sflJsonFilePath, overwrite: true);
         var types = XDocument.Load(_typesXmlFilePath);
-        var usageDict = new Dictionary<string, List<string>>
+        var usageDict = new Dictionary<string, HashSet<string>>
         {
-            { "Civilian", new List<string>() },
-            { "Industrial", new List<string>() },
-            { "Farm", new List<string>() },
-            { "Hunting", new List<string>() },
-            { "Police", new List<string>() },
-            { "Medical", new List<string>() },
-            { "Military", new List<string>() },
+            { "Civilian", new HashSet<string>() },
+            { "Industrial", new HashSet<string>() },
+            { "Farm", new HashSet<string>() },
+            { "Hunting", new HashSet<string>() },
+            { "Police", new HashSet<string>() },
+            { "Medical", new HashSet<string>() },
+            { "Military", new HashSet<string>() },
         };
         foreach (var type in types.Root!.Nodes().OfType<XElement>())
         {
@@ -47,6 +47,10 @@ public class FixSearchForLoot
                     {
                         usageDict["Civilian"].Add(typeName);
                     }
+                    else if (nameAttr == "Medic")
+                    {
+                        usageDict["Medical"].Add(typeName);
+                    }
                     else if (nameAttr is not null && usageDict.ContainsKey(nameAttr))
                     {
                         usageDict[nameAttr].Add(typeName);
@@ -56,12 +60,38 @@ public class FixSearchForLoot
         }
         var cfg = JsonSerializer.Deserialize<SflRoot>(File.ReadAllText(_sflJsonFilePath));
         if (cfg is null) throw new ApplicationException("Fail");
+
+        var structureClassNames = DataHelper.GetStructureClassNames();
+        cfg.SFLBuildings.First(b => b.name == "Civilian").buildings = structureClassNames["**Residential**"].Where(x => x != "GardenPlot").ToArray();
+        cfg.SFLBuildings.First(b => b.name == "Industrial").buildings = structureClassNames["**Industrial**"].ToArray();
+        cfg.SFLBuildings.First(b => b.name == "Military").buildings = (structureClassNames["**Specific**"].Concat(structureClassNames["**Military**"])).ToArray();
+
+        var forbiddenClassNamesSubstrings = new[]
+        {
+            "DOOR",
+            "WHEEL",
+            "HOOD",
+            "LEFT",
+            "RIGHT",
+            "TRUNK",
+        };
+        bool IsForbidden(string name)
+        {
+            foreach (var forbid in forbiddenClassNamesSubstrings)
+            {
+                if (name.ToUpperInvariant().Contains(forbid)) return true;
+            }
+            return false;
+        }
+
         foreach (var category in cfg.SFLLootCategory)
         {
             if (usageDict.ContainsKey(category.name))
             {
                 var list = usageDict[category.name];
-                category.loot = list.ToArray();
+                category.loot = list
+                    .Where(className => !IsForbidden(className))
+                    .ToArray();
                 category.rarity = 0;
             }
         }

@@ -141,7 +141,7 @@ public class UpdateAiPatrols
             p.DamageMultiplier = -1;
         });
 
-        using var fs = FileManagement.Writer(_outputFilePath);
+        using var fs = FileManagement.Utf8BomWriter(_outputFilePath);
         var jsonOptions = new JsonSerializerOptions
         {
             WriteIndented = true,

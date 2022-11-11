@@ -16,12 +16,22 @@ public class FixExpansionTypesXml
         FileManagement.BackupFile(inputFilePath, overwrite: false, appendRandomString: true);
         XDocument xd = XDocument.Load(inputFilePath);
         var types = xd.Root!.Nodes();
+
+        var toLowerOccurenceSubstrings = new[]
+        {
+            "DOOR",
+            "WHEEL",
+            "HOOD",
+            "LEFT",
+            "RIGHT",
+            "TRUNK",
+        };
         foreach (XElement type in types.OfType<XElement>())
         {
-            var attrName = type.Attribute("name")!.Value;
-            if (attrName.StartsWith("Expansion"))
+            var attrName = type.Attribute("name")!.Value?.ToUpperInvariant() ?? "";
+            if (attrName.StartsWith("EXPANSION_"))
             {
-                if (attrName.Contains("Wheel") || attrName.Contains("Door"))
+                if (toLowerOccurenceSubstrings.Any(x=>attrName.Contains(x)))
                 {
                     var typeNodes = type.Nodes();
                     foreach (XElement typeNode in typeNodes.OfType<XElement>())
@@ -39,7 +49,7 @@ public class FixExpansionTypesXml
             }
         }
 
-        using var fs = FileManagement.Writer(inputFilePath + "-NEW");
+        using var fs = FileManagement.Utf8BomWriter(inputFilePath);
         xd.Save(fs);
     }
 }

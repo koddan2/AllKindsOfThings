@@ -4,17 +4,64 @@ namespace DZT.Lib;
 
 public static class FileManagement
 {
-    private readonly static Random _Rng = new Random();
+    private readonly static Random _Rng = new();
 
-    public static StreamWriter Writer(string path)
+    public static StreamWriter Utf8BomWriter(string path)
     {
         var writer = new StreamWriter(path, append: false, new UTF8Encoding(false));
         return writer;
     }
 
-    public static void BackupFile(string path, bool overwrite, bool appendRandomString = false)
+    internal static void RestoreFileV2(string rootDir, string relativePath)
     {
-        var dirName = Path.GetDirectoryName(path)!;
+        var backupRootDir = Path.Combine(GeneralSetup.ApplicationDirPath, "BACKUP");
+        var pathToBackupFile = Path.Combine(backupRootDir, relativePath);
+        var destFile = Path.Combine(rootDir, relativePath);
+
+        File.Copy(pathToBackupFile, destFile, true);
+    }
+
+    public record BackupFileV2Result(string BackupFilePath, bool FileOperationCommitted);
+    public static BackupFileV2Result BackupFileV2(string rootDir, string relativePath)
+    {
+        var backupRootDir = Path.Combine(GeneralSetup.ApplicationDirPath, "BACKUP");
+        var pathToBackupFile = Path.Combine(backupRootDir, relativePath);
+        var srcFile = Path.Combine(rootDir, relativePath);
+
+        if (File.Exists(pathToBackupFile))
+        {
+            return new BackupFileV2Result(pathToBackupFile, false);
+        }
+
+        if (!Directory.Exists(backupRootDir))
+        {
+            Directory.CreateDirectory(backupRootDir);
+        }
+        var pathToBackupFileDir = Path.GetDirectoryName(pathToBackupFile);
+
+        if (pathToBackupFileDir is null)
+        {
+            throw new ApplicationException($"Unable to determine directory of {pathToBackupFile}");
+        }
+
+        if (!Directory.Exists(pathToBackupFileDir))
+        {
+            Directory.CreateDirectory(pathToBackupFileDir);
+        }
+
+        File.Copy(srcFile, pathToBackupFile, false);
+        return new BackupFileV2Result(pathToBackupFile, true);
+    }
+
+    public static void BackupFile(string path, bool overwrite = false, bool appendRandomString = false)
+    {
+        var dirName = Path.GetDirectoryName(path);
+
+        if (dirName is null)
+        {
+            throw new ApplicationException($"Unable to determine directory of {path}");
+        }
+
         var fileNameNoExt = Path.GetFileNameWithoutExtension(path);
         var extWithPeriod = Path.GetExtension(path);
         var backupPath = appendRandomString ?
