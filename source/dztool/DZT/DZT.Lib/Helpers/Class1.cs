@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DZT.Lib
+namespace DZT.Lib.Helpers
 {
     internal class Class1
     {

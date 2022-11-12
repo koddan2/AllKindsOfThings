@@ -12,6 +12,7 @@ ManipulateTerritoryCommand.AddToCommand(rootCommand, globalOptionDayZServerRootD
 UpdateAiPatrolsCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 FixExpansionTypesXmlCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 FixSearchForLootCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
+GenerateSplattedLoadoutCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 
 ////return await rootCommand.InvokeAsync(args);
 return rootCommand.Invoke(args);

@@ -1,4 +1,4 @@
-﻿namespace DZT.Lib;
+﻿namespace DZT.Lib.Helpers;
 public static class Validators
 {
     public static void ValidateDirExists(string path)

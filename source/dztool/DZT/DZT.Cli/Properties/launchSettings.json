@@ -1,5 +1,9 @@
 {
   "profiles": {
+    "DZT.Cli (generate-splatted-ai-loadout)": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-splatted-ai-loadout --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\""
+    },
     "DZT.Cli (manipulate-territory)": {
       "commandName": "Project",
       "commandLineArgs": "manipulate-territory\r\n --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\"\r\n --mp-mission=\"dayzOffline.chernarusplus\"\r\n --entity=\"zombie\"\r\n --multiply-by=2"

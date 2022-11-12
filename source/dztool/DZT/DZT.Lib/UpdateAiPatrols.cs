@@ -1,4 +1,5 @@
-﻿using DZT.Lib.Models;
+﻿using DZT.Lib.Helpers;
+using DZT.Lib.Models;
 using System.Linq;
 using System.Text.Json;
 
@@ -31,11 +32,11 @@ public class UpdateAiPatrols
         _settings.Enabled = 1;
         _settings.AccuracyMin = 0.27;
         _settings.AccuracyMax = 0.72;
-        _settings.DespawnRadius = 2200;
+        _settings.DespawnRadius = 2100;
         _settings.DespawnTime = 90;
-        _settings.MinDistRadius = 350;
+        _settings.MinDistRadius = 150;
         _settings.MaxDistRadius = 1700;
-        _settings.ThreatDistanceLimit = 600;
+        _settings.ThreatDistanceLimit = 400;
         _settings.DamageMultiplier = 1.0;
 
         AddObjectPatrol("East", new[] { "Land_City_PoliceStation", "Land_Village_PoliceStation" }, p =>
@@ -90,12 +91,15 @@ public class UpdateAiPatrols
             structureClassNames["**Residential**"],
             structureClassNames["**Industrial**"],
             structureClassNames["**Specific**"],
-            }.SelectMany(x => x).ToArray(),
+            }.SelectMany(x => x)
+            .Where(x => x != "GardenPlot")
+            .ToArray(),
             p =>
             {
                 p.Faction = "Raiders";
-                p.LoadoutFile = "SurvivorLoadout";
-                p.Chance = 0.02;
+                ////p.LoadoutFile = "SurvivorLoadout";
+                p.LoadoutFile = "SplattedLoadout";
+                p.Chance = 0.05;
                 p.NumberOfAI = -3;
             });
 
@@ -124,6 +128,7 @@ public class UpdateAiPatrols
             ////    p.LoadoutFile = "PoliceLoadout";
             ////    p.LoadoutFile = GetRandomLoadout();
             ////}
+            ////p.LoadoutFile = "SplattedLoadout";
             p.ThreatDistanceLimit = -1;
             p.DamageMultiplier = -1;
         });

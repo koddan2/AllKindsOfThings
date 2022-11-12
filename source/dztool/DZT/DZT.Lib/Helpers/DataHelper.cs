@@ -1,8 +1,15 @@
 ﻿using System.Reflection;
+using System.Xml.Linq;
 
-namespace DZT.Lib;
+namespace DZT.Lib.Helpers;
 class DataHelper
 {
+    public static XDocument GetTypesXml(string rootDir, string mpMissionName)
+    {
+        var path = Path.Combine(rootDir, "mpmissions", mpMissionName, "db", "types.xml");
+        return XDocument.Load(path);
+    }
+
     public static IDictionary<string, IEnumerable<string>> GetStructureClassNames()
     {
         Assembly asm = Assembly.GetExecutingAssembly();

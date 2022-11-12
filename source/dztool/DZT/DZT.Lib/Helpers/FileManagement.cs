@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace DZT.Lib;
+namespace DZT.Lib.Helpers;
 
 public static class FileManagement
 {
