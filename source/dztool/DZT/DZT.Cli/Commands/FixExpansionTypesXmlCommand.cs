@@ -1,5 +1,8 @@
 ﻿using DZT.Lib;
+using Microsoft.Extensions.Logging;
 using System.CommandLine;
+
+namespace DZT.Cli.Commands;
 class FixExpansionTypesXmlCommand
 {
     internal static void AddToCommand(Command addTo, Option<string> optionRootDir)
@@ -16,7 +19,7 @@ class FixExpansionTypesXmlCommand
         cmd.SetHandler(
             (inputFilePath, rootDir) =>
             {
-                FixExpansionTypesXml impl = new(rootDir, inputFilePath);
+                FixExpansionTypesXml impl = new(Globals.DztLoggerFactory.CreateLogger<FixExpansionTypesXml>(), rootDir, inputFilePath);
                 impl.Process();
             },
             sourceFile,

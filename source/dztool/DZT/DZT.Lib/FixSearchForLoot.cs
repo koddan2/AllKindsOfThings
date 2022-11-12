@@ -100,6 +100,7 @@ public class FixSearchForLoot
         cfg.Rarity = 99;
         cfg.InitialCooldown = 1;
         cfg.DisableNotifications = 1;
+        cfg.XPGain = 10;
 
         File.WriteAllText(_sflJsonFilePath, JsonSerializer.Serialize(cfg, new JsonSerializerOptions { WriteIndented = true, }));
     }

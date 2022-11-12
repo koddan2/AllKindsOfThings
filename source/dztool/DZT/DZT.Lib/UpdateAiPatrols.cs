@@ -30,12 +30,12 @@ public class UpdateAiPatrols
     {
         _settings.MVersion = 11;
         _settings.Enabled = 1;
-        _settings.AccuracyMin = 0.27;
-        _settings.AccuracyMax = 0.72;
-        _settings.DespawnRadius = 2100;
-        _settings.DespawnTime = 90;
-        _settings.MinDistRadius = 150;
-        _settings.MaxDistRadius = 1700;
+        _settings.AccuracyMin = 0.42;
+        _settings.AccuracyMax = 0.77;
+        _settings.DespawnRadius = 1700;
+        _settings.DespawnTime = 30;
+        _settings.MinDistRadius = 200;
+        _settings.MaxDistRadius = 1400;
         _settings.ThreatDistanceLimit = 400;
         _settings.DamageMultiplier = 1.0;
 
@@ -78,28 +78,41 @@ public class UpdateAiPatrols
         AddObjectPatrol("East", new[] { "Land_City_Stand_Grocery", "Land_House_1B01_Pub" }, p =>
         {
             p.Faction = "Raiders";
-            p.LoadoutFile = "SurvivorLoadout";
+            ////p.LoadoutFile = "SurvivorLoadout";
+            p.LoadoutFile = "SplattedLoadout";
             p.Chance = Math.Max(BaseExtraSpawnChance - 0.15, 0.1);
         });
 
         var structureClassNames = DataHelper.GetStructureClassNames();
 
-        AddObjectPatrol(
-            "East",
-            new[]
-            {
+        var forbiddenObjects = new[]
+        {
+            "GardenPlot",
+            "Polytunnel",
+            "Land_Dam_Concrete_20_Floodgate",
+            //"and_Pier_Crane_B",
+        };
+        var objectsForPatrol = new[]
+        {
             structureClassNames["**Residential**"],
             structureClassNames["**Industrial**"],
             structureClassNames["**Specific**"],
-            }.SelectMany(x => x)
-            .Where(x => x != "GardenPlot")
-            .ToArray(),
+            structureClassNames["**Wrecks**"],
+            structureClassNames["**Military**"],
+        }
+            .SelectMany(x => x)
+            .Where(x => !forbiddenObjects.Contains(x))
+            .ToArray();
+
+        AddObjectPatrol(
+            "East",
+            objectsForPatrol,
             p =>
             {
                 p.Faction = "Raiders";
                 ////p.LoadoutFile = "SurvivorLoadout";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = 0.05;
+                p.Chance = 0.01;
                 p.NumberOfAI = -3;
             });
 

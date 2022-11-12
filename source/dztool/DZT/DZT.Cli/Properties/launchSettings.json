@@ -6,7 +6,7 @@
     },
     "DZT.Cli (manipulate-territory)": {
       "commandName": "Project",
-      "commandLineArgs": "manipulate-territory\r\n --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\"\r\n --mp-mission=\"dayzOffline.chernarusplus\"\r\n --entity=\"zombie\"\r\n --multiply-by=2"
+      "commandLineArgs": "manipulate-territory\r\n --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\"\r\n --mp-mission=\"dayzOffline.chernarusplus\"\r\n --entity=\"zombie\"\r\n --restore --multiply-by=1,6"
     },
     "DZT.Cli (update-ai-patrols)": {
       "commandName": "Project",

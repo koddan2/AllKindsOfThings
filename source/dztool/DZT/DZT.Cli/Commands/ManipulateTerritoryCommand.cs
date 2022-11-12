@@ -83,9 +83,7 @@ internal class ManipulateTerritoryCommand
         {
             impl.RestoreBackup();
         }
-        else
-        {
-            impl.Process();
-        }
+
+        impl.Process();
     }
 }

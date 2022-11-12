@@ -79,13 +79,21 @@ public class GenerateSplattedLoadout
         "CRATE",
         "WOODEN",
     };
-    bool IsForbidden(string name, XElement typ)
+
+    static bool IsForbidden(string name, XElement typ)
     {
         // exempt armbands
-        if (name.Contains("Armband_")) return false;
+        if (name.Contains("Armband_"))
+        {
+            return false;
+        }
+
         foreach (var forbid in _ForbiddenClassNamesSubstrings)
         {
-            if (name.ToUpperInvariant().Contains(forbid)) return true;
+            if (name.ToUpperInvariant().Contains(forbid))
+            {
+                return true;
+            }
         }
 
         var hasCategory = false;
@@ -93,7 +101,11 @@ public class GenerateSplattedLoadout
         var hasNominal = false;
         foreach (var typEl in typ.Nodes().OfType<XElement>())
         {
-            if (typEl.Name == "nominal" && typEl.Value != "0") hasNominal = true;
+            if (typEl.Name == "nominal" && typEl.Value != "0")
+            {
+                hasNominal = true;
+            }
+
             if (typEl.Name == "category")
             {
                 var catName = typEl.Attribute("name")?.Value;
@@ -105,7 +117,11 @@ public class GenerateSplattedLoadout
             }
         }
 
-        if (hasCategory && (hasUsage || hasNominal)) return false;
+        if (hasCategory && (hasUsage || hasNominal))
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -146,7 +162,7 @@ public class GenerateSplattedLoadout
             .Select(x => new InventoryCargoModel
             {
                 ClassName = x.Name,
-                Chance = 0.019,
+                Chance = 0.023,
                 Sets = new List<Set>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
@@ -180,9 +196,11 @@ public class GenerateSplattedLoadout
         {
             att.Items = att.Items.DistinctBy(x => x.ClassName).ToList();
         }
+
+        splat.InventoryAttachments = splat.InventoryAttachments.Where(x => x.SlotName != "Shoulder").ToList();
     }
 
-    private void AssignInventoryAttachments(AiLoadoutRoot splat, AiLoadoutRoot item)
+    private static void AssignInventoryAttachments(AiLoadoutRoot splat, AiLoadoutRoot item)
     {
         foreach (var attachment in item.InventoryAttachments)
         {
@@ -214,7 +232,19 @@ public class GenerateSplattedLoadout
             ++index;
         }
 
-        splat.Sets = splat.Sets.Where(s => s.ClassName != "CLOTHING").ToList();
+        splat.Sets = splat.Sets
+            //// .Where(s => s.ClassName != "CLOTHING")
+            .Where(s =>
+            {
+                // oops side-effect here
+                if (s.ClassName == "WEAPON")
+                {
+                    s.Chance = 0.1;
+                }
+                return s.ClassName != "CLOTHING";
+            })
+            .DistinctBy(x => x.InventoryAttachments[0]?.Items[0]?.ClassName)
+            .ToList();
 
         //foreach (var att in splat.InventoryAttachments)
         //{
@@ -222,7 +252,7 @@ public class GenerateSplattedLoadout
         //}
     }
 
-    private void AssignSets(AiLoadoutRoot splat, AiLoadoutRoot item)
+    private static void AssignSets(AiLoadoutRoot splat, AiLoadoutRoot item)
     {
         foreach (var set in item.Sets)
         {
