@@ -75,6 +75,9 @@ public class GenerateSplattedLoadout
         "PLATE",
         "BARREL",
         "POWERG",
+        "SEACHEST",
+        "CRATE",
+        "WOODEN",
     };
     bool IsForbidden(string name, XElement typ)
     {
