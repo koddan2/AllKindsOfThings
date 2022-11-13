@@ -27,6 +27,7 @@ public class FixSearchForLoot
     {
         var restore = FileManagement.TryRestoreFileV2(_rootDir, _sflJsonRelativePath);
         var backup = FileManagement.BackupFileV2(_rootDir, _sflJsonRelativePath);
+        // TODO: follow cfgeconomycore.xml refs -> types files
         var types = XDocument.Load(_typesXmlFilePath);
         var usageDict = new Dictionary<string, HashSet<string>>
         {
