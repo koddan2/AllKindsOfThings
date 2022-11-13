@@ -19,6 +19,40 @@ public class FixExpansionTypesXml
         _rootDir = rootDir;
     }
 
+    public void ProcessBrExtra()
+    {
+        var relativePath = "mpmissions/dayzOffline.chernarusplus/_mixins/br_extra_types.xml";
+        _ = FileManagement.TryRestoreFileV2(_rootDir, relativePath);
+        var backupResult = FileManagement.BackupFileV2(_rootDir, relativePath);
+
+        var pathToFile = Path.Combine(_rootDir, relativePath);
+        XDocument xd = XDocument.Load(pathToFile);
+        var dzTypes = DzTypesXmlTypeElement.FromDocument(xd);
+        foreach (var typ in dzTypes)
+        {
+            if (typ.Name.StartsWith("SNAFU"))
+            {
+                typ.Nominal = 1;
+                typ.Min = 1;
+                typ.Restock = 0;
+                typ.Flags = typ.Flags?.ToDictionary(x => x.Key, y =>
+                {
+                    if (y.Key == "count_in_map")
+                    {
+                        return "1";
+                    }
+                    else
+                    {
+                        return "0";
+                    }
+                });
+            }
+        }
+
+        using var fs = FileManagement.Utf8WithoutBomWriter(pathToFile);
+        xd.Save(fs);
+    }
+
     public void ProcessDzn()
     {
         var relativePath = "mpmissions/dayzOffline.chernarusplus/_mixins/br_nam_types_dzn.xml";
@@ -45,7 +79,7 @@ public class FixExpansionTypesXml
                     "Tier3",
                     "Tier4",
                 };
-            typ.Category = "clothes";
+                typ.Category = "clothes";
             }
             typ.Usages = new[]
             {
@@ -62,7 +96,16 @@ public class FixExpansionTypesXml
 
     public void Process()
     {
-        var relativePath = Path.GetRelativePath(_rootDir, _inputFilePath);
+        ProcessSingle(_inputFilePath);
+        foreach (var file in Directory.GetFiles(Path.Combine(_rootDir, "mpmissions/dayzOffline.chernarusplus/_mixins/")))
+        {
+            ProcessSingle(file);
+        }
+    }
+
+    public void ProcessSingle(string inputFilePath)
+    {
+        var relativePath = Path.GetRelativePath(_rootDir, inputFilePath);
         var restore = FileManagement.TryRestoreFileV2(_rootDir, relativePath);
         if (File.Exists(restore.BackupFilePath))
         {
@@ -77,7 +120,7 @@ public class FixExpansionTypesXml
         {
             _logger.LogInformation("File already backed up {file}", backupResult.BackupFilePath);
         }
-        XDocument xd = XDocument.Load(_inputFilePath);
+        XDocument xd = XDocument.Load(inputFilePath);
         var types = xd.Root!.Nodes();
 
         var toLowerOccurenceSubstrings = new[]
@@ -135,7 +178,7 @@ public class FixExpansionTypesXml
             }
         }
 
-        using var fs = FileManagement.Utf8WithoutBomWriter(_inputFilePath);
+        using var fs = FileManagement.Utf8WithoutBomWriter(inputFilePath);
         xd.Save(fs);
     }
 }

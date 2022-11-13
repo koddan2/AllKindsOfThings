@@ -63,9 +63,10 @@ public class UpdateAiPatrols
         },
         p =>
         {
-            p.NumberOfAI = -7;
+            p.NumberOfAI = -5;
             p.Faction = "Raiders";
-            p.LoadoutFile = "BanditLoadout";
+            ////p.LoadoutFile = "BanditLoadout";
+            p.LoadoutFile = "SplattedLoadout";
             p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.1);
         });
 

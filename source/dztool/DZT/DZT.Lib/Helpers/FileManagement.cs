@@ -42,7 +42,7 @@ public static class FileManagement
         var pathToBackupFile = Path.Combine(backupRootDir, relativePath);
         var srcFile = Path.Combine(rootDir, relativePath);
 
-        if (!HasSameContent(pathToBackupFile, srcFile))
+        if (File.Exists(pathToBackupFile) && !HasSameContent(pathToBackupFile, srcFile))
         {
             BackupBackupFile(pathToBackupFile);
         }
@@ -103,7 +103,7 @@ public static class FileManagement
         var fileNameNoExt = Path.GetFileNameWithoutExtension(filePath);
         var extension = Path.GetExtension(filePath);
 
-        var backupBackupFile = Path.Combine(dirName, fileNameNoExt, $"{DateTimeOffset.Now:O}", extension);
+        var backupBackupFile = Path.Combine(dirName, $"{fileNameNoExt}-{DateTimeOffset.Now:O}{extension}");
         File.Copy(filePath, backupBackupFile, true);
     }
 

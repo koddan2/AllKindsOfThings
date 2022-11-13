@@ -23,6 +23,7 @@ class FixExpansionTypesXmlCommand
                 FixExpansionTypesXml impl = new(Globals.DztLoggerFactory.CreateLogger<FixExpansionTypesXml>(), rootDir, inputFilePath);
                 impl.Process();
                 impl.ProcessDzn();
+                impl.ProcessBrExtra();
             },
             sourceFile,
             optionRootDir);

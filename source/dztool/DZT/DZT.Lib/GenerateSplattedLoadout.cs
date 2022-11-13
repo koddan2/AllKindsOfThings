@@ -45,7 +45,10 @@ public class GenerateSplattedLoadout
             Quantity = new Quantity { Min = 0, Max = 0 },
             ClassName = "",
             ConstructionPartsBuilt = new List<object>(),
-            Health = new List<Health>(),
+            Health = new List<Health>
+            {
+                new Health {Min=0.3, Max=0.9},
+            },
             ////InventoryAttachments = invAttachmentsSlotNames.Select(x => new InventoryAttachment { SlotName = x, Items=new List<Item>() }).ToList(),
             InventoryAttachments = new List<InventoryAttachment>(),
             InventoryCargo = new List<InventoryCargoModel>(),
@@ -87,6 +90,11 @@ public class GenerateSplattedLoadout
         if (name.Contains("Armband_"))
         {
             return false;
+        }
+
+        if (new Models.DzTypesXmlTypeElement(typ).Category=="containers")
+        {
+            return true;
         }
 
         foreach (var forbid in _ForbiddenClassNamesSubstrings)
@@ -151,19 +159,19 @@ public class GenerateSplattedLoadout
     {
         var cargoCandidates = GetCargoCandidates();
 
-        foreach (var item in model)
-        {
-            if (item?.InventoryCargo is not null)
-            {
-                splat.InventoryCargo.AddRange(item.InventoryCargo);
-            }
-        }
+        ////foreach (var item in model)
+        ////{
+        ////    if (item?.InventoryCargo is not null)
+        ////    {
+        ////        splat.InventoryCargo.AddRange(item.InventoryCargo);
+        ////    }
+        ////}
 
         var extras = cargoCandidates
             .Select(x => new InventoryCargoModel
             {
                 ClassName = x.Name,
-                Chance = 0.023,
+                Chance = 0.017,
                 Sets = new List<Set>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
@@ -172,9 +180,24 @@ public class GenerateSplattedLoadout
                 InventoryCargo = new List<InventoryCargoModel>(),
             });
 
-        splat.InventoryCargo.AddRange(extras);
+        ////splat.InventoryCargo.AddRange(extras);
 
-        splat.InventoryCargo = splat.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
+        ////splat.InventoryCargo = splat.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
+        SplatItems("Back", splat, extras);
+        SplatItems("Vest", splat, extras);
+        SplatItems("Body", splat, extras);
+        SplatItems("Legs", splat, extras);
+
+        static void SplatItems(string slotName, AiLoadoutRoot splat, IEnumerable<InventoryCargoModel> extras)
+        {
+            var invAttachments = splat.InventoryAttachments.FirstOrDefault(x => x.SlotName == slotName)
+                ?? throw new ApplicationException("Dang it.");
+            foreach (var invAttachment in invAttachments.Items)
+            {
+                invAttachment.InventoryCargo.AddRange(extras);
+                invAttachment.InventoryCargo = invAttachment.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
+            }
+        }
     }
 
     private void AssignInventoryAttachments(AiLoadoutRoot splat, List<AiLoadoutRoot?> model)
