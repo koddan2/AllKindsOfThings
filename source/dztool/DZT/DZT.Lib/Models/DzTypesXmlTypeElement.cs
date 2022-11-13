@@ -22,6 +22,12 @@ namespace DZT.Lib.Models;
 */
 public record DzTypesXmlTypeElement(XElement Element)
 {
+    public static IEnumerable<DzTypesXmlTypeElement> FromDocument(XDocument doc)
+    {
+        var types = doc.Root!.Nodes();
+        var result = types.OfType<XElement>().Select(x => new DzTypesXmlTypeElement(x));
+        return result;
+    }
     private IEnumerable<XElement>? _nodes = null;
     public IEnumerable<XElement> Nodes
     {
@@ -73,9 +79,17 @@ public record DzTypesXmlTypeElement(XElement Element)
         get => GetNode("cost")?.Value.ParseInt() ?? 0;
         set => GetNode("cost")?.SetValue(value);
     }
-    public XElement? Flags
+    public IDictionary<string, string>? Flags
     {
-        get => GetNode("flags");
+        get => Nodes.FirstOrDefault(x => x.Name == "flags")?.Attributes()
+            .ToDictionary(x => x.Name.ToString(), x => x.Value);
+        set
+        {
+            Nodes.FirstOrDefault(x => x.Name == "flags")?.Remove();
+            var attributes = value?.Select(kvp => new XAttribute(kvp.Key, kvp.Value));
+            var newEl = new XElement("flags", attributes);
+            Element.Add(newEl);
+        }
     }
     public string? Category
     {
@@ -95,9 +109,9 @@ public record DzTypesXmlTypeElement(XElement Element)
                 .Where(x => x.Name == "usage")
                 .Remove();
             _nodes = null;
-            foreach (var usage in value)
+            foreach (var usageName in value)
             {
-                var node = new XElement("usage", new XAttribute("name", usage));
+                var node = new XElement("usage", new XAttribute("name", usageName));
                 Element.Add(node);
             }
         }
@@ -115,9 +129,30 @@ public record DzTypesXmlTypeElement(XElement Element)
                 .Where(x => x.Name == "value")
                 .Remove();
             _nodes = null;
-            foreach (var usage in value)
+            foreach (var valueName in value)
             {
-                var node = new XElement("value", new XAttribute("name", usage));
+                var node = new XElement("value", new XAttribute("name", valueName));
+                Element.Add(node);
+            }
+            var b = Element;
+        }
+    }
+    public string[] Tags
+    {
+        get => Nodes
+            .Where(x => x.Name == "tag")
+            .Select(x => x.Attribute("name")?.Value)
+            .OfType<string>()
+            .ToArray();
+        set
+        {
+            Nodes
+                .Where(x => x.Name == "tag")
+                .Remove();
+            _nodes = null;
+            foreach (var tagName in value)
+            {
+                var node = new XElement("tag", new XAttribute("name", tagName));
                 Element.Add(node);
             }
             var b = Element;

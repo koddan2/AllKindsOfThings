@@ -77,7 +77,6 @@ internal class ManipulateTerritoryCommand
         uint? setMax,
         bool? restoreBackup)
     {
-        GeneralSetup.Initialize(rootDir);
         ManipulateTerritory impl = new(Globals.DztLoggerFactory.CreateLogger<ManipulateTerritory>(), rootDir, mpMissionName, entityName, multiplyByFactor, setMin, setMax);
         if (restoreBackup is true)
         {

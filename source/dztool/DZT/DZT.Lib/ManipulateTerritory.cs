@@ -77,7 +77,7 @@ public class ManipulateTerritory
             }
         }
 
-        using var fs = FileManagement.Utf8BomWriter(territoryFilePath);
+        using var fs = FileManagement.Utf8WithoutBomWriter(territoryFilePath);
         xd.Save(fs);
         _logger.LogInformation("File {} updated", territoryFilePath);
     }

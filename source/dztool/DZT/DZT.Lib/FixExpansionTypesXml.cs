@@ -27,22 +27,36 @@ public class FixExpansionTypesXml
 
         var pathToFile = Path.Combine(_rootDir, relativePath);
         XDocument xd = XDocument.Load(pathToFile);
-        var types = xd.Root!.Nodes();
-        var typesApi = types.OfType<XElement>().Select(x => new DzTypesXmlTypeElement(x));
-        foreach (var typ in typesApi)
+        var dzTypes = DzTypesXmlTypeElement.FromDocument(xd);
+        foreach (var typ in dzTypes)
         {
-            typ.Values = Array.Empty<string>();
+            typ.Tags = Array.Empty<string>();
+            if (typ.Name.Contains("platecarriervest"))
+            {
+                typ.Values = Array.Empty<string>();
+                typ.Category = "weapons";
+            }
+            else
+            {
+                typ.Values = new[]
+                {
+                    "Tier1",
+                    "Tier2",
+                    "Tier3",
+                    "Tier4",
+                };
             typ.Category = "clothes";
+            }
             typ.Usages = new[]
             {
                 "Military"
             };
             typ.Restock = 0;
-            typ.Nominal = 4;
-            typ.Min = 2;
+            typ.Nominal = 5;
+            typ.Min = 3;
         }
 
-        using var fs = FileManagement.Utf8BomWriter(pathToFile);
+        using var fs = FileManagement.Utf8WithoutBomWriter(pathToFile);
         xd.Save(fs);
     }
 
@@ -75,11 +89,26 @@ public class FixExpansionTypesXml
             "RIGHT",
             "TRUNK",
         };
+        var toKeepLifetimeSubstrings = new[]
+        {
+            "BARREL",
+            "TENT",
+            "CRATE",
+            "SEACHEST",
+        };
 
         var typesApi = types.OfType<XElement>().Select(x => new DzTypesXmlTypeElement(x));
         foreach (var type in typesApi)
         {
-            type.Lifetime = (int)type.Lifetime / 4;
+            var keepLifetime = toKeepLifetimeSubstrings.Any(x => type.Name.ToUpperInvariant().Contains(x));
+            if (!keepLifetime)
+            {
+                type.Lifetime = (int)type.Lifetime / 10;
+            }
+            ////else
+            ////{
+            ////    var a = 1;
+            ////}
             type.Restock = 0;
             // fix GCK
             // AD_
@@ -106,7 +135,7 @@ public class FixExpansionTypesXml
             }
         }
 
-        using var fs = FileManagement.Utf8BomWriter(_inputFilePath);
+        using var fs = FileManagement.Utf8WithoutBomWriter(_inputFilePath);
         xd.Save(fs);
     }
 }

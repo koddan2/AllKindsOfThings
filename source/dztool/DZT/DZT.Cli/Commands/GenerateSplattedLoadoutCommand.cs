@@ -22,7 +22,6 @@ internal class GenerateSplattedLoadoutCommand
 
     static void Handler(string rootDir)
     {
-        GeneralSetup.Initialize(rootDir);
         GenerateSplattedLoadout impl = new(Globals.DztLoggerFactory.CreateLogger<GenerateSplattedLoadout>(), rootDir);
         impl.Process();
     }

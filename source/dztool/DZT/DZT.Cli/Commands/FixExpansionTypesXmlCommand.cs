@@ -20,7 +20,6 @@ class FixExpansionTypesXmlCommand
         cmd.SetHandler(
             (inputFilePath, rootDir) =>
             {
-                GeneralSetup.Initialize(rootDir);
                 FixExpansionTypesXml impl = new(Globals.DztLoggerFactory.CreateLogger<FixExpansionTypesXml>(), rootDir, inputFilePath);
                 impl.Process();
                 impl.ProcessDzn();

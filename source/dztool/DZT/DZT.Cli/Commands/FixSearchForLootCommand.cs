@@ -14,7 +14,6 @@ class FixSearchForLootCommand
         cmd.SetHandler(
             (rootDir) =>
             {
-                GeneralSetup.Initialize(rootDir);
                 FixSearchForLoot impl = new(rootDir);
                 impl.Process();
             },
