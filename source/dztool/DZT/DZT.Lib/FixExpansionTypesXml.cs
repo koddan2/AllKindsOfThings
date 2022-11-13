@@ -19,9 +19,45 @@ public class FixExpansionTypesXml
         _rootDir = rootDir;
     }
 
+    public void ProcessDzn()
+    {
+        var relativePath = "mpmissions/dayzOffline.chernarusplus/_mixins/nam_types_dzn.xml";
+        _ = FileManagement.TryRestoreFileV2(_rootDir, relativePath);
+        var backupResult = FileManagement.BackupFileV2(_rootDir, relativePath);
+
+        var pathToFile = Path.Combine(_rootDir, relativePath);
+        XDocument xd = XDocument.Load(pathToFile);
+        var types = xd.Root!.Nodes();
+        var typesApi = types.OfType<XElement>().Select(x => new DzTypesXmlTypeElement(x));
+        foreach (var typ in typesApi)
+        {
+            typ.Values = new[]
+            {
+                "Tier2",
+                "Tier3",
+                "Tier4",
+            };
+            typ.Usages = new[]
+            {
+                "Military"
+            };
+            typ.Restock = 0;
+        }
+
+        using var fs = FileManagement.Utf8BomWriter(pathToFile);
+        xd.Save(fs);
+    }
+
     public void Process()
     {
         var relativePath = Path.GetRelativePath(_rootDir, _inputFilePath);
+        var restore = FileManagement.TryRestoreFileV2(_rootDir, relativePath);
+        {
+            var tempxd = XDocument.Load(restore.BackupFilePath);
+            using var tempfs = FileManagement.Utf8BomWriter(restore.BackupFilePath);
+            tempxd.Save(tempfs);
+
+        }
         var backupResult = FileManagement.BackupFileV2(_rootDir, relativePath);
         if (backupResult.FileOperationCommitted)
         {
@@ -47,6 +83,8 @@ public class FixExpansionTypesXml
         var typesApi = types.OfType<XElement>().Select(x => new DzTypesXmlTypeElement(x));
         foreach (var type in typesApi)
         {
+            type.Lifetime = (int)type.Lifetime / 4;
+            type.Restock = 0;
             // fix GCK
             // AD_
             if (type.Name == "WeaponCleaningKit")

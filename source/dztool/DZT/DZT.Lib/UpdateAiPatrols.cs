@@ -12,6 +12,14 @@ public class UpdateAiPatrols
     private readonly string _json;
     private readonly AiPatrolSettingsRoot _settings;
 
+    private readonly string[] _forbiddenObjects = new[]
+    {
+        "GardenPlot",
+        "Polytunnel",
+        "Land_Dam_Concrete_20_Floodgate",
+        "Land_Train_Wagon_Tanker",
+    };
+
     public double BaseExtraSpawnChance { get; set; } = 0.25;
 
     public UpdateAiPatrols(string rootDir, string inputFilePath, string outputFilePath)
@@ -84,24 +92,16 @@ public class UpdateAiPatrols
         });
 
         var structureClassNames = DataHelper.GetStructureClassNames();
-
-        var forbiddenObjects = new[]
-        {
-            "GardenPlot",
-            "Polytunnel",
-            "Land_Dam_Concrete_20_Floodgate",
-            //"and_Pier_Crane_B",
-        };
         var objectsForPatrol = new[]
-        {
-            structureClassNames["**Residential**"],
-            structureClassNames["**Industrial**"],
-            structureClassNames["**Specific**"],
-            structureClassNames["**Wrecks**"],
-            structureClassNames["**Military**"],
-        }
+            {
+                structureClassNames["**Residential**"],
+                structureClassNames["**Industrial**"],
+                structureClassNames["**Specific**"],
+                ////structureClassNames["**Wrecks**"],
+                structureClassNames["**Military**"],
+            }
             .SelectMany(x => x)
-            .Where(x => !forbiddenObjects.Contains(x))
+            .Where(x => !_forbiddenObjects.Contains(x))
             .ToArray();
 
         AddObjectPatrol(

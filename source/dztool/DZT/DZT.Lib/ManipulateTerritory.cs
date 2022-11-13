@@ -39,7 +39,7 @@ public class ManipulateTerritory
         _logger.LogInformation("Restoring backup: {}", territoryFilePathRelative);
         try
         {
-            FileManagement.RestoreFileV2(_rootDir, territoryFilePathRelative);
+            FileManagement.TryRestoreFileV2(_rootDir, territoryFilePathRelative);
         }
         catch (Exception exn)
         {

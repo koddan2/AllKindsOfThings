@@ -68,8 +68,8 @@ public class GenerateSplattedLoadout
         "LEFT",
         "RIGHT",
         "TRUNK",
-        "ANIMAL_",
-        "EXPANSION_",
+        "ANIMAL",
+        "EXPANSION",
         "ZMB",
         "CONSTRUC",
         "PLATE",
@@ -78,6 +78,7 @@ public class GenerateSplattedLoadout
         "SEACHEST",
         "CRATE",
         "WOODEN",
+        "TENT",
     };
 
     static bool IsForbidden(string name, XElement typ)
@@ -234,22 +235,20 @@ public class GenerateSplattedLoadout
 
         splat.Sets = splat.Sets
             //// .Where(s => s.ClassName != "CLOTHING")
-            .Where(s =>
+            .Select(set =>
             {
-                // oops side-effect here
-                if (s.ClassName == "WEAPON")
+                if (set.ClassName == "WEAPON")
                 {
-                    s.Chance = 0.1;
+                    set.Chance = 0.23;
                 }
-                return s.ClassName != "CLOTHING";
+                return set;
+            })
+            .Where(set =>
+            {
+                return set.ClassName != "CLOTHING";
             })
             .DistinctBy(x => x.InventoryAttachments[0]?.Items[0]?.ClassName)
             .ToList();
-
-        //foreach (var att in splat.InventoryAttachments)
-        //{
-        //    att.Items = att.Items.DistinctBy(x => x.ClassName).ToList();
-        //}
     }
 
     private static void AssignSets(AiLoadoutRoot splat, AiLoadoutRoot item)

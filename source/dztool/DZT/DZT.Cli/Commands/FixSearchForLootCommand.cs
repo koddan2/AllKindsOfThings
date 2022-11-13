@@ -1,4 +1,5 @@
 ﻿using DZT.Lib;
+using DZT.Lib.Helpers;
 using System.CommandLine;
 
 class FixSearchForLootCommand
@@ -13,6 +14,7 @@ class FixSearchForLootCommand
         cmd.SetHandler(
             (rootDir) =>
             {
+                GeneralSetup.Initialize(rootDir);
                 FixSearchForLoot impl = new(rootDir);
                 impl.Process();
             },

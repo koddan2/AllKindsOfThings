@@ -12,13 +12,22 @@ public static class FileManagement
         return writer;
     }
 
-    internal static void RestoreFileV2(string rootDir, string relativePath)
+    public record RestoreFileV2Result(string BackupFilePath, bool FileOperationCommitted);
+    internal static RestoreFileV2Result TryRestoreFileV2(string rootDir, string relativePath)
     {
         var backupRootDir = Path.Combine(GeneralSetup.ApplicationDirPath, "BACKUP");
         var pathToBackupFile = Path.Combine(backupRootDir, relativePath);
         var destFile = Path.Combine(rootDir, relativePath);
 
-        File.Copy(pathToBackupFile, destFile, true);
+        if (File.Exists(pathToBackupFile))
+        {
+            File.Copy(pathToBackupFile, destFile, true);
+            return new RestoreFileV2Result(pathToBackupFile, true);
+        }
+        else
+        {
+            return new RestoreFileV2Result(pathToBackupFile, false);
+        }
     }
 
     public record BackupFileV2Result(string BackupFilePath, bool FileOperationCommitted);

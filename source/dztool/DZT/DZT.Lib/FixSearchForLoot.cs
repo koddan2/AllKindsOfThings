@@ -11,18 +11,22 @@ public class FixSearchForLoot
 {
     private readonly string _sflJsonFilePath;
     private readonly string _typesXmlFilePath;
+    private readonly string _sflJsonRelativePath;
+    private readonly string _rootDir;
 
     public FixSearchForLoot(string rootDir)
     {
         var typesXmlRelativePath = "mpmissions\\dayzOffline.chernarusplus\\db\\types.xml";
         _typesXmlFilePath = Path.Combine(rootDir, typesXmlRelativePath);
-        var sflJsonRelativePath = "config\\SearchForLoot\\SearchForLoot.json";
-        _sflJsonFilePath = Path.Combine(rootDir, sflJsonRelativePath);
+        _sflJsonRelativePath = "config\\SearchForLoot\\SearchForLoot.json";
+        _sflJsonFilePath = Path.Combine(rootDir, _sflJsonRelativePath);
+        _rootDir = rootDir;
     }
 
     public void Process()
     {
-        FileManagement.BackupFile(_sflJsonFilePath, overwrite: true);
+        var restore = FileManagement.TryRestoreFileV2(_rootDir, _sflJsonRelativePath);
+        var backup = FileManagement.BackupFileV2(_rootDir, _sflJsonRelativePath);
         var types = XDocument.Load(_typesXmlFilePath);
         var usageDict = new Dictionary<string, HashSet<string>>
         {
