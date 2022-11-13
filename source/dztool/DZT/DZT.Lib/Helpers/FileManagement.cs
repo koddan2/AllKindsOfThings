@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Xml.Linq;
 
 namespace DZT.Lib.Helpers;
 
@@ -60,6 +61,13 @@ public static class FileManagement
 
         File.Copy(srcFile, pathToBackupFile, false);
         return new BackupFileV2Result(pathToBackupFile, true);
+    }
+
+    public static void FormatXmlFileInPlace(string filePath)
+    {
+        var xd = XDocument.Load(filePath);
+        using var tempfs = FileManagement.Utf8BomWriter(filePath);
+        xd.Save(tempfs);
     }
 
     public static void BackupFile(string path, bool overwrite = false, bool appendRandomString = false)

@@ -21,7 +21,7 @@ public class FixExpansionTypesXml
 
     public void ProcessDzn()
     {
-        var relativePath = "mpmissions/dayzOffline.chernarusplus/_mixins/nam_types_dzn.xml";
+        var relativePath = "mpmissions/dayzOffline.chernarusplus/_mixins/br_nam_types_dzn.xml";
         _ = FileManagement.TryRestoreFileV2(_rootDir, relativePath);
         var backupResult = FileManagement.BackupFileV2(_rootDir, relativePath);
 
@@ -31,17 +31,15 @@ public class FixExpansionTypesXml
         var typesApi = types.OfType<XElement>().Select(x => new DzTypesXmlTypeElement(x));
         foreach (var typ in typesApi)
         {
-            typ.Values = new[]
-            {
-                "Tier2",
-                "Tier3",
-                "Tier4",
-            };
+            typ.Values = Array.Empty<string>();
+            typ.Category = "clothes";
             typ.Usages = new[]
             {
                 "Military"
             };
             typ.Restock = 0;
+            typ.Nominal = 4;
+            typ.Min = 2;
         }
 
         using var fs = FileManagement.Utf8BomWriter(pathToFile);
@@ -52,11 +50,9 @@ public class FixExpansionTypesXml
     {
         var relativePath = Path.GetRelativePath(_rootDir, _inputFilePath);
         var restore = FileManagement.TryRestoreFileV2(_rootDir, relativePath);
+        if (File.Exists(restore.BackupFilePath))
         {
-            var tempxd = XDocument.Load(restore.BackupFilePath);
-            using var tempfs = FileManagement.Utf8BomWriter(restore.BackupFilePath);
-            tempxd.Save(tempfs);
-
+            FileManagement.FormatXmlFileInPlace(restore.BackupFilePath);
         }
         var backupResult = FileManagement.BackupFileV2(_rootDir, relativePath);
         if (backupResult.FileOperationCommitted)
