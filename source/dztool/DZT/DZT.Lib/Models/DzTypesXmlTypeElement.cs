@@ -22,6 +22,7 @@ namespace DZT.Lib.Models;
 */
 public record DzTypesXmlTypeElement(XElement Element)
 {
+    public static DzTypesXmlTypeElement FromElement(XElement element) => new DzTypesXmlTypeElement(element);
     public static IEnumerable<DzTypesXmlTypeElement> FromDocument(XDocument doc)
     {
         var types = doc.Root!.Nodes();

@@ -16,9 +16,9 @@
       "commandName": "Project",
       "commandLineArgs": "update-searchforloot --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\""
     },
-    "DZT.Cli (fix-expansion-types)": {
+    "DZT.Cli (adjust-types)": {
       "commandName": "Project",
-      "commandLineArgs": "fix-expansion-types --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" --file=\"mpmissions\\dayzOffline.chernarusplus\\db\\types.xml\""
+      "commandLineArgs": "adjust-types --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" --mp-mission-name=\"dayzOffline.chernarusplus\""
     }
   }
 }

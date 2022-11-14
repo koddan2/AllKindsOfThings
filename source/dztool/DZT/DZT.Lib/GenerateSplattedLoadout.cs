@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Xml.Linq;
 
 namespace DZT.Lib;
-
 public class GenerateSplattedLoadout
 {
     private readonly string _loadoutDir;
@@ -184,9 +183,9 @@ public class GenerateSplattedLoadout
 
         ////splat.InventoryCargo = splat.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
         SplatItems("Back", splat, extras);
-        SplatItems("Vest", splat, extras);
-        SplatItems("Body", splat, extras);
-        SplatItems("Legs", splat, extras);
+        //SplatItems("Vest", splat, extras);
+        //SplatItems("Body", splat, extras);
+        //SplatItems("Legs", splat, extras);
 
         static void SplatItems(string slotName, AiLoadoutRoot splat, IEnumerable<InventoryCargoModel> extras)
         {

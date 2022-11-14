@@ -16,7 +16,7 @@ Option<string> globalOptionDayZServerRootDir = new(
 rootCommand.Add(globalOptionDayZServerRootDir);
 ManipulateTerritoryCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 UpdateAiPatrolsCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
-FixExpansionTypesXmlCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
+AdjustTypesXmlCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 FixSearchForLootCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 GenerateSplattedLoadoutCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 

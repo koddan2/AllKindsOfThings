@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\SAK\SAK\SAK.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="DATA\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
