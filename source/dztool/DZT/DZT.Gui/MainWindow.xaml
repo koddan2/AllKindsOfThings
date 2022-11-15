@@ -1,0 +1,18 @@
+﻿<Window x:Class="DZT.Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DZT.Gui"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <TextBox x:Name="DayzServerRootDirTextBox" HorizontalAlignment="Left" Margin="128,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="572"/>
+        <Label Content="DayZ Server folder" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Width="185"/>
+        <Label Content="MP mission name" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="185"/>
+        <TextBox x:Name="MpMissionNameTextBox" HorizontalAlignment="Left" Margin="128,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="572"/>
+        <Button x:Name="SetDayzServerRootDirButton" Content="Select" HorizontalAlignment="Left" Margin="705,9,0,0" VerticalAlignment="Top" Width="52" Click="SetDayzServerRootDirButton_Click"/>
+        <Button x:Name="SetMpMissionFolderButton" Content="Select" HorizontalAlignment="Left" Margin="705,40,0,0" VerticalAlignment="Top" Width="52" Click="SetMpMissionFolderButton_Click"/>
+
+    </Grid>
+</Window>
