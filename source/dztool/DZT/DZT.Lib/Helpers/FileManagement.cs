@@ -3,7 +3,6 @@ using System.Xml.Linq;
 using System.Security.Cryptography;
 
 namespace DZT.Lib.Helpers;
-
 public static class FileManagement
 {
     private readonly static Random _Rng = new();

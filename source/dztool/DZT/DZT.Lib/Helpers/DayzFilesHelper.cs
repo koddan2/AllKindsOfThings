@@ -1,7 +1,7 @@
 ﻿using SAK;
 using System.Xml.Linq;
 
-namespace DZT.Lib;
+namespace DZT.Lib.Helpers;
 
 public static class DayzFilesHelper
 {

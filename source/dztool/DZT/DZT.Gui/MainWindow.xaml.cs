@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using SAK;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using IOPath = System.IO.Path;
-using IOFile = System.IO.File;
-using IODir = System.IO.Directory;
-using System.Text.Json;
+using System.IO;
+using DZT.Lib;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DZT.Gui
 {
@@ -25,54 +27,22 @@ namespace DZT.Gui
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly string _prefsJsonPath;
-
-        class AppPrefs
-        {
-            private readonly string _path;
-            public AppPrefs(string path) => _path = path;
-
-            public string DayzServerRootDirectoryPath { get; set; } = "";
-            public string MpMissionName { get; set; } = "";
-
-            public void Load()
-            {
-                var loaded = JsonSerializer.Deserialize<AppPrefs>(IOFile.ReadAllText(_path))
-                     ?? throw new ApplicationException("");
-
-                this.DayzServerRootDirectoryPath = loaded.DayzServerRootDirectoryPath;
-                this.MpMissionName = loaded.MpMissionName;
-            }
-
-            public void Store()
-            {
-                IOFile.WriteAllText(_path, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true }));
-            }
-        }
-
         private AppPrefs Prefs { get; set; }
 
         public MainWindow()
         {
             var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var appDir = IOPath.Combine(appDataDir, "DZT");
-            _prefsJsonPath = IOPath.Combine(appDir, "prefs.json");
-            if (!IODir.Exists(appDir))
-            {
-                IODir.CreateDirectory(appDir);
-            }
-
-            Prefs = new AppPrefs(_prefsJsonPath);
-            if (!IOFile.Exists(_prefsJsonPath))
-            {
-                Prefs.Store();
-            }
-            else
-            {
-                Prefs.Load();
-            }
+            var appDir = System.IO.Path.Combine(appDataDir, "DZT");
+            var prefsJsonPath = System.IO.Path.Combine(appDir, "prefs.json");
+            Prefs = new AppPrefs(prefsJsonPath);
+            Prefs.EnsureInited();
 
             InitializeComponent();
+            PopulateFromPrefs();
+        }
+
+        private void PopulateFromPrefs()
+        {
             DayzServerRootDirTextBox.Text = Prefs.DayzServerRootDirectoryPath;
             MpMissionNameTextBox.Text = Prefs.MpMissionName;
         }
@@ -93,9 +63,35 @@ namespace DZT.Gui
             var picker = new FolderPicker { InputPath = DayzServerRootDirTextBox.Text };
             if (picker.ShowDialog() is true)
             {
-                MpMissionNameTextBox.Text = picker.ResultPath;
-                Prefs.MpMissionName = picker.ResultPath;
+                var result = new DirectoryInfo(picker.ResultPath).OrFail().Name;
+                MpMissionNameTextBox.Text = result;
+                Prefs.MpMissionName = result;
                 Prefs.Store();
+            }
+        }
+
+        private void OperationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (OperationComboBox.SelectedItem is not null)
+            {
+                GoButton.IsEnabled = true;
+            }
+        }
+
+        private void GoButton_Click(object sender, RoutedEventArgs e)
+        {
+            ComboBoxItem selItem = (ComboBoxItem)OperationComboBox.SelectedItem;
+            if (selItem == AdjustTypes)
+            {
+                ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    //builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, WpfLoggerProvider>());
+                    builder.Services.AddSingleton<ILoggerProvider>((_) => new WpfLoggerProvider(this.InfoTextBox));
+                });
+
+                ILogger<AdjustTypesXml> logger = loggerFactory.CreateLogger<AdjustTypesXml>();
+                AdjustTypesXml impl = new(logger, Prefs.DayzServerRootDirectoryPath, Prefs.MpMissionName);
+                impl.Process();
             }
         }
     }

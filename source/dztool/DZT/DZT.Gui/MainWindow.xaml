@@ -5,14 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DZT.Gui"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <TextBox x:Name="DayzServerRootDirTextBox" HorizontalAlignment="Left" Margin="128,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="572"/>
+        MinWidth="720"
+        MinHeight="450"
+        Title="DZT" Height="450" Width="720">
+    <Grid x:Name="DZT">
+        <TextBox x:Name="DayzServerRootDirTextBox" HorizontalAlignment="Left" Margin="128,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="512"/>
         <Label Content="DayZ Server folder" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top" Width="185"/>
         <Label Content="MP mission name" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="185"/>
-        <TextBox x:Name="MpMissionNameTextBox" HorizontalAlignment="Left" Margin="128,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="572"/>
-        <Button x:Name="SetDayzServerRootDirButton" Content="Select" HorizontalAlignment="Left" Margin="705,9,0,0" VerticalAlignment="Top" Width="52" Click="SetDayzServerRootDirButton_Click"/>
-        <Button x:Name="SetMpMissionFolderButton" Content="Select" HorizontalAlignment="Left" Margin="705,40,0,0" VerticalAlignment="Top" Width="52" Click="SetMpMissionFolderButton_Click"/>
-
+        <TextBox x:Name="MpMissionNameTextBox" HorizontalAlignment="Left" Margin="128,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="512"/>
+        <Button x:Name="SetDayzServerRootDirButton" Content="Select" HorizontalAlignment="Left" Margin="645,9,0,0" VerticalAlignment="Top" Width="52" Click="SetDayzServerRootDirButton_Click"/>
+        <Button x:Name="SetMpMissionFolderButton" Content="Select" HorizontalAlignment="Left" Margin="645,40,0,0" VerticalAlignment="Top" Width="52" Click="SetMpMissionFolderButton_Click"/>
+        <ComboBox x:Name="OperationComboBox" HorizontalAlignment="Left" Margin="10,68,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="OperationComboBox_SelectionChanged">
+            <ComboBoxItem Content="Adjust types.xml" Name="AdjustTypes" />
+        </ComboBox>
+        <Button Content="Go" IsEnabled="False" x:Name="GoButton" HorizontalAlignment="Left" Margin="145,69,0,0" VerticalAlignment="Top" Click="GoButton_Click"/>
+        <TextBox x:Name="InfoTextBox"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 IsReadOnly="True"
+                 HorizontalAlignment="Left" Margin="179,70,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="518" Height="354"/>
     </Grid>
 </Window>
