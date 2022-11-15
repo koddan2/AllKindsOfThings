@@ -8,36 +8,22 @@ namespace DZT.Lib;
 
 public class AdjustTypesXml
 {
-    private readonly string _mpMissionDir;
-    private readonly XDocument _cfgEconomyCore;
     private readonly ILogger<AdjustTypesXml> _logger;
     private readonly string _rootDir;
-    private readonly string _baseDbTypesXmlFilePath;
+    private readonly string _mpMissionName;
 
     public AdjustTypesXml(ILogger<AdjustTypesXml> logger, string rootDir, string mpMissionName)
     {
-        _mpMissionDir = Path.Combine(rootDir, DayzConstants.SubdirectoryNames.MpMissions, mpMissionName);
-        _baseDbTypesXmlFilePath = Path.Combine(_mpMissionDir,DayzConstants.SubdirectoryNames.Db, DayzConstants.FileNames.Types);
-        var cfgEconomyCoreXmlPath = Path.Combine(_mpMissionDir, DayzConstants.FileNames.CfgEconomyCore);
-        _cfgEconomyCore = XDocument.Load(cfgEconomyCoreXmlPath);
         _logger = logger;
         _rootDir = rootDir;
+        _mpMissionName = mpMissionName;
     }
 
     public void Process()
     {
-        ProcessSingle(_baseDbTypesXmlFilePath);
-
-        var ceElements = _cfgEconomyCore.Root.OrFail()
-            .Nodes().OfType<XElement>().Where(x => x.Name == "ce");
-        foreach (var ceElement in ceElements)
+        foreach (var file in DayzFilesHelper.GetAllTypesXmlFileNames(_rootDir, _mpMissionName))
         {
-            var ceDirName = ceElement.Attribute("folder").OrFail().Value;
-            var ceDirPath = Path.Combine(_mpMissionDir, ceDirName);
-            foreach (var file in Directory.GetFiles(ceDirPath))
-            {
-                ProcessSingle(file);
-            }
+            ProcessSingle(file);
         }
     }
 
@@ -145,14 +131,7 @@ public class AdjustTypesXml
         type.Restock = 0;
         type.Flags = type.Flags?.ToDictionary(x => x.Key, y =>
         {
-            if (y.Key == "count_in_map")
-            {
-                return "1";
-            }
-            else
-            {
-                return "0";
-            }
+            return y.Key == "count_in_map" ? "1" : "0";
         });
     }
 
@@ -173,17 +152,17 @@ public class AdjustTypesXml
         {
             type.Values = new[]
             {
-                    "Tier1",
-                    "Tier2",
-                    "Tier3",
-                    "Tier4",
-                };
+                "Tier1",
+                "Tier2",
+                "Tier3",
+                "Tier4",
+            };
             type.Category = "clothes";
         }
         type.Usages = new[]
         {
-                "Military"
-            };
+            "Military"
+        };
         type.Restock = 0;
         type.Nominal = 5;
         type.Min = 3;

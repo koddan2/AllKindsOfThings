@@ -1,5 +1,7 @@
 ﻿using DZT.Lib.Helpers;
+using DZT.Lib.Models;
 using Microsoft.Extensions.Logging;
+using SAK;
 using System.Text.Json;
 using System.Xml.Linq;
 
@@ -9,11 +11,13 @@ public class GenerateSplattedLoadout
     private readonly string _loadoutDir;
     private readonly ILogger<GenerateSplattedLoadout> _logger;
     private readonly string _rootDir;
+    private readonly string _mpMissionName;
 
-    public GenerateSplattedLoadout(ILogger<GenerateSplattedLoadout> logger, string rootDir)
+    public GenerateSplattedLoadout(ILogger<GenerateSplattedLoadout> logger, string rootDir, string mpMissionName)
     {
         _logger = logger;
         _rootDir = rootDir;
+        _mpMissionName = mpMissionName;
         _loadoutDir = Path.Combine(rootDir, "config/ExpansionMod/Loadouts");
     }
 
@@ -83,49 +87,42 @@ public class GenerateSplattedLoadout
         "TENT",
     };
 
-    static bool IsForbidden(string name, XElement typ)
+    private static string[] _ExemptedFromExclusion = new[]
     {
-        // exempt armbands
-        if (name.Contains("Armband_"))
+        "BOTTLE",
+        "ARMBAND",
+    };
+
+    static bool IsForbidden(DzTypesXmlTypeElement type)
+    {
+        if (_ExemptedFromExclusion.Any(exe => type.Name.ToUpperInvariant().Contains(exe)))
         {
             return false;
         }
 
-        if (new Models.DzTypesXmlTypeElement(typ).Category=="containers")
+        if (type.Name.Contains("SYGUJug"))
+        {
+            return true;
+        }
+
+        if (type.Category == "containers" || type.Category == "clothes" || type.Tags?.Contains("floor") is true || type.Flags["crafted"] == "1")
         {
             return true;
         }
 
         foreach (var forbid in _ForbiddenClassNamesSubstrings)
         {
-            if (name.ToUpperInvariant().Contains(forbid))
+            if (type.Name.ToUpperInvariant().Contains(forbid))
             {
                 return true;
             }
         }
 
-        var hasCategory = false;
-        var hasUsage = false;
-        var hasNominal = false;
-        foreach (var typEl in typ.Nodes().OfType<XElement>())
-        {
-            if (typEl.Name == "nominal" && typEl.Value != "0")
-            {
-                hasNominal = true;
-            }
+        var hasCategory = type.Category.IsNullOrEmpty() is false;
+        var hasUsage = type.Usages?.Length > 0;
+        var hasNominal = type.Nominal > 0;
 
-            if (typEl.Name == "category")
-            {
-                var catName = typEl.Attribute("name")?.Value;
-                hasCategory = catName != "vehiclesparts" && catName != "weapons";
-            }
-            else if (typEl.Name == "usage")
-            {
-                hasUsage = true;
-            }
-        }
-
-        if (hasCategory && (hasUsage || hasNominal))
+        if (hasCategory || (hasUsage || hasNominal))
         {
             return false;
         }
@@ -133,25 +130,29 @@ public class GenerateSplattedLoadout
         return true;
     }
 
-    private record TypeElement(string Name);
-    private HashSet<TypeElement> GetCargoCandidates()
+    private IEnumerable<DzTypesXmlTypeElement> GetCargoCandidates()
     {
-        var xd = DataHelper.GetTypesXml(_rootDir, "dayzOffline.chernarusplus");
-        var accum = new HashSet<TypeElement>();
-        var forbiddens = new HashSet<string>();
-        foreach (var typ in xd.Root!.Nodes().OfType<XElement>())
+        var seen = new Dictionary<string, bool>();
+        ////var xd = DataHelper.GetTypesXml(_rootDir, _mpMissionName);
+        foreach (var typesXmlFile in DayzFilesHelper.GetAllTypesXmlFileNames(_rootDir, _mpMissionName))
         {
-            var nameAttr = typ.Attribute("name")!.Value;
-            if (IsForbidden(nameAttr, typ))
+            var xd = XDocument.Load(typesXmlFile);
+            var types = xd.Root.OrFail().Nodes().OfType<XElement>().Select(DzTypesXmlTypeElement.FromElement);
+            foreach (var type in types)
             {
-                forbiddens.Add(nameAttr);
-                continue;
+                if (IsForbidden(type))
+                {
+                    continue;
+                }
+                else if (seen.ContainsKey(type.Name))
+                {
+                    continue;
+                }
+                seen[type.Name] = true;
+
+                yield return type;
             }
-
-            accum.Add(new TypeElement(nameAttr));
         }
-
-        return accum;
     }
 
     private void AssignInventoryCargo(AiLoadoutRoot splat, List<AiLoadoutRoot?> model)

@@ -15,14 +15,19 @@ internal class GenerateSplattedLoadoutCommand
 
         cmd.Add(optionRootDir);
 
+        Option<string> mpMissionName = new("--mp-mission-name", description: "The name of the MP mission") { IsRequired = true };
+        mpMissionName.AddAlias("-m");
+        cmd.Add(mpMissionName);
+
         cmd.SetHandler(
             Handler,
-            optionRootDir);
+            optionRootDir,
+            mpMissionName);
     }
 
-    static void Handler(string rootDir)
+    static void Handler(string rootDir, string mpMissionName)
     {
-        GenerateSplattedLoadout impl = new(Globals.DztLoggerFactory.CreateLogger<GenerateSplattedLoadout>(), rootDir);
+        GenerateSplattedLoadout impl = new(Globals.DztLoggerFactory.CreateLogger<GenerateSplattedLoadout>(), rootDir, mpMissionName);
         impl.Process();
     }
 }

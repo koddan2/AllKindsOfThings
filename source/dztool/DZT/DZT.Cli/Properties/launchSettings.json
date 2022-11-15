@@ -2,7 +2,7 @@
   "profiles": {
     "DZT.Cli (generate-splatted-ai-loadout)": {
       "commandName": "Project",
-      "commandLineArgs": "generate-splatted-ai-loadout --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\""
+      "commandLineArgs": "generate-splatted-ai-loadout -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -m=\"dayzOffline.chernarusplus\""
     },
     "DZT.Cli (manipulate-territory)": {
       "commandName": "Project",
