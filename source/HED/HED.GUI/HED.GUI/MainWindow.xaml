@@ -24,6 +24,8 @@
                 SyntaxHighlighting=""
                 FontFamily="Consolas"
                 PreviewKeyDown="_editor_PreviewKeyDown"
+                PreviewMouseUp="_editor_PreviewMouseUp"
+                PreviewMouseDown="_editor_PreviewMouseDown"
                 FontSize="12pt"/>
     </DockPanel>
 </Window>

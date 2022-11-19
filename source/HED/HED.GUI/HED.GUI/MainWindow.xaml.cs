@@ -17,6 +17,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MFontFamily = System.Windows.Media.FontFamily;
 using IOFile = System.IO.File;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace HED.GUI
 {
@@ -36,37 +38,39 @@ namespace HED.GUI
 
             _editor.Text = IOFile.ReadAllText(@"C:\Program Files (x86)\Steam\steamapps\common\DayZServer\config\SearchForLoot\SearchForLoot.json");
             _editor.Focus();
-            EventManager.RegisterClassHandler(typeof(MainWindow), Keyboard.KeyDownEvent, new RoutedEventHandler(_routedEventHandler));
-        }
-
-        private void _routedEventHandler(object sender, RoutedEventArgs e)
-        {
-            UpdateStatusBar();
         }
 
         private void UpdateStatusBar()
         {
             var currentLine = _editor.Document.GetLineByOffset(_editor.CaretOffset);
             var currentLocation = _editor.Document.GetLocation(_editor.CaretOffset);
-            statusBar_CursorPosition.Text = $"C:{_editor.CaretOffset} | L:{currentLine} | L:{currentLocation}";
+            {
+                var ta = _editor.TextArea;
+                var opts = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    ReferenceHandler = ReferenceHandler.Preserve
+                };
+                var info = new
+                {
+                    A = ta.Cursor
+                };
+                _editor.Text = JsonSerializer.Serialize(ta, opts);
+            }
+            statusBar_CursorPosition.Text = $"::{_editor.CaretOffset} | ::{currentLine} | ::{currentLocation}";
         }
 
-        private void _editor_KeyDown(object sender, KeyEventArgs e)
+        private void _editor_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             UpdateStatusBar();
         }
 
-        private void _editor_StylusMove(object sender, StylusEventArgs e)
+        private void _editor_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
             UpdateStatusBar();
         }
 
-        private void _editor_TextChanged(object sender, EventArgs e)
-        {
-            UpdateStatusBar();
-        }
-
-        private void _editor_DocumentChanged(object sender, EventArgs e)
+        private void _editor_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             UpdateStatusBar();
         }
