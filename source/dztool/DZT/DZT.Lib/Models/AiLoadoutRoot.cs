@@ -97,19 +97,19 @@ public class AiLoadoutRoot
     public Quantity Quantity { get; set; }
 
     [JsonPropertyName("Health")]
-    public List<Health> Health { get; set; }
+    public List<Health> Health { get; set; } = new List<Health>();
 
     [JsonPropertyName("InventoryAttachments")]
-    public List<InventoryAttachment> InventoryAttachments { get; set; }
+    public List<InventoryAttachment> InventoryAttachments { get; set; } = new List<InventoryAttachment>();
 
     [JsonPropertyName("InventoryCargo")]
-    public List<InventoryCargoModel> InventoryCargo { get; set; }
+    public List<InventoryCargoModel> InventoryCargo { get; set; } = new List<InventoryCargoModel>();
 
     [JsonPropertyName("ConstructionPartsBuilt")]
-    public List<object> ConstructionPartsBuilt { get; set; }
+    public List<object> ConstructionPartsBuilt { get; set; } = new List<object>();
 
     [JsonPropertyName("Sets")]
-    public List<Set> Sets { get; set; }
+    public List<Set> Sets { get; set; } = new List<Set>();
 }
 
 public class Set

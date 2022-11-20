@@ -40,10 +40,10 @@ public class UpdateAiPatrols
         _settings.Enabled = 1;
         _settings.AccuracyMin = 0.42;
         _settings.AccuracyMax = 0.77;
-        _settings.DespawnRadius = 1700;
+        _settings.DespawnRadius = 1400;
         _settings.DespawnTime = 30;
-        _settings.MinDistRadius = 200;
-        _settings.MaxDistRadius = 1400;
+        _settings.MinDistRadius = 140;
+        _settings.MaxDistRadius = 1200;
         _settings.ThreatDistanceLimit = 400;
         _settings.DamageMultiplier = 1.0;
 
@@ -95,7 +95,7 @@ public class UpdateAiPatrols
         var structureClassNames = DataHelper.GetStructureClassNames();
         var objectsForPatrol = new[]
             {
-                structureClassNames["**Residential**"],
+                structureClassNames["**Residential**"].Where(x=>!x.Contains("HouseBlock") && !x.Contains("Lamp")),
                 structureClassNames["**Industrial**"],
                 structureClassNames["**Specific**"],
                 ////structureClassNames["**Wrecks**"],
@@ -113,7 +113,7 @@ public class UpdateAiPatrols
                 p.Faction = "Raiders";
                 ////p.LoadoutFile = "SurvivorLoadout";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = 0.01;
+                p.Chance = 0.02;
                 p.NumberOfAI = -3;
             });
 

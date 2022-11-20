@@ -1,6 +1,26 @@
 title = "TOML cfg for adjust-types"
 
 [[rules]]
+starts_with = "TTC_"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
+category = "weapons"
+usages = ["Military"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+
+[[rules]]
+starts_with = "TTC_PistolSuppressor"
+nominal = 14
+min = 8
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+
+[[rules]]
 name_contains_substring_case_insensitive = ['suppressor']
 nominal = 12
 min = 8

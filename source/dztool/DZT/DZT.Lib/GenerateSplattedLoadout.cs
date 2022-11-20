@@ -9,11 +9,11 @@ namespace DZT.Lib;
 public class GenerateSplattedLoadout
 {
     private readonly string _loadoutDir;
-    private readonly ILogger<GenerateSplattedLoadout> _logger;
+    private readonly ILogger _logger;
     private readonly string _rootDir;
     private readonly string _mpMissionName;
 
-    public GenerateSplattedLoadout(ILogger<GenerateSplattedLoadout> logger, string rootDir, string mpMissionName)
+    public GenerateSplattedLoadout(ILogger logger, string rootDir, string mpMissionName)
     {
         _logger = logger;
         _rootDir = rootDir;
@@ -47,15 +47,15 @@ public class GenerateSplattedLoadout
             Chance = 1,
             Quantity = new Quantity { Min = 0, Max = 0 },
             ClassName = "",
-            ConstructionPartsBuilt = new List<object>(),
-            Health = new List<Health>
+            ////ConstructionPartsBuilt = new List<object>(),
+            Health = ////new List<Health>
             {
                 new Health {Min=0.3, Max=0.9},
             },
             ////InventoryAttachments = invAttachmentsSlotNames.Select(x => new InventoryAttachment { SlotName = x, Items=new List<Item>() }).ToList(),
-            InventoryAttachments = new List<InventoryAttachment>(),
-            InventoryCargo = new List<InventoryCargoModel>(),
-            Sets = new List<Set>(),
+            ////InventoryAttachments = new List<InventoryAttachment>(),
+            ////InventoryCargo = new List<InventoryCargoModel>(),
+            ////Sets = new List<Set>(),
         };
 
         AssignInventoryAttachments(splat, model);
@@ -65,6 +65,12 @@ public class GenerateSplattedLoadout
         var outputPath = Path.Combine(_loadoutDir, OutputFileName);
         File.WriteAllText(outputPath, JsonSerializer.Serialize(splat, new JsonSerializerOptions { WriteIndented = true }));
     }
+
+    private static readonly string[] _ForbiddenClassNamesStartsWith = new[]
+    {
+        "TTC_",
+        "SYGUJug",
+    };
 
     private static readonly string[] _ForbiddenClassNamesSubstrings = new[]
     {
@@ -80,45 +86,51 @@ public class GenerateSplattedLoadout
         "CONSTRUC",
         "PLATE",
         "BARREL",
-        "POWERG",
+        "POWERGEN",
         "SEACHEST",
         "CRATE",
         "WOODEN",
         "TENT",
     };
 
-    private static string[] _ExemptedFromExclusion = new[]
+    private static readonly string[] _ExemptedFromExclusion = new[]
     {
         "BOTTLE",
+        "SUPPRESS",
         "ARMBAND",
     };
 
     static bool IsForbidden(DzTypesXmlTypeElement type)
     {
-        if (_ExemptedFromExclusion.Any(exe => type.Name.ToUpperInvariant().Contains(exe)))
+        if (_ExemptedFromExclusion.Any(type.NameUpper.Contains))
         {
             return false;
         }
 
-        if (type.Name.Contains("SYGUJug"))
+        if (_ForbiddenClassNamesStartsWith.Any(x => type.NameUpper.StartsWith(x.ToUpperInvariant())))
         {
             return true;
         }
 
-        if (type.Category == "containers" || type.Category == "clothes" || type.Tags?.Contains("floor") is true || type.Flags["crafted"] == "1")
+        var forbid0 = type.Category == "containers"
+            || type.Category == "clothes"
+            || type.Tags?.Contains("floor") is true
+            || type.Flags?["crafted"] == "1"
+            ;
+        if (forbid0)
         {
             return true;
         }
 
         foreach (var forbid in _ForbiddenClassNamesSubstrings)
         {
-            if (type.Name.ToUpperInvariant().Contains(forbid))
+            if (type.NameUpper.Contains(forbid))
             {
                 return true;
             }
         }
 
-        var hasCategory = type.Category.IsNullOrEmpty() is false;
+        var hasCategory = !type.Category.IsNullOrEmpty();
         var hasUsage = type.Usages?.Length > 0;
         var hasNominal = type.Nominal > 0;
 
@@ -133,11 +145,10 @@ public class GenerateSplattedLoadout
     private IEnumerable<DzTypesXmlTypeElement> GetCargoCandidates()
     {
         var seen = new Dictionary<string, bool>();
-        ////var xd = DataHelper.GetTypesXml(_rootDir, _mpMissionName);
         foreach (var typesXmlFile in DayzFilesHelper.GetAllTypesXmlFileNames(_rootDir, _mpMissionName))
         {
             var xd = XDocument.Load(typesXmlFile);
-            var types = xd.Root.OrFail().Nodes().OfType<XElement>().Select(DzTypesXmlTypeElement.FromElement);
+            var types = DzTypesXmlTypeElement.FromDocument(xd);
             foreach (var type in types)
             {
                 if (IsForbidden(type))
@@ -171,7 +182,7 @@ public class GenerateSplattedLoadout
             .Select(x => new InventoryCargoModel
             {
                 ClassName = x.Name,
-                Chance = 0.017,
+                Chance = 0.03,
                 Sets = new List<Set>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
@@ -180,13 +191,13 @@ public class GenerateSplattedLoadout
                 InventoryCargo = new List<InventoryCargoModel>(),
             });
 
-        ////splat.InventoryCargo.AddRange(extras);
+        splat.InventoryCargo.AddRange(extras);
+        splat.InventoryCargo = splat.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
 
-        ////splat.InventoryCargo = splat.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
-        SplatItems("Back", splat, extras);
-        //SplatItems("Vest", splat, extras);
-        //SplatItems("Body", splat, extras);
-        //SplatItems("Legs", splat, extras);
+        ////SplatItems("Back", splat, extras);
+        ////SplatItems("Vest", splat, extras);
+        ////SplatItems("Body", splat, extras);
+        ////SplatItems("Legs", splat, extras);
 
         static void SplatItems(string slotName, AiLoadoutRoot splat, IEnumerable<InventoryCargoModel> extras)
         {

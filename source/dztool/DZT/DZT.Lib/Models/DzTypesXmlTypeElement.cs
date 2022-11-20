@@ -51,6 +51,7 @@ public record DzTypesXmlTypeElement(XElement Element)
         ;
 
     public string Name => Element.Attribute("name")?.Value ?? throw new ApplicationException("Invalid <type>: missing attribute(name)");
+    public string NameUpper => Name.ToUpperInvariant();
     public int Nominal
     {
         get => GetNode("nominal")?.Value.ParseInt() ?? 0;
