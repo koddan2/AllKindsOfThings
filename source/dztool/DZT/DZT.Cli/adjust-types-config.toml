@@ -6,9 +6,6 @@ nominal = 0
 min = 0
 lifetime = 600
 restock = 0
-category = "weapons"
-usages = ["Military"]
-values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 
 [[rules]]
 starts_with = "TTC_PistolSuppressor"
@@ -19,6 +16,22 @@ restock = 0
 category = "weapons"
 usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+
+[[rules]]
+name_equals_case_insensitive = ['pot', 'WeaponCleaningKit', 'PortableGasStove']
+nominal = 70
+min = 30
+lifetime = 14400
+restock = 0
+category = "tools"
+usages = ["Military", "Police", "Hunting", "Village"]
+
+[[rules]]
+starts_with = "Mag_SG_30Rnd"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
 
 [[rules]]
 name_contains_substring_case_insensitive = ['suppressor']
@@ -50,7 +63,7 @@ usages = ["Military"]
 values = ["Tier2", "Tier3", "Tier4"]
 
 [[rules]]
-name_equals_case_insensitive = 'ad_rmr'
+name_equals_case_insensitive = ['ad_rmr']
 nominal = 12
 min = 4
 lifetime = 14400

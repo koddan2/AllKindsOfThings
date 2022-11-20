@@ -49,7 +49,8 @@ public class UpdateAiPatrols
 
         AddObjectPatrol("East", new[] { "Land_City_PoliceStation", "Land_Village_PoliceStation" }, p =>
         {
-            p.LoadoutFile = "PoliceLoadout";
+            ////p.LoadoutFile = "PoliceLoadout";
+            p.LoadoutFile = "SplattedLoadout";
             p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.1);
         });
         AddObjectPatrol("East", new[]
@@ -73,15 +74,19 @@ public class UpdateAiPatrols
         AddObjectPatrol("East", new[] { "Land_Mil_Airfield_HQ", "Land_Mil_ATC_Small", "Land_Mil_ATC_Big" }, p =>
         {
             p.Faction = "Raiders";
-            p.LoadoutFile = "GorkaLoadout";
+            ////p.LoadoutFile = "GorkaLoadout";
+            p.LoadoutFile = "SplattedLoadout";
             p.Chance = BaseExtraSpawnChance;
         });
 
         AddObjectPatrol("East", new[] { "Land_City_FireStation" }, p =>
         {
+            ////p.Faction = "Raiders";
+            ////p.LoadoutFile = "FireFighterLoadout";
+            p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.0);
             p.Faction = "Raiders";
-            p.LoadoutFile = "FireFighterLoadout";
-            p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.3);
+            p.LoadoutFile = "SplattedLoadout";
+            p.NumberOfAI = -2;
         });
 
         AddObjectPatrol("East", new[] { "Land_City_Stand_Grocery", "Land_House_1B01_Pub" }, p =>
@@ -113,14 +118,15 @@ public class UpdateAiPatrols
                 p.Faction = "Raiders";
                 ////p.LoadoutFile = "SurvivorLoadout";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = 0.02;
+                p.Chance = 0.008;
                 p.NumberOfAI = -3;
             });
 
         AddObjectPatrol("East", structureClassNames["**Military**"].ToArray(), p =>
         {
             p.Faction = "East";
-            p.LoadoutFile = "EastLoadout";
+            ////p.LoadoutFile = "EastLoadout";
+            p.LoadoutFile = "SplattedLoadout";
             p.Chance = 0.005;
             p.NumberOfAI = 2;
         });
@@ -128,7 +134,8 @@ public class UpdateAiPatrols
         AddObjectPatrol("West", structureClassNames["**Military**"].ToArray(), p =>
         {
             p.Faction = "West";
-            p.LoadoutFile = "WestLoadout";
+            ////p.LoadoutFile = "WestLoadout";
+            p.LoadoutFile = "SplattedLoadout";
             p.Chance = 0.005;
             p.NumberOfAI = 2;
         });

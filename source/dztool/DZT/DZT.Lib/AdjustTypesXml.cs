@@ -55,8 +55,8 @@ public class AdjustTypesXml
             ProcessByConfiguration(type);
             GeneralAdjustments(type);
             ProcessBaseDayzItems(type);
-            ProcessExpansion(type);
-            ProcessAdvancedWeaponScopes(type);
+            //ProcessExpansion(type);
+            //ProcessAdvancedWeaponScopes(type);
             ProcessSnafu(type);
             ProcessDzn(type);
         }
@@ -196,12 +196,12 @@ public class AdjustTypesXmlConfigurationRule
     public List<string> Tags { get; set; } = new List<string>();
 
     public string? StartsWith { get; set; }
-    public string? NameEqualsCaseInsensitive { get; set; }
+    public List<string> NameEqualsCaseInsensitive { get; set; } = new List<string>();
     public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
 
     public override string ToString()
     {
-        return $"SW:{StartsWith}|CON:{string.Join(":", NameContainsSubstringCaseInsensitive)}";
+        return $"SW:{StartsWith}|EQ:({string.Join(":", NameEqualsCaseInsensitive)})|CON:{string.Join(":", NameContainsSubstringCaseInsensitive)}";
     }
 }
 
@@ -243,10 +243,15 @@ public static class AdjustTypesXmlConfigurationExtensions
 
     public static bool Matches(this AdjustTypesXmlConfigurationRule rule, DzTypesXmlTypeElement type)
     {
+        ////if (rule.NameEqualsCaseInsensitive.Count > 0)
+        ////{
+        ////    var a = 1;
+        ////}
         var match = true;
-        if (rule.NameEqualsCaseInsensitive is string nameEquals)
+        if (rule.NameEqualsCaseInsensitive.Count > 0)
         {
-            if (type.Name.ToUpperInvariant() != nameEquals.ToUpperInvariant())
+            var equals = rule.NameEqualsCaseInsensitive.Any(x => x.ToUpperInvariant() == type.NameUpper);
+            if (!equals)
             {
                 match = false;
                 return match;

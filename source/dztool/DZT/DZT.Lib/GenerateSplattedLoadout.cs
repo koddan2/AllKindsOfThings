@@ -68,7 +68,7 @@ public class GenerateSplattedLoadout
 
     private static readonly string[] _ForbiddenClassNamesStartsWith = new[]
     {
-        "TTC_",
+        "TTC",
         "SYGUJug",
     };
 
@@ -83,7 +83,8 @@ public class GenerateSplattedLoadout
         "ANIMAL",
         "EXPANSION",
         "ZMB",
-        "CONSTRUC",
+        ////"CONSTRUC",
+        "SPOTLIGHT",
         "PLATE",
         "BARREL",
         "POWERGEN",
@@ -193,6 +194,15 @@ public class GenerateSplattedLoadout
 
         splat.InventoryCargo.AddRange(extras);
         splat.InventoryCargo = splat.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
+
+        {
+            var ttcs = splat.InventoryCargo.Where(x => x.ClassName.StartsWith("TT"));
+            var b = ttcs.Select(x => x.ClassName).ToArray();
+            foreach (var item in ttcs)
+            {
+                item.Chance = 0.001;
+            }
+        }
 
         ////SplatItems("Back", splat, extras);
         ////SplatItems("Vest", splat, extras);
