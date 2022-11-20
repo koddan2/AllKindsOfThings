@@ -18,7 +18,7 @@ usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 
 [[rules]]
-name_equals_case_insensitive = ['pot', 'WeaponCleaningKit', 'PortableGasStove']
+name_equals_case_insensitive = ["pot", "WeaponCleaningKit", "PortableGasStove"]
 nominal = 70
 min = 30
 lifetime = 14400
@@ -34,7 +34,7 @@ lifetime = 600
 restock = 0
 
 [[rules]]
-name_contains_substring_case_insensitive = ['suppressor']
+name_contains_substring_case_insensitive = ["suppressor"]
 nominal = 12
 min = 8
 lifetime = 14400
@@ -44,7 +44,7 @@ usages = ["Military"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 
 [[rules]]
-name_contains_substring_case_insensitive = ['pistolsuppressor']
+name_contains_substring_case_insensitive = ["pistolsuppressor"]
 nominal = 20
 min = 10
 lifetime = 14400
@@ -63,7 +63,7 @@ usages = ["Military"]
 values = ["Tier2", "Tier3", "Tier4"]
 
 [[rules]]
-name_equals_case_insensitive = ['ad_rmr']
+name_equals_case_insensitive = ["ad_rmr"]
 nominal = 12
 min = 4
 lifetime = 14400
@@ -74,7 +74,7 @@ values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 
 [[rules]]
 starts_with = "AD_"
-name_contains_substring_case_insensitive = ['pilad']
+name_contains_substring_case_insensitive = ["pilad"]
 nominal = 8
 min = 4
 lifetime = 14400
@@ -99,3 +99,34 @@ lifetime = 14400
 restock = 0
 usages = ["Industrial"]
 tags = ["floor"]
+
+[[rules]]
+starts_with = "dzn_"
+nominal = 15
+min = 8
+lifetime = 14400
+restock = 0
+category = "clothes"
+usages = ["Military"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+
+[[rules]]
+starts_with = "dzn_platecarrier"
+nominal = 1
+min = 1
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military"]
+flags = { count_in_map = "1", deloot = "1" }
+
+[[rules]]
+starts_with = "SNAFU"
+nominal = 1
+min = 1
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }

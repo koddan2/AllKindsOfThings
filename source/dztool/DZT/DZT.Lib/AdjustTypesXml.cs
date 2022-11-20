@@ -57,8 +57,8 @@ public class AdjustTypesXml
             ProcessBaseDayzItems(type);
             //ProcessExpansion(type);
             //ProcessAdvancedWeaponScopes(type);
-            ProcessSnafu(type);
-            ProcessDzn(type);
+            //ProcessSnafu(type);
+            //ProcessDzn(type);
         }
 
         using var fs = FileManagement.Utf8WithoutBomWriter(inputFilePath);
@@ -183,6 +183,15 @@ public class AdjustTypesXml
     }
 }
 
+public class AdjustTypesXmlConfigurationRuleFlags
+{
+    public string CountInMap { get; set; } = "0";
+    public string CountInHoarder { get; set; } = "0";
+    public string CountInCargo { get; set; } = "0";
+    public string CountInPlayer { get; set; } = "0";
+    public string Crafted { get; set; } = "0";
+    public string Deloot { get; set; } = "0";
+}
 public class AdjustTypesXmlConfigurationRule
 {
     public uint? Nominal { get; set; }
@@ -191,6 +200,8 @@ public class AdjustTypesXmlConfigurationRule
     public uint? Restock { get; set; }
     public string? Category { get; set; }
 
+    public AdjustTypesXmlConfigurationRuleFlags? Flags { get; set; }
+
     public List<string> Values { get; set; } = new List<string>();
     public List<string> Usages { get; set; } = new List<string>();
     public List<string> Tags { get; set; } = new List<string>();
@@ -198,6 +209,7 @@ public class AdjustTypesXmlConfigurationRule
     public string? StartsWith { get; set; }
     public List<string> NameEqualsCaseInsensitive { get; set; } = new List<string>();
     public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
+
 
     public override string ToString()
     {
@@ -239,6 +251,19 @@ public static class AdjustTypesXmlConfigurationExtensions
         type.Usages = rule.Usages.ToArray();
         type.Tags = rule.Tags.ToArray();
         type.Category = rule.Category;
+
+        if (rule.Flags is AdjustTypesXmlConfigurationRuleFlags flags)
+        {
+            type.Flags = new Dictionary<string, string>
+            {
+                ["count_in_map"] = flags.CountInMap,
+                ["count_in_hoarder"] = flags.CountInHoarder,
+                ["count_in_cargo"] = flags.CountInCargo,
+                ["ount_in_player"] = flags.CountInPlayer,
+                ["crafted"] = flags.Crafted,
+                ["deloot"] = flags.Deloot,
+            };
+        }
     }
 
     public static bool Matches(this AdjustTypesXmlConfigurationRule rule, DzTypesXmlTypeElement type)
