@@ -18,7 +18,7 @@
     },
     "DZT.Cli (adjust-types)": {
       "commandName": "Project",
-      "commandLineArgs": "adjust-types --dayz-server-root-dir=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" --mp-mission-name=\"dayzOffline.chernarusplus\""
+      "commandLineArgs": "adjust-types -c=adjust-types-config.toml -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -m=\"dayzOffline.chernarusplus\""
     }
   }
 }

@@ -1,1 +1,0 @@
-.\DZT.Cli.exe fix-expansion-types --dayz-server-root-dir="C:\Program Files (x86)\Steam\steamapps\common\DayZServer" --file="mpmissions\dayzOffline.chernarusplus\db\types.xml"

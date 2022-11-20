@@ -22,13 +22,19 @@ namespace DZT.Lib.Models;
 */
 public record DzTypesXmlTypeElement(XElement Element)
 {
-    public static DzTypesXmlTypeElement FromElement(XElement element) => new DzTypesXmlTypeElement(element);
+    public static DzTypesXmlTypeElement FromElement(XElement element) => new(element);
     public static IEnumerable<DzTypesXmlTypeElement> FromDocument(XDocument doc)
     {
         var types = doc.Root!.Nodes();
         var result = types.OfType<XElement>().Select(x => new DzTypesXmlTypeElement(x));
         return result;
     }
+
+    public override string ToString()
+    {
+        return $"<{Name}>";
+    }
+
     private IEnumerable<XElement>? _nodes = null;
     public IEnumerable<XElement> Nodes
     {
@@ -95,7 +101,24 @@ public record DzTypesXmlTypeElement(XElement Element)
     public string? Category
     {
         get => GetNode("category")?.Attribute("name")?.Value;
-        set => GetNode("category")?.Attribute("name")?.SetValue(value ?? "");
+        set
+        {
+            if (value is null)
+            {
+                if (GetNode("category") is XElement categoryEl)
+                {
+                    categoryEl.Remove();
+                }
+            }
+            else if (GetNode("category") is null)
+            {
+                Element.Add(new XElement("category", new XAttribute("name", value)));
+            }
+            else
+            {
+                GetNode("category")?.Attribute("name")?.SetValue(value);
+            }
+        }
     }
     public string[] Usages
     {

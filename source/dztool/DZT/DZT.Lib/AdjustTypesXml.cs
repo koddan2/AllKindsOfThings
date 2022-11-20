@@ -8,13 +8,15 @@ namespace DZT.Lib;
 
 public class AdjustTypesXml
 {
-    private readonly ILogger<AdjustTypesXml> _logger;
+    private readonly ILogger _logger;
+    private readonly AdjustTypesXmlConfiguration _configuration;
     private readonly string _rootDir;
     private readonly string _mpMissionName;
 
-    public AdjustTypesXml(ILogger<AdjustTypesXml> logger, string rootDir, string mpMissionName)
+    public AdjustTypesXml(ILogger logger, AdjustTypesXmlConfiguration configuration, string rootDir, string mpMissionName)
     {
         _logger = logger;
+        _configuration = configuration;
         _rootDir = rootDir;
         _mpMissionName = mpMissionName;
     }
@@ -50,6 +52,7 @@ public class AdjustTypesXml
 
         foreach (var type in types)
         {
+            ProcessByConfiguration(type);
             GeneralAdjustments(type);
             ProcessBaseDayzItems(type);
             ProcessExpansion(type);
@@ -60,6 +63,17 @@ public class AdjustTypesXml
 
         using var fs = FileManagement.Utf8WithoutBomWriter(inputFilePath);
         xd.Save(fs);
+    }
+
+    private void ProcessByConfiguration(DzTypesXmlTypeElement type)
+    {
+        foreach (var rule in _configuration.Rules)
+        {
+            if (rule.Matches(type))
+            {
+                rule.Apply(type);
+            }
+        }
     }
 
     private static void GeneralAdjustments(DzTypesXmlTypeElement type)
@@ -166,5 +180,96 @@ public class AdjustTypesXml
         type.Restock = 0;
         type.Nominal = 5;
         type.Min = 3;
+    }
+}
+
+public class AdjustTypesXmlConfigurationRule
+{
+    public uint? Nominal { get; set; }
+    public uint? Min { get; set; }
+    public uint? Lifetime { get; set; }
+    public uint? Restock { get; set; }
+    public string? Category { get; set; }
+
+    public List<string> Values { get; set; } = new List<string>();
+    public List<string> Usages { get; set; } = new List<string>();
+    public List<string> Tags { get; set; } = new List<string>();
+
+    public string? StartsWith { get; set; }
+    public string? NameEqualsCaseInsensitive { get; set; }
+    public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
+
+    public override string ToString()
+    {
+        return $"SW:{StartsWith}|CON:{string.Join(":", NameContainsSubstringCaseInsensitive)}";
+    }
+}
+
+public class AdjustTypesXmlConfiguration
+{
+    public string Title { get; set; } = "";
+    public List<AdjustTypesXmlConfigurationRule> Rules { get; set; } = new List<AdjustTypesXmlConfigurationRule>();
+}
+
+public static class AdjustTypesXmlConfigurationExtensions
+{
+    public static void Apply(this AdjustTypesXmlConfigurationRule rule, DzTypesXmlTypeElement type)
+    {
+        if (rule.Nominal is uint nominal)
+        {
+            type.Nominal = Convert.ToInt32(nominal);
+        }
+
+        if (rule.Min is uint min)
+        {
+            type.Min = Convert.ToInt32(min);
+        }
+
+        if (rule.Lifetime is uint lifetime)
+        {
+            type.Lifetime = Convert.ToInt32(lifetime);
+        }
+
+        if (rule.Restock is uint restock)
+        {
+            type.Restock = Convert.ToInt32(restock);
+        }
+
+        type.Values = rule.Values.ToArray();
+        type.Usages = rule.Usages.ToArray();
+        type.Tags = rule.Tags.ToArray();
+        type.Category = rule.Category;
+    }
+
+    public static bool Matches(this AdjustTypesXmlConfigurationRule rule, DzTypesXmlTypeElement type)
+    {
+        var match = true;
+        if (rule.NameEqualsCaseInsensitive is string nameEquals)
+        {
+            if (type.Name.ToUpperInvariant() != nameEquals.ToUpperInvariant())
+            {
+                match = false;
+                return match;
+            }
+        }
+        else if (rule.StartsWith is string startsWith)
+        {
+            if (!type.Name.StartsWith(startsWith))
+            {
+                match = false;
+                return match;
+            }
+        }
+
+        if (rule.NameContainsSubstringCaseInsensitive.Count > 0)
+        {
+            match = match && rule.NameContainsSubstringCaseInsensitive.Any(substr =>
+            {
+                var nameUpper = type.Name.ToUpperInvariant();
+                return nameUpper.Contains(substr.ToUpperInvariant());
+            });
+        }
+
+        return match;
     }
 }

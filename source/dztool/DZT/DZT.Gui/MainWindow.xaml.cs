@@ -90,7 +90,7 @@ namespace DZT.Gui
                 });
 
                 ILogger<AdjustTypesXml> logger = loggerFactory.CreateLogger<AdjustTypesXml>();
-                AdjustTypesXml impl = new(logger, Prefs.DayzServerRootDirectoryPath, Prefs.MpMissionName);
+                AdjustTypesXml impl = new(logger, new AdjustTypesXmlConfiguration(), Prefs.DayzServerRootDirectoryPath, Prefs.MpMissionName);
                 impl.Process();
             }
         }

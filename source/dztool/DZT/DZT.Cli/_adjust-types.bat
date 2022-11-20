@@ -1,0 +1,1 @@
+.\DZT.Cli.exe adjust-types --dayz-server-root-dir="C:\Program Files (x86)\Steam\steamapps\common\DayZServer" --mp-mission-name="mpmissions\dayzOffline.chernarusplus\db\types.xml" --configuration=adjust-types-config.json

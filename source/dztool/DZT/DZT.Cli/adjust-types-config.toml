@@ -1,0 +1,68 @@
+title = "TOML cfg for adjust-types"
+
+[[rules]]
+name_contains_substring_case_insensitive = ['suppressor']
+nominal = 12
+min = 8
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+
+[[rules]]
+name_contains_substring_case_insensitive = ['pistolsuppressor']
+nominal = 20
+min = 10
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military", "Police"]
+
+[[rules]]
+starts_with = "AD_"
+nominal = 4
+min = 2
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military"]
+values = ["Tier2", "Tier3", "Tier4"]
+
+[[rules]]
+name_equals_case_insensitive = 'ad_rmr'
+nominal = 12
+min = 4
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Police", "Military"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+
+[[rules]]
+starts_with = "AD_"
+name_contains_substring_case_insensitive = ['pilad']
+nominal = 8
+min = 4
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Hunting"]
+values = ["Tier1", "Tier2", "Tier3"]
+
+[[rules]]
+starts_with = "Expansion"
+name_contains_substring_case_insensitive = [
+    "door",
+    "wheel",
+    "hood",
+    "trunk",
+    "left",
+    "right",
+]
+nominal = 1
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Industrial"]
+tags = ["floor"]
