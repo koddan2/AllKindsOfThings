@@ -200,7 +200,7 @@ public class GenerateSplattedLoadout
             var b = ttcs.Select(x => x.ClassName).ToArray();
             foreach (var item in ttcs)
             {
-                item.Chance = 0.001;
+                item.Chance = 0.01;
             }
         }
 
