@@ -9,26 +9,19 @@ class UpdateAiPatrolsCommand
 
         cmd.Add(optionRootDir);
 
-        var sourceFile = cmd.AddOption<string>(
-            name: "--source",
-            description: "The path to the input JSON file",
+        var mpMissionName = cmd.AddOption<string>(
+            name: "--mp-mission-name",
+            description: "The name of the mission, e.g. dayzOffline.chernarusplus",
             isRequired: true,
-            aliases: new[] { "-s" });
-
-        var destFile = cmd.AddOption<string>(
-            name: "--destination",
-            description: "The path to the output JSON file",
-            isRequired: true,
-            aliases: new[] { "-d" });
+            aliases: new[] { "-m" });
 
         cmd.SetHandler(
-            (inputFilePath, outputFilePath, rootDir) =>
+            (rootDir, mpMissionName) =>
             {
-                UpdateAiPatrols impl = new(rootDir, inputFilePath, outputFilePath);
+                UpdateAiPatrols impl = new(rootDir, mpMissionName);
                 impl.Process();
             },
-            sourceFile,
-            destFile,
-            optionRootDir);
+            optionRootDir,
+            mpMissionName);
     }
 }

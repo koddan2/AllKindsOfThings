@@ -10,10 +10,11 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net6.0/DZT.Cli.dll",
+            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net7.0/DZT.Cli.dll",
             "args": [
                 "generate-splatted-ai-loadout",
-                "--dayz-server-root-dir=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer"
+                "-r=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer",
+                "-m=dayzOffline.chernarusplus"
             ],
             "cwd": "${workspaceFolder}/DZT/DZT.Cli",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
@@ -25,29 +26,43 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net6.0/DZT.Cli.dll",
+            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net7.0/DZT.Cli.dll",
             "args": [
                 "update-searchforloot",
                 "--dayz-server-root-dir=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer"
             ],
             "cwd": "${workspaceFolder}/DZT/DZT.Cli",
-            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false
         },
         {
-            "name": "DZT.Cli fix-expansion-types",
+            "name": "DZT.Cli adjust-types",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net6.0/DZT.Cli.dll",
+            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net7.0/DZT.Cli.dll",
             "args": [
-                "fix-expansion-types",
-                "--dayz-server-root-dir=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer",
-                "--file=mpmissions\\dayzOffline.chernarusplus\\db\\types.xml"
+                "adjust-types",
+                "-c=adjust-types-config.toml",
+                "-r=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer",
+                "-m=dayzOffline.chernarusplus"
             ],
             "cwd": "${workspaceFolder}/DZT/DZT.Cli",
-            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "DZT.Cli update-ai-patrols",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net7.0/DZT.Cli.dll",
+            "args": [
+                "update-ai-patrols",
+                "--dayz-server-root-dir=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer",
+                "-m=dayzOffline.chernarusplus"
+            ],
+            "cwd": "${workspaceFolder}/DZT/DZT.Cli",
             "console": "internalConsole",
             "stopAtEntry": false
         },

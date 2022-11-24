@@ -39,23 +39,8 @@ public static class FileManagement
     {
         var backupRootDir = Path.Combine(rootDir, GeneralInvariants.ApplicationSubDirectoryName, "BACKUP");
         var pathToBackupFile = Path.Combine(backupRootDir, relativePath);
-        var srcFile = Path.Combine(rootDir, relativePath);
-
-        if (File.Exists(pathToBackupFile) && !HasSameContent(pathToBackupFile, srcFile))
-        {
-            BackupBackupFile(pathToBackupFile);
-        }
-
-        if (File.Exists(pathToBackupFile))
-        {
-            return new BackupFileV2Result(pathToBackupFile, false);
-        }
-
-        if (!Directory.Exists(backupRootDir))
-        {
-            Directory.CreateDirectory(backupRootDir);
-        }
         var pathToBackupFileDir = Path.GetDirectoryName(pathToBackupFile);
+        var srcFile = Path.Combine(rootDir, relativePath);
 
         if (pathToBackupFileDir is null)
         {
@@ -65,6 +50,24 @@ public static class FileManagement
         if (!Directory.Exists(pathToBackupFileDir))
         {
             Directory.CreateDirectory(pathToBackupFileDir);
+        }
+
+        if (File.Exists(pathToBackupFile))
+        {
+            if (!HasSameContent(pathToBackupFile, srcFile))
+            {
+                BackupBackupFile(pathToBackupFile);
+                File.Delete(pathToBackupFile);
+            }
+            else
+            {
+                return new BackupFileV2Result(pathToBackupFile, false);
+            }
+        }
+
+        if (!Directory.Exists(backupRootDir))
+        {
+            Directory.CreateDirectory(backupRootDir);
         }
 
         File.Copy(srcFile, pathToBackupFile, false);
@@ -102,7 +105,7 @@ public static class FileManagement
         var fileNameNoExt = Path.GetFileNameWithoutExtension(filePath);
         var extension = Path.GetExtension(filePath);
 
-        var backupBackupFile = Path.Combine(dirName, $"{fileNameNoExt}-{DateTimeOffset.Now:O}{extension}");
+        var backupBackupFile = Path.Combine(dirName, $"{fileNameNoExt}-{DateTimeOffset.Now:yyyyddMM-HHmmss}{extension}");
         File.Copy(filePath, backupBackupFile, true);
     }
 

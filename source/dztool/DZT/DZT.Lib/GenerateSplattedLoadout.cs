@@ -70,6 +70,7 @@ public class GenerateSplattedLoadout
     {
         "TTC",
         "SYGUJug",
+        "Jug",
     };
 
     private static readonly string[] _ForbiddenClassNamesSubstrings = new[]
@@ -183,7 +184,7 @@ public class GenerateSplattedLoadout
             .Select(x => new InventoryCargoModel
             {
                 ClassName = x.Name,
-                Chance = 0.03,
+                Chance = (x.Flags ?? throw new ApplicationException())["crafted"] == "1" ? 0.03 : 0.03 * (((float)x.Nominal) / 8f),
                 Sets = new List<Set>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
@@ -237,9 +238,31 @@ public class GenerateSplattedLoadout
             ++index;
         }
 
+        var juggStuff = new[]
+        {
+            "SYGUJugVest",
+            "SYGUJugPants",
+            "SYGUJugBoots",
+            "JugHelm",
+        }.ToDictionary(
+            x => x,
+            juggItem => new Item
+            {
+                Chance = 0.2,
+                ClassName = juggItem,
+                ConstructionPartsBuilt = new List<object>(),
+                Health = new List<Health> { new Health { Min = 0.5, Max = 0.9 } },
+                InventoryAttachments = new List<InventoryAttachment>(),
+                InventoryCargo = new List<InventoryCargoModel>(),
+            });
+
         foreach (var att in splat.InventoryAttachments)
         {
             att.Items = att.Items.DistinctBy(x => x.ClassName).ToList();
+            if (att.SlotName == "Vest") att.Items.Add(juggStuff["SYGUJugVest"]);
+            else if (att.SlotName == "Legs") att.Items.Add(juggStuff["SYGUJugPants"]);
+            else if (att.SlotName == "Headgear") att.Items.Add(juggStuff["JugHelm"]);
+            else if (att.SlotName == "Feet") att.Items.Add(juggStuff["SYGUJugBoots"]);
         }
 
         splat.InventoryAttachments = splat.InventoryAttachments.Where(x => x.SlotName != "Shoulder").ToList();

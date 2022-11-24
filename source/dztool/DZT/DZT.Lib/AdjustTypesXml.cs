@@ -48,7 +48,7 @@ public class AdjustTypesXml
         }
         XDocument xd = XDocument.Load(inputFilePath);
 
-        var types = xd.Root.OrFail().Nodes().OfType<XElement>().Select(DzTypesXmlTypeElement.FromElement);
+        var types = DzTypesXmlTypeElement.FromDocument(xd);
 
         foreach (var type in types)
         {
@@ -192,8 +192,13 @@ public class AdjustTypesXmlConfigurationRuleFlags
     public string Crafted { get; set; } = "0";
     public string Deloot { get; set; } = "0";
 }
+public enum AdjustTypesXmlConfigurationRuleAction
+{
+    Remove = 1,
+}
 public class AdjustTypesXmlConfigurationRule
 {
+    public AdjustTypesXmlConfigurationRuleAction? Action { get; set; }
     public uint? Nominal { get; set; }
     public uint? Min { get; set; }
     public uint? Lifetime { get; set; }
@@ -209,6 +214,7 @@ public class AdjustTypesXmlConfigurationRule
     public string? StartsWith { get; set; }
     public List<string> NameEqualsCaseInsensitive { get; set; } = new List<string>();
     public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
+    public List<string> NotNameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
 
 
     public override string ToString()
@@ -227,6 +233,11 @@ public static class AdjustTypesXmlConfigurationExtensions
 {
     public static void Apply(this AdjustTypesXmlConfigurationRule rule, DzTypesXmlTypeElement type)
     {
+        if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Remove)
+        {
+            type.Element.Remove();
+        }
+
         if (rule.Nominal is uint nominal)
         {
             type.Nominal = Convert.ToInt32(nominal);
@@ -289,6 +300,15 @@ public static class AdjustTypesXmlConfigurationExtensions
                 match = false;
                 return match;
             }
+        }
+
+        if (rule.NotNameContainsSubstringCaseInsensitive.Count > 0)
+        {
+            match = match && rule.NotNameContainsSubstringCaseInsensitive.All(substr =>
+            {
+                var nameUpper = type.Name.ToUpperInvariant();
+                return !nameUpper.Contains(substr.ToUpperInvariant());
+            });
         }
 
         if (rule.NameContainsSubstringCaseInsensitive.Count > 0)

@@ -1,23 +1,13 @@
 title = "TOML cfg for adjust-types"
 
 [[rules]]
-starts_with = "TTC_"
+starts_with = "TTC"
+not_name_contains_substring_case_insensitive = ["suppressor"]
+action = "remove"
 nominal = 0
 min = 0
 lifetime = 600
 restock = 0
-
-[[rules]]
-starts_with = "TTC_"
-name_contains_substring_case_insensitive = ["suppressor"]
-nominal = 12
-min = 8
-lifetime = 14400
-restock = 0
-category = "weapons"
-usages = ["Military", "Police"]
-values = ["Tier1", "Tier2", "Tier3", "Tier4"]
-flags = { count_in_map = "1" }
 
 [[rules]]
 name_equals_case_insensitive = ["pot", "WeaponCleaningKit", "PortableGasStove"]
@@ -29,7 +19,8 @@ category = "tools"
 usages = ["Military", "Police", "Hunting", "Village"]
 
 [[rules]]
-starts_with = "Mag_SG_30Rnd"
+name_equals_case_insensitive = ["Mag_SG_30Rnd", "Mag_Kimber1911_10Rnd"]
+action = "remove"
 nominal = 0
 min = 0
 lifetime = 600
@@ -123,6 +114,16 @@ usages = ["Military"]
 flags = { count_in_map = "1", deloot = "1" }
 
 [[rules]]
+name_equals_case_insensitive = ["JugVisor", "JugHelm", "SYGUJugBoots", "SYGUJugPants", "SYGUJugVest"]
+nominal = 4
+min = 1
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military", "ContaminatedArea"]
+flags = { count_in_map = "1", deloot = "1" }
+
+[[rules]]
 starts_with = "SNAFU"
 nominal = 1
 min = 1
@@ -130,5 +131,28 @@ lifetime = 14400
 restock = 0
 category = "weapons"
 usages = ["Military"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+starts_with = "TTC"
+name_contains_substring_case_insensitive = ["suppressor"]
+nominal = 6
+min = 2
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_equals_case_insensitive = ["TTC_PistolSuppressor"]
+nominal = 44
+min = 22
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }

@@ -28,7 +28,8 @@ public class FixSearchForLoot
         var restore = FileManagement.TryRestoreFileV2(_rootDir, _sflJsonRelativePath);
         var backup = FileManagement.BackupFileV2(_rootDir, _sflJsonRelativePath);
         // TODO: follow cfgeconomycore.xml refs -> types files
-        var types = XDocument.Load(_typesXmlFilePath);
+        var xd = XDocument.Load(_typesXmlFilePath);
+        var types = DzTypesXmlTypeElement.FromDocument(xd);
         var usageDict = new Dictionary<string, HashSet<string>>
         {
             { "Civilian", new HashSet<string>() },
@@ -39,28 +40,35 @@ public class FixSearchForLoot
             { "Medical", new HashSet<string>() },
             { "Military", new HashSet<string>() },
         };
-        foreach (var type in types.Root!.Nodes().OfType<XElement>())
+        var forbiddenSubstrings = new[]
         {
-            var typeName = type.Attribute("name")?.Value;
-            if (typeName is null) continue;
+            "CHEML",
+            "BEAR",
+            "PEN",
+            "PILEOF",
+        };
+        foreach (var type in types)
+        {
+            if (type.Category == "clothes") continue;
+            if (type.Category == "containers") continue;
 
-            foreach (var typeNode in type.Nodes().OfType<XElement>())
+            if (forbiddenSubstrings.Any(x => type.NameUpper.Contains(x))) continue;
+
+            var typeName = type.Name;
+
+            foreach (var usage in type.Usages)
             {
-                if (typeNode.Name == "usage")
+                if (usage == "Town" || usage == "Village")
                 {
-                    var nameAttr = typeNode.Attribute("name")?.Value;
-                    if (nameAttr == "Town" || nameAttr == "Village")
-                    {
-                        usageDict["Civilian"].Add(typeName);
-                    }
-                    else if (nameAttr == "Medic")
-                    {
-                        usageDict["Medical"].Add(typeName);
-                    }
-                    else if (nameAttr is not null && usageDict.ContainsKey(nameAttr))
-                    {
-                        usageDict[nameAttr].Add(typeName);
-                    }
+                    usageDict["Civilian"].Add(typeName);
+                }
+                else if (usage.Contains("Medic"))
+                {
+                    usageDict["Medical"].Add(typeName);
+                }
+                else if (usageDict.ContainsKey(usage))
+                {
+                    usageDict[usage].Add(typeName);
                 }
             }
         }
@@ -102,7 +110,7 @@ public class FixSearchForLoot
             }
         }
 
-        cfg.Rarity = 99;
+        cfg.Rarity = 25;
         cfg.InitialCooldown = 1;
         cfg.DisableNotifications = 1;
         cfg.XPGain = 10;

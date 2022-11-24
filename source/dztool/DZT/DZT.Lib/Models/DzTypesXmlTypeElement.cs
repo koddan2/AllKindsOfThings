@@ -27,7 +27,7 @@ public record DzTypesXmlTypeElement(XElement Element)
     {
         var types = doc.Root!.Nodes();
         var result = types.OfType<XElement>().Select(x => new DzTypesXmlTypeElement(x));
-        return result;
+        return result.ToList();
     }
 
     public override string ToString()
