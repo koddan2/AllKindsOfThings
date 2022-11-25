@@ -40,10 +40,10 @@ public class UpdateAiPatrols
         _settings.Enabled = 1;
         _settings.AccuracyMin = 0.42;
         _settings.AccuracyMax = 0.77;
-        _settings.DespawnRadius = 1400;
+        _settings.DespawnRadius = 900;
         _settings.DespawnTime = 30;
         _settings.MinDistRadius = 80;
-        _settings.MaxDistRadius = 1200;
+        _settings.MaxDistRadius = 800;
         _settings.ThreatDistanceLimit = 400;
         _settings.DamageMultiplier = 1.0;
 
@@ -64,7 +64,7 @@ public class UpdateAiPatrols
         },
         p =>
         {
-            p.NumberOfAI = -5;
+            p.NumberOfAI = -6;
             p.Faction = "Raiders";
             ////p.LoadoutFile = "BanditLoadout";
             p.LoadoutFile = "SplattedLoadout";
@@ -94,7 +94,7 @@ public class UpdateAiPatrols
             p.Faction = "Raiders";
             ////p.LoadoutFile = "SurvivorLoadout";
             p.LoadoutFile = "SplattedLoadout";
-            p.Chance = Math.Max(BaseExtraSpawnChance - 0.15, 0.1);
+            p.Chance = Math.Min(1.0, BaseExtraSpawnChance - 0.0);
         });
 
         var structureClassNames = DataHelper.GetStructureClassNames();
@@ -134,7 +134,7 @@ public class UpdateAiPatrols
             {
                 p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = 0.03;
+                p.Chance = 0.06;
                 p.NumberOfAI = -3;
             });
 

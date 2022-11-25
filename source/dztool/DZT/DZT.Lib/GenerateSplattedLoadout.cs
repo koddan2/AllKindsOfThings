@@ -115,7 +115,7 @@ public class GenerateSplattedLoadout
         }
 
         var forbid0 = type.Category == "containers"
-            || type.Category == "clothes"
+            || (type.Category == "clothes" && !type.NameUpper.Contains("POUCH"))
             || type.Tags?.Contains("floor") is true
             || type.Flags?["crafted"] == "1"
             ;
@@ -184,7 +184,7 @@ public class GenerateSplattedLoadout
             .Select(x => new InventoryCargoModel
             {
                 ClassName = x.Name,
-                Chance = (x.Flags ?? throw new ApplicationException())["crafted"] == "1" ? 0.03 : 0.03 * (((float)x.Nominal) / 8f),
+                Chance = (x.Flags ?? throw new ApplicationException())["crafted"] == "1" ? 0.03 : 0.01 * (((float)x.Nominal) / 8f),
                 Sets = new List<Set>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
@@ -210,16 +210,16 @@ public class GenerateSplattedLoadout
         ////SplatItems("Body", splat, extras);
         ////SplatItems("Legs", splat, extras);
 
-        static void SplatItems(string slotName, AiLoadoutRoot splat, IEnumerable<InventoryCargoModel> extras)
-        {
-            var invAttachments = splat.InventoryAttachments.FirstOrDefault(x => x.SlotName == slotName)
-                ?? throw new ApplicationException("Dang it.");
-            foreach (var invAttachment in invAttachments.Items)
-            {
-                invAttachment.InventoryCargo.AddRange(extras);
-                invAttachment.InventoryCargo = invAttachment.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
-            }
-        }
+        ////static void SplatItems(string slotName, AiLoadoutRoot splat, IEnumerable<InventoryCargoModel> extras)
+        ////{
+        ////    var invAttachments = splat.InventoryAttachments.FirstOrDefault(x => x.SlotName == slotName)
+        ////        ?? throw new ApplicationException("Dang it.");
+        ////    foreach (var invAttachment in invAttachments.Items)
+        ////    {
+        ////        invAttachment.InventoryCargo.AddRange(extras);
+        ////        invAttachment.InventoryCargo = invAttachment.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
+        ////    }
+        ////}
     }
 
     private void AssignInventoryAttachments(AiLoadoutRoot splat, List<AiLoadoutRoot?> model)
@@ -238,31 +238,65 @@ public class GenerateSplattedLoadout
             ++index;
         }
 
-        var juggStuff = new[]
+        var extraStuff = new Dictionary<string, string[]>
         {
-            "SYGUJugVest",
-            "SYGUJugPants",
-            "SYGUJugBoots",
-            "JugHelm",
+            ["Vest"] = new[] {
+                "MMG_JPC_Vest_black", "MMG_tt_Vest_black", "MMG_chestrig_black", "MMG_MK_III_Armor_black", "MMG_MK_V_Armor_black",
+                "JuggernautLVL5_Suit",
+                "JuggernautLVL5_Tan",
+                "JuggernautLVL5_Black",
+                "JuggernautLVL5_Winter",
+                "JuggernautLVL1_Suit",
+                "JuggernautLVL1_Suit_Tan",
+                "JuggernautLVL1_Suit_Black",
+                "JuggernautLVL1_Suit_Winter",
+            },
+            ["Back"] = new[] { "MMG_carrier_backpack_black", "MMG_supplybag_black", "MMG_assault_pack_black", "MMG_camelback_black", "MMG_mmps_bag_black", },
+            ["Hips"] = new[] { "MMG_falcon_b1_belt_black", },
+            ["Headgear"] = new[] { "MMG_tactical_helmet_black", "MMG_striker_helmet_black", "mmg_armored_helmet_black", },
+            ["Body"] = new[] { "MMG_operatorshirt_black", "MMG_tactical_shirt_black", "MMG_combatshirt_black", },
+            ["Legs"] = new[] { "MMG_combatpants_black", "mmg_tactical_pants_black", },
         }.ToDictionary(
-            x => x,
-            juggItem => new Item
+            kvp => kvp.Key,
+            kvp => kvp.Value.Select(item => new Item
             {
-                Chance = 0.2,
-                ClassName = juggItem,
+                Chance = 1,
+                ClassName = item,
+                Quantity = new Quantity { Min = 0, Max = 0 },
+                Sets = new List<Set>(),
                 ConstructionPartsBuilt = new List<object>(),
                 Health = new List<Health> { new Health { Min = 0.5, Max = 0.9 } },
-                InventoryAttachments = new List<InventoryAttachment>(),
+                InventoryAttachments =
+                item.StartsWith("Juggernaut")
+                ? new List<InventoryAttachment>
+                {
+                    new InventoryAttachment
+                    {
+                        Items =new[]{"Juggernaut_Buttpack_Black", "Juggernaut_Pouches_Black",}.Select(className=>
+                            new Item
+                            {
+                                Chance = 1,
+                                ClassName = className,
+                                ConstructionPartsBuilt=new List<object>(),
+                                Health=new List<Health>{
+                                    new Health{ Min=0.5, Max=0.9},
+                                },
+                                InventoryAttachments=new List<InventoryAttachment>(),
+                                InventoryCargo=new List<InventoryCargoModel>(),
+                            }).ToList()
+                    }
+                }
+                : new List<InventoryAttachment>(),
                 InventoryCargo = new List<InventoryCargoModel>(),
-            });
+            }));
 
         foreach (var att in splat.InventoryAttachments)
         {
             att.Items = att.Items.DistinctBy(x => x.ClassName).ToList();
-            if (att.SlotName == "Vest") att.Items.Add(juggStuff["SYGUJugVest"]);
-            else if (att.SlotName == "Legs") att.Items.Add(juggStuff["SYGUJugPants"]);
-            else if (att.SlotName == "Headgear") att.Items.Add(juggStuff["JugHelm"]);
-            else if (att.SlotName == "Feet") att.Items.Add(juggStuff["SYGUJugBoots"]);
+
+            if (extraStuff.ContainsKey(att.SlotName)) att.Items.AddRange(extraStuff[att.SlotName]);
+            // if (att.SlotName == "Vest") att.Items.AddRange(extraStuff["Vest"]);
+            // else if (att.SlotName == "Headgear") att.Items.AddRange(extraStuff["Headgear"]);
         }
 
         splat.InventoryAttachments = splat.InventoryAttachments.Where(x => x.SlotName != "Shoulder").ToList();

@@ -11,7 +11,7 @@ restock = 0
 
 [[rules]]
 name_equals_case_insensitive = ["pot", "WeaponCleaningKit", "PortableGasStove"]
-nominal = 70
+nominal = 80
 min = 30
 lifetime = 14400
 restock = 0
@@ -153,6 +153,62 @@ min = 22
 lifetime = 14400
 restock = 0
 category = "weapons"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+
+[[rules]]
+name_contains_substring_case_insensitive = ["quad"]
+nominal = 14
+min = 8
+lifetime = 14400
+restock = 0
+category = "clothes"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+starts_with = "Juggernaut"
+nominal = 4
+min = 2
+lifetime = 14400
+restock = 0
+category = "clothes"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+starts_with = "MMG"
+nominal = 4
+min = 2
+lifetime = 14400
+restock = 0
+category = "clothes"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+starts_with = "mmg"
+nominal = 4
+min = 2
+lifetime = 14400
+restock = 0
+category = "clothes"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_contains_substring_case_insensitive = ["mung"]
+nominal = 14
+min = 8
+lifetime = 14400
+restock = 0
+category = "clothes"
 usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }

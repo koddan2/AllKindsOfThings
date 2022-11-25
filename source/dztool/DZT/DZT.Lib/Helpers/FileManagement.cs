@@ -54,7 +54,8 @@ public static class FileManagement
 
         if (File.Exists(pathToBackupFile))
         {
-            if (!HasSameContent(pathToBackupFile, srcFile))
+            var compareResult = CompareContents(pathToBackupFile, srcFile);
+            if (!compareResult.Same)
             {
                 BackupBackupFile(pathToBackupFile);
                 File.Delete(pathToBackupFile);
@@ -109,13 +110,14 @@ public static class FileManagement
         File.Copy(filePath, backupBackupFile, true);
     }
 
-    private static bool HasSameContent(string file1, string file2)
+    public record  CompareContentsResult(bool Same, string Hash1, string Hash2);
+    private static CompareContentsResult CompareContents(string file1, string file2)
     {
         using var fileStream1 = File.OpenRead(file1);
         using var fileStream2 = File.OpenRead(file2);
         var hash1 = BitConverter.ToString(_HashAlgorithm.ComputeHash(fileStream1));
         var hash2 = BitConverter.ToString(_HashAlgorithm.ComputeHash(fileStream2));
 
-        return hash1.Equals(hash2);
+        return new CompareContentsResult(hash1.Equals(hash2), hash1, hash2);
     }
 }

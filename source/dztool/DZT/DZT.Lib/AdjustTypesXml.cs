@@ -37,6 +37,8 @@ public class AdjustTypesXml
         {
             FileManagement.FormatXmlFileInPlace(restore.BackupFilePath);
         }
+
+        FileManagement.FormatXmlFileInPlace(inputFilePath);
         var backupResult = FileManagement.BackupFileV2(_rootDir, relativePath);
         if (backupResult.FileOperationCommitted)
         {
@@ -47,6 +49,60 @@ public class AdjustTypesXml
             _logger.LogInformation("File already backed up {file}", backupResult.BackupFilePath);
         }
         XDocument xd = XDocument.Load(inputFilePath);
+
+        var extraFromQuad = new[] {
+            "tacticalbelt_quad_black",
+            "tacticalbelt_quad_green",
+            "tacticalbelt_quad_tan",
+            "riflesling_quad_black",
+            "riflesling_quad_green",
+            "riflesling_quad_tan",
+            "riflesling_quad_winter",
+            "rifleslingfront_quad_black",
+            "rifleslingfront_quad_green",
+            "rifleslingfront_quad_tan",
+            "rifleslingfront_quad_winter",
+            "rifleslingback_quad_black",
+            "rifleslingback_quad_green",
+            "rifleslingback_quad_tan",
+            "rifleslingback_quad_winter",
+            "JuggernautLVL5_Suit",
+            "JuggernautLVL5_Tan",
+            "JuggernautLVL5_Black",
+            "JuggernautLVL5_Winter",
+            "JuggernautLVL1_Suit",
+            "JuggernautLVL1_Suit_Tan",
+            "JuggernautLVL1_Suit_Black",
+            "JuggernautLVL1_Suit_Winter",
+            "Juggernaut_Suit_Buttpack",
+            "Juggernaut_Buttpack_Tan",
+            "Juggernaut_Buttpack_Black",
+            "Juggernaut_Buttpack_Winter",
+            "Juggernaut_Suit_Pouches",
+            "Juggernaut_Pouches_Tan",
+            "Juggernaut_Pouches_Black",
+            "Juggernaut_Pouches_Winter",
+        };
+
+        if (Path.GetFileName(inputFilePath) == "generated_types.xml")
+            foreach (var item in extraFromQuad)
+            {
+                using var tempStream = StreamHelper.GenerateStreamFromString($@"
+                <type name=""{item}"">
+                    <nominal>4</nominal>
+                    <lifetime>1440</lifetime>
+                    <restock>0</restock>
+                    <min>1</min>
+                    <quantmin>-1</quantmin>
+                    <quantmax>-1</quantmax>
+                    <cost>100</cost>
+                    <flags count_in_map=""1"" count_in_hoarder=""0"" count_in_cargo=""0"" ount_in_player=""0"" crafted=""0"" deloot=""1"" />
+                </type>");
+                var tempXd = XDocument.Load(tempStream);
+                var tempType = DzTypesXmlTypeElement.FromElement(tempXd.Root!);
+                tempType.Category = "clothes";
+                xd.Root!.Add(tempXd.Root);
+            }
 
         var types = DzTypesXmlTypeElement.FromDocument(xd);
 
@@ -64,6 +120,7 @@ public class AdjustTypesXml
         using var fs = FileManagement.Utf8WithoutBomWriter(inputFilePath);
         xd.Save(fs);
     }
+
 
     private void ProcessByConfiguration(DzTypesXmlTypeElement type)
     {
