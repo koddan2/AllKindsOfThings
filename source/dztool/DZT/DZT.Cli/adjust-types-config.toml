@@ -115,8 +115,8 @@ flags = { count_in_map = "1", deloot = "1" }
 
 [[rules]]
 name_equals_case_insensitive = ["JugVisor", "JugHelm", "SYGUJugBoots", "SYGUJugPants", "SYGUJugVest"]
-nominal = 4
-min = 1
+nominal = 0
+min = 0
 lifetime = 14400
 restock = 0
 category = "weapons"
@@ -148,8 +148,8 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 name_equals_case_insensitive = ["TTC_PistolSuppressor"]
-nominal = 44
-min = 22
+nominal = 50
+min = 30
 lifetime = 14400
 restock = 0
 category = "weapons"
@@ -160,19 +160,19 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 name_contains_substring_case_insensitive = ["quad"]
-nominal = 14
-min = 8
+nominal = 34
+min = 12
 lifetime = 14400
 restock = 0
 category = "clothes"
-usages = ["Military", "Police"]
+usages = ["Military", "Police", "Hunting", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
 [[rules]]
 starts_with = "Juggernaut"
-nominal = 4
-min = 2
+nominal = 6
+min = 3
 lifetime = 14400
 restock = 0
 category = "clothes"
@@ -182,8 +182,8 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 starts_with = "MMG"
-nominal = 4
-min = 2
+nominal = 22
+min = 11
 lifetime = 14400
 restock = 0
 category = "clothes"
@@ -193,8 +193,8 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 starts_with = "mmg"
-nominal = 4
-min = 2
+nominal = 22
+min = 11
 lifetime = 14400
 restock = 0
 category = "clothes"
@@ -204,11 +204,11 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 name_contains_substring_case_insensitive = ["mung"]
-nominal = 14
-min = 8
+nominal = 32
+min = 11
 lifetime = 14400
 restock = 0
 category = "clothes"
-usages = ["Military", "Police"]
+usages = ["Military", "Police", "Hunting", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }

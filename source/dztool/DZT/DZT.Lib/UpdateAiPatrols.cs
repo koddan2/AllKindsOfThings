@@ -28,7 +28,7 @@ public class UpdateAiPatrols
         _aiPatrolSettingsJsonFile = Path.Combine(rootDir, relativePathToFile);
         Validators.ValidateFileExists(_aiPatrolSettingsJsonFile);
 
-        FileManagement.TryRestoreFileV2(rootDir,relativePathToFile);
+        FileManagement.TryRestoreFileV2(rootDir, relativePathToFile);
         var result = FileManagement.BackupFileV2(rootDir, relativePathToFile);
         _json = File.ReadAllText(_aiPatrolSettingsJsonFile);
         _settings = JsonSerializer.Deserialize<AiPatrolSettingsRoot>(_json)!;
@@ -111,9 +111,10 @@ public class UpdateAiPatrols
             objectsForPatrolCity,
             p =>
             {
-                p.Faction = "Raiders";
+                p.Faction = "Mercenaries";
+                // p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = 0.001;
+                p.Chance = 0.002;
                 p.NumberOfAI = -3;
             });
 
@@ -132,7 +133,8 @@ public class UpdateAiPatrols
             objectsForPatrolRest,
             p =>
             {
-                p.Faction = "Raiders";
+                p.Faction = "Mercenaries";
+                // p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
                 p.Chance = 0.06;
                 p.NumberOfAI = -3;
