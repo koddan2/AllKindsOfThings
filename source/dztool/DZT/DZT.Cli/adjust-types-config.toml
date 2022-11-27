@@ -143,7 +143,7 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 name_equals_case_insensitive = ["TTC_PistolSuppressor"]
-nominal = 50
+nominal = 70
 min = 30
 lifetime = 14400
 restock = 0
@@ -155,8 +155,8 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 name_contains_substring_case_insensitive = ["quad"]
-nominal = 34
-min = 12
+nominal = 44
+min = 32
 lifetime = 14400
 restock = 0
 category = "clothes"
