@@ -199,12 +199,27 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 name_contains_substring_case_insensitive = ["mung"]
-nominal = 32
-min = 11
+nominal = 52
+min = 32
 lifetime = 14400
 restock = 0
 category = "clothes"
 usages = ["Military", "Police", "Hunting", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_equals_case_insensitive = [
+    "csmcmillan_mung",
+    "Mag_cs5_10Rnd_mung",
+    "mcmillan_buttstock",
+]
+nominal = 5
+min = 5
+lifetime = 14400
+restock = 0
+category = "weapons"
+usages = ["Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
@@ -256,4 +271,14 @@ min = 17
 lifetime = 14400
 restock = 0
 usages = ["Police", "Farm", "Hunting"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+in_file = "expansion_types.xml"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
+usages = []
+values = []
 flags = { count_in_map = "1" }

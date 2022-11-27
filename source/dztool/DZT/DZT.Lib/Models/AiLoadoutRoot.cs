@@ -28,25 +28,25 @@ public class InventoryCargoModel
     public string ClassName { get; set; }
 
     [JsonPropertyName("Chance")]
-    public double Chance { get; set; }
+    public double Chance { get; set; } = 1.0;
 
     [JsonPropertyName("Quantity")]
-    public Quantity Quantity { get; set; }
+    public Quantity Quantity { get; set; } = new Quantity {Min=0, Max=1};
 
     [JsonPropertyName("Health")]
-    public List<Health> Health { get; set; }
+    public List<Health> Health { get; set; } = new List<Health>();
 
     [JsonPropertyName("InventoryAttachments")]
-    public List<InventoryAttachment> InventoryAttachments { get; set; }
+    public List<InventoryAttachment> InventoryAttachments { get; set; } = new List<InventoryAttachment>();
 
     [JsonPropertyName("InventoryCargo")]
-    public List<InventoryCargoModel> InventoryCargo { get; set; }
+    public List<InventoryCargoModel> InventoryCargo { get; set; } = new List<InventoryCargoModel>();
 
     [JsonPropertyName("ConstructionPartsBuilt")]
-    public List<object> ConstructionPartsBuilt { get; set; }
+    public List<object> ConstructionPartsBuilt { get; set; } = new List<object>();
 
     [JsonPropertyName("Sets")]
-    public List<LoadoutSet> Sets { get; set; }
+    public List<LoadoutSet> Sets { get; set; } = new List<LoadoutSet>();
 }
 
 public class Item
@@ -55,7 +55,7 @@ public class Item
     public string ClassName { get; set; }
 
     [JsonPropertyName("Chance")]
-    public double Chance { get; set; }
+    public double Chance { get; set; } = 1.0;
 
     [JsonPropertyName("Quantity")]
     public Quantity Quantity { get; set; } = new Quantity { Min = 0, Max = 0 };

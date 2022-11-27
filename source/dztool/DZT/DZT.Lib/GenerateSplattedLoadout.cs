@@ -374,7 +374,6 @@ static class WeaponSet
     {
         ClassName = "WEAPON",
         Chance = 0.04,
-        ConstructionPartsBuilt = new List<object>(),
         Health = new List<Health>
         {
             new Health {Min=0.4, Max=0.9},
@@ -395,6 +394,7 @@ static class WeaponSet
                         {
                             new InventoryAttachment
                             {
+                                SlotName = "",
                                 Items = new List<Item>
                                 {
                                     new Item
@@ -406,7 +406,12 @@ static class WeaponSet
                                     {
                                         Chance = 1,
                                         ClassName = "SNAFU_Tango6T_Black",
-                                    }
+                                    },
+                                    new Item
+                                    {
+                                        Chance = 0.1,
+                                        ClassName = "SNAFUKivaari_338_Supp"
+                                    },
                                 }
                             }
                         },
@@ -414,13 +419,13 @@ static class WeaponSet
                         {
                             new InventoryCargoModel
                             {
-                                Chance=1,
-                                ClassName="SNAFU_AWM_Mag",
+                                Chance = 1,
+                                ClassName = "SNAFU_AWM_Mag",
                             },
                             new InventoryCargoModel
                             {
-                                Chance=1,
-                                ClassName="SNAFU_Ammo_338",
+                                Chance = 1,
+                                ClassName = "SNAFU_Ammo_338",
                                 Quantity = new Quantity {Min=10, Max=20},
                             },
                         }
