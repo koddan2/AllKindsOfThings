@@ -10,7 +10,7 @@ public class Health
     public double Max { get; set; }
 
     [JsonPropertyName("Zone")]
-    public string Zone { get; set; }
+    public string Zone { get; set; } = "";
 }
 
 public class InventoryAttachment
@@ -46,7 +46,7 @@ public class InventoryCargoModel
     public List<object> ConstructionPartsBuilt { get; set; }
 
     [JsonPropertyName("Sets")]
-    public List<Set> Sets { get; set; }
+    public List<LoadoutSet> Sets { get; set; }
 }
 
 public class Item
@@ -58,22 +58,22 @@ public class Item
     public double Chance { get; set; }
 
     [JsonPropertyName("Quantity")]
-    public Quantity Quantity { get; set; }
+    public Quantity Quantity { get; set; } = new Quantity { Min = 0, Max = 0 };
 
     [JsonPropertyName("Health")]
-    public List<Health> Health { get; set; }
+    public List<Health> Health { get; set; } = new List<Health>();
 
     [JsonPropertyName("InventoryAttachments")]
-    public List<InventoryAttachment> InventoryAttachments { get; set; }
+    public List<InventoryAttachment> InventoryAttachments { get; set; } = new List<InventoryAttachment>();
 
     [JsonPropertyName("InventoryCargo")]
-    public List<InventoryCargoModel> InventoryCargo { get; set; }
+    public List<InventoryCargoModel> InventoryCargo { get; set; } = new List<InventoryCargoModel>();
 
     [JsonPropertyName("ConstructionPartsBuilt")]
-    public List<object> ConstructionPartsBuilt { get; set; }
+    public List<object> ConstructionPartsBuilt { get; set; } = new List<object>();
 
     [JsonPropertyName("Sets")]
-    public List<Set> Sets { get; set; }
+    public List<LoadoutSet> Sets { get; set; } = new List<LoadoutSet>();
 }
 
 public class Quantity
@@ -109,10 +109,10 @@ public class AiLoadoutRoot
     public List<object> ConstructionPartsBuilt { get; set; } = new List<object>();
 
     [JsonPropertyName("Sets")]
-    public List<Set> Sets { get; set; } = new List<Set>();
+    public List<LoadoutSet> Sets { get; set; } = new List<LoadoutSet>();
 }
 
-public class Set
+public class LoadoutSet
 {
     [JsonPropertyName("ClassName")]
     public string ClassName { get; set; }
@@ -136,7 +136,7 @@ public class Set
     public List<object> ConstructionPartsBuilt { get; set; }
 
     [JsonPropertyName("Sets")]
-    public List<Set> Sets { get; set; }
+    public List<LoadoutSet> Sets { get; set; }
 }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

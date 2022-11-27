@@ -19,7 +19,7 @@ public class UpdateAiPatrols
         "Land_Train_Wagon_Tanker",
     };
 
-    public double BaseExtraSpawnChance { get; set; } = 0.25;
+    public double BaseExtraSpawnChance { get; set; } = 0.35;
 
     public UpdateAiPatrols(string rootDir, string mpMissionName)
     {
@@ -38,18 +38,17 @@ public class UpdateAiPatrols
     {
         _settings.MVersion = 11;
         _settings.Enabled = 1;
-        _settings.AccuracyMin = 0.42;
-        _settings.AccuracyMax = 0.77;
-        _settings.DespawnRadius = 900;
-        _settings.DespawnTime = 30;
+        _settings.AccuracyMin = 0.52;
+        _settings.AccuracyMax = 0.82;
+        _settings.DespawnRadius = 1000;
+        _settings.DespawnTime = 20;
         _settings.MinDistRadius = 80;
-        _settings.MaxDistRadius = 800;
+        _settings.MaxDistRadius = 950;
         _settings.ThreatDistanceLimit = 400;
         _settings.DamageMultiplier = 1.0;
 
         AddObjectPatrol("East", new[] { "Land_City_PoliceStation", "Land_Village_PoliceStation" }, p =>
         {
-            ////p.LoadoutFile = "PoliceLoadout";
             p.LoadoutFile = "SplattedLoadout";
             p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.1);
         });
@@ -66,7 +65,6 @@ public class UpdateAiPatrols
         {
             p.NumberOfAI = -6;
             p.Faction = "Raiders";
-            ////p.LoadoutFile = "BanditLoadout";
             p.LoadoutFile = "SplattedLoadout";
             p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.1);
         });
@@ -74,26 +72,27 @@ public class UpdateAiPatrols
         AddObjectPatrol("East", new[] { "Land_Mil_Airfield_HQ", "Land_Mil_ATC_Small", "Land_Mil_ATC_Big" }, p =>
         {
             p.Faction = "Raiders";
-            ////p.LoadoutFile = "GorkaLoadout";
             p.LoadoutFile = "SplattedLoadout";
             p.Chance = BaseExtraSpawnChance;
+            p.NumberOfAI = -4;
         });
 
         AddObjectPatrol("East", new[] { "Land_City_FireStation" }, p =>
         {
-            ////p.Faction = "Raiders";
-            ////p.LoadoutFile = "FireFighterLoadout";
             p.Chance = Math.Min(1.0, BaseExtraSpawnChance + 0.0);
             p.Faction = "Raiders";
             p.LoadoutFile = "SplattedLoadout";
-            p.NumberOfAI = -2;
+            p.NumberOfAI = -4;
         });
 
-        AddObjectPatrol("East", new[] { "Land_City_Stand_Grocery", "Land_House_1B01_Pub" }, p =>
+        AddObjectPatrol("East", new[] {
+            "Land_City_Stand_Grocery",
+            "Land_House_1B01_Pub",
+            }, p =>
         {
             p.Faction = "Raiders";
-            ////p.LoadoutFile = "SurvivorLoadout";
             p.LoadoutFile = "SplattedLoadout";
+            p.NumberOfAI = -4;
             p.Chance = Math.Min(1.0, BaseExtraSpawnChance - 0.0);
         });
 
@@ -115,7 +114,7 @@ public class UpdateAiPatrols
                 // p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
                 p.Chance = 0.002;
-                p.NumberOfAI = -3;
+                p.NumberOfAI = -2;
             });
 
         var objectsForPatrolRest = new[]
@@ -134,19 +133,17 @@ public class UpdateAiPatrols
             p =>
             {
                 p.Faction = "Mercenaries";
-                // p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = 0.06;
+                p.Chance = 0.05;
                 p.NumberOfAI = -3;
             });
 
         AddObjectPatrol("East", structureClassNames["**Military**"].ToArray(), p =>
         {
             p.Faction = "East";
-            ////p.LoadoutFile = "EastLoadout";
             p.LoadoutFile = "SplattedLoadout";
             p.Chance = 0.005;
-            p.NumberOfAI = 2;
+            p.NumberOfAI = -3;
         });
 
         AddObjectPatrol("West", structureClassNames["**Military**"].ToArray(), p =>
@@ -155,36 +152,23 @@ public class UpdateAiPatrols
             ////p.LoadoutFile = "WestLoadout";
             p.LoadoutFile = "SplattedLoadout";
             p.Chance = 0.005;
-            p.NumberOfAI = 2;
+            p.NumberOfAI = -3;
         });
 
         _settings.ObjectPatrols.ToList().ForEach(p =>
         {
-            p.Faction = "Raiders";
-            ////p.NumberOfAI = -5;
+            p.Faction = "Mercenaries";
             p.UnlimitedReload = 1;
             p.LoadoutFile = "SplattedLoadout";
-            ////if (p.LoadoutFile == "" && p.ClassName != "Wreck_UH1Y" && p.ClassName != "Wreck_Mi8_Crashed") // if (p.LoadoutFile == "")
-            ////{
-            ////    p.LoadoutFile = "PoliceLoadout";
-            ////    p.LoadoutFile = GetRandomLoadout();
-            ////}
-            ////p.LoadoutFile = "SplattedLoadout";
             p.ThreatDistanceLimit = -1;
             p.DamageMultiplier = -1;
         });
 
         _settings.Patrols.ToList().ForEach(p =>
         {
-            p.Faction = "Raiders";
-            ////p.NumberOfAI = -5;
+            p.Faction = "Mercenaries";
             p.UnlimitedReload = 1;
             p.LoadoutFile = "SplattedLoadout";
-            ////if (p.LoadoutFile == "")
-            ////{
-            ////    p.LoadoutFile = "PoliceLoadout";
-            ////    p.LoadoutFile = GetRandomLoadout();
-            ////}
             p.ThreatDistanceLimit = -1;
             p.DamageMultiplier = -1;
         });

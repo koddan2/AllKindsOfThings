@@ -21,6 +21,9 @@ public class AdjustTypesXml
         _mpMissionName = mpMissionName;
     }
 
+    public string GeneratedTypesXmlFileName { get; set; } = "generated_types.xml";
+    public bool IsGeneratedTypesXmlFile(string filePath) => Path.GetFileName(filePath) == GeneratedTypesXmlFileName;
+
     public void Process()
     {
         foreach (var file in DayzFilesHelper.GetAllTypesXmlFileNames(_rootDir, _mpMissionName))
@@ -55,36 +58,36 @@ public class AdjustTypesXml
             // "tacticalbelt_quad_green",
             // "tacticalbelt_quad_tan",
             "riflesling_quad_black",
-            // "riflesling_quad_green",
+            "riflesling_quad_green",
             // "riflesling_quad_tan",
             // "riflesling_quad_winter",
             "rifleslingfront_quad_black",
-            // "rifleslingfront_quad_green",
+            "rifleslingfront_quad_green",
             // "rifleslingfront_quad_tan",
             // "rifleslingfront_quad_winter",
             "rifleslingback_quad_black",
-            // "rifleslingback_quad_green",
+            "rifleslingback_quad_green",
             // "rifleslingback_quad_tan",
             // "rifleslingback_quad_winter",
             // "JuggernautLVL5_Suit",
-            "JuggernautLVL5_Tan",
+            // "JuggernautLVL5_Tan",
             "JuggernautLVL5_Black",
             // "JuggernautLVL5_Winter",
             // "JuggernautLVL1_Suit",
-            "JuggernautLVL1_Suit_Tan",
+            // "JuggernautLVL1_Suit_Tan",
             "JuggernautLVL1_Suit_Black",
             // "JuggernautLVL1_Suit_Winter",
             // "Juggernaut_Suit_Buttpack",
-            "Juggernaut_Buttpack_Tan",
+            // "Juggernaut_Buttpack_Tan",
             "Juggernaut_Buttpack_Black",
             // "Juggernaut_Buttpack_Winter",
             // "Juggernaut_Suit_Pouches",
-            "Juggernaut_Pouches_Tan",
+            // "Juggernaut_Pouches_Tan",
             "Juggernaut_Pouches_Black",
             // "Juggernaut_Pouches_Winter",
         };
 
-        if (Path.GetFileName(inputFilePath) == "generated_types.xml")
+        if (IsGeneratedTypesXmlFile(inputFilePath))
             foreach (var item in extraFromQuad)
             {
                 using var tempStream = StreamHelper.GenerateStreamFromString($@"
@@ -108,7 +111,7 @@ public class AdjustTypesXml
 
         foreach (var type in types)
         {
-            ProcessByConfiguration(type);
+            ProcessByConfiguration(type, xd, inputFilePath);
             GeneralAdjustments(type);
             ProcessBaseDayzItems(type);
             //ProcessExpansion(type);
@@ -117,16 +120,32 @@ public class AdjustTypesXml
             //ProcessDzn(type);
         }
 
+        ProcessInsertionsByConfiguration(xd, inputFilePath);
+
         using var fs = FileManagement.Utf8WithoutBomWriter(inputFilePath);
         xd.Save(fs);
     }
 
 
-    private void ProcessByConfiguration(DzTypesXmlTypeElement type)
+    private void ProcessInsertionsByConfiguration(XDocument xd, string pathToFile)
+    {
+        foreach (var rule in _configuration.Rules)
+            if (rule.Action is AdjustTypesXmlConfigurationRuleAction.Insert && IsGeneratedTypesXmlFile(pathToFile))
+            {
+                foreach (var nameStr in rule.Names)
+                {
+                    var xe = new XElement("type", new XAttribute("name", nameStr));
+                    xd.Root!.Add(xe);
+                    rule.Apply(DzTypesXmlTypeElement.FromElement(xe));
+                }
+            }
+    }
+
+    private void ProcessByConfiguration(DzTypesXmlTypeElement type, XDocument xd, string pathToFile)
     {
         foreach (var rule in _configuration.Rules)
         {
-            if (rule.Matches(type))
+            if (rule.Matches(type, pathToFile))
             {
                 rule.Apply(type);
             }
@@ -252,6 +271,8 @@ public class AdjustTypesXmlConfigurationRuleFlags
 public enum AdjustTypesXmlConfigurationRuleAction
 {
     Remove = 1,
+
+    Insert = 2,
 }
 public class AdjustTypesXmlConfigurationRule
 {
@@ -268,6 +289,9 @@ public class AdjustTypesXmlConfigurationRule
     public List<string> Usages { get; set; } = new List<string>();
     public List<string> Tags { get; set; } = new List<string>();
 
+    /// Names for insertion
+    public List<string> Names { get; set; } = new List<string>();
+    public string? InFile { get; set; }
     public string? StartsWith { get; set; }
     public List<string> NameEqualsCaseInsensitive { get; set; } = new List<string>();
     public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
@@ -327,20 +351,33 @@ public static class AdjustTypesXmlConfigurationExtensions
                 ["count_in_map"] = flags.CountInMap,
                 ["count_in_hoarder"] = flags.CountInHoarder,
                 ["count_in_cargo"] = flags.CountInCargo,
-                ["ount_in_player"] = flags.CountInPlayer,
+                ["count_in_player"] = flags.CountInPlayer,
                 ["crafted"] = flags.Crafted,
                 ["deloot"] = flags.Deloot,
             };
         }
     }
 
-    public static bool Matches(this AdjustTypesXmlConfigurationRule rule, DzTypesXmlTypeElement type)
+    public static bool Matches(this AdjustTypesXmlConfigurationRule rule, DzTypesXmlTypeElement type, string pathToFile)
     {
         ////if (rule.NameEqualsCaseInsensitive.Count > 0)
         ////{
         ////    var a = 1;
         ////}
         var match = true;
+
+        if (rule.InFile is string inFile)
+        {
+            if (Path.GetFileName(pathToFile) == inFile)
+            {
+                match = true;
+            }
+            else
+            {
+                match = false;
+            }
+        }
+
         if (rule.NameEqualsCaseInsensitive.Count > 0)
         {
             var equals = rule.NameEqualsCaseInsensitive.Any(x => x.ToUpperInvariant() == type.NameUpper);

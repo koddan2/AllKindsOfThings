@@ -50,42 +50,53 @@ public record DzTypesXmlTypeElement(XElement Element)
         : Nodes.Where(pred).FirstOrDefault(x => x.Name == name)
         ;
 
+    private void SetNodeValue(string name, object value)
+    {
+        if (GetNode(name) is null) 
+        {
+            Element.Add(new XElement(name));
+            _nodes = null;
+        }
+        var node = GetNode(name) ?? throw new ApplicationException("Failed adding node");
+        node.SetValue(value);
+    }
+
     public string Name => Element.Attribute("name")?.Value ?? throw new ApplicationException("Invalid <type>: missing attribute(name)");
     public string NameUpper => Name.ToUpperInvariant();
     public int Nominal
     {
         get => GetNode("nominal")?.Value.ParseInt() ?? 0;
-        set => GetNode("nominal")?.SetValue(value);
+        set => SetNodeValue("nominal", value);
     }
     public int Lifetime
     {
         get => GetNode("lifetime")?.Value.ParseInt() ?? 0;
-        set => GetNode("lifetime")?.SetValue(value);
+        set => SetNodeValue("lifetime", value);
     }
     public int Restock
     {
         get => GetNode("restock")?.Value.ParseInt() ?? 0;
-        set => GetNode("restock")?.SetValue(value);
+        set => SetNodeValue("restock", value);
     }
     public int Min
     {
         get => GetNode("min")?.Value.ParseInt() ?? 0;
-        set => GetNode("min")?.SetValue(value);
+        set => SetNodeValue("min", value);
     }
     public int QuantMin
     {
         get => GetNode("quantmin")?.Value.ParseInt() ?? 0;
-        set => GetNode("quantmin")?.SetValue(value);
+        set => SetNodeValue("quantmin", value);
     }
     public int QuantMax
     {
         get => GetNode("quantmax")?.Value.ParseInt() ?? 0;
-        set => GetNode("quantmax")?.SetValue(value);
+        set => SetNodeValue("quantmax", value);
     }
     public int Cost
     {
         get => GetNode("cost")?.Value.ParseInt() ?? 0;
-        set => GetNode("cost")?.SetValue(value);
+        set => SetNodeValue("cost", value);
     }
     public IDictionary<string, string>? Flags
     {

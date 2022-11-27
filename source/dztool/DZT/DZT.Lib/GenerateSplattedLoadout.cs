@@ -185,7 +185,7 @@ public class GenerateSplattedLoadout
             {
                 ClassName = x.Name,
                 Chance = (x.Flags ?? throw new ApplicationException())["crafted"] == "1" ? 0.03 : 0.01 * (((float)x.Nominal) / 8f),
-                Sets = new List<Set>(),
+                Sets = new List<LoadoutSet>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
                 ConstructionPartsBuilt = new List<object>(),
@@ -243,11 +243,11 @@ public class GenerateSplattedLoadout
             ["Vest"] = new[] {
                 "MMG_JPC_Vest_black", "MMG_tt_Vest_black", "MMG_chestrig_black", "MMG_MK_III_Armor_black", "MMG_MK_V_Armor_black",
                 // "JuggernautLVL5_Suit",
-                "JuggernautLVL5_Tan",
+                // "JuggernautLVL5_Tan",
                 "JuggernautLVL5_Black",
                 // "JuggernautLVL5_Winter",
                 // "JuggernautLVL1_Suit",
-                "JuggernautLVL1_Suit_Tan",
+                // "JuggernautLVL1_Suit_Tan",
                 "JuggernautLVL1_Suit_Black",
                 // "JuggernautLVL1_Suit_Winter",
             },
@@ -260,10 +260,10 @@ public class GenerateSplattedLoadout
             kvp => kvp.Key,
             kvp => kvp.Value.Select(item => new Item
             {
-                Chance = 1,
+                Chance = 0.12,
                 ClassName = item,
                 Quantity = new Quantity { Min = 0, Max = 0 },
-                Sets = new List<Set>(),
+                Sets = new List<LoadoutSet>(),
                 ConstructionPartsBuilt = new List<object>(),
                 Health = new List<Health> { new Health { Min = 0.5, Max = 0.9 } },
                 InventoryAttachments =
@@ -335,21 +335,28 @@ public class GenerateSplattedLoadout
         }
 
         splat.Sets = splat.Sets
-            //// .Where(s => s.ClassName != "CLOTHING")
             .Select(set =>
             {
+                // SIDE-EFFECT SELECT because I'm lazy.
                 if (set.ClassName == "WEAPON")
                 {
-                    set.Chance = 0.23;
+                    // set.Chance = 0.23;
+                    set.Chance = 0.11;
                 }
                 return set;
             })
             .Where(set =>
             {
+                // Why is this removed?
+                // It's because only NBC dudes has a Set which is CLOTHING,
+                // so if this isn't removed, there'll be only NBC dudes.
                 return set.ClassName != "CLOTHING";
             })
             .DistinctBy(x => x.InventoryAttachments[0]?.Items[0]?.ClassName)
             .ToList();
+
+        splat.Sets.Add(WeaponSet.Awm);
+
     }
 
     private static void AssignSets(AiLoadoutRoot splat, AiLoadoutRoot item)
@@ -361,3 +368,69 @@ public class GenerateSplattedLoadout
     }
 }
 
+static class WeaponSet
+{
+    public static LoadoutSet Awm = new LoadoutSet
+    {
+        ClassName = "WEAPON",
+        Chance = 0.04,
+        ConstructionPartsBuilt = new List<object>(),
+        Health = new List<Health>
+        {
+            new Health {Min=0.4, Max=0.9},
+        },
+        InventoryAttachments = new List<InventoryAttachment>
+        {
+            new InventoryAttachment
+            {
+                SlotName = "Shoulder",
+                Items = new List<Item>
+                {
+                    new Item
+                    {
+                        Chance = 1,
+                        ClassName = "SNAFU_AWM_Gun",
+                        Health = new List<Health> { new Health {Min=0.5, Max=0.9} },
+                        InventoryAttachments = new List<InventoryAttachment>
+                        {
+                            new InventoryAttachment
+                            {
+                                Items = new List<Item>
+                                {
+                                    new Item
+                                    {
+                                        Chance = 1,
+                                        ClassName = "SNAFU_AWM_Mag"
+                                    },
+                                    new Item
+                                    {
+                                        Chance = 1,
+                                        ClassName = "SNAFU_Tango6T_Black",
+                                    }
+                                }
+                            }
+                        },
+                        InventoryCargo = new List<InventoryCargoModel>
+                        {
+                            new InventoryCargoModel
+                            {
+                                Chance=1,
+                                ClassName="SNAFU_AWM_Mag",
+                            },
+                            new InventoryCargoModel
+                            {
+                                Chance=1,
+                                ClassName="SNAFU_Ammo_338",
+                                Quantity = new Quantity {Min=10, Max=20},
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        InventoryCargo = new List<InventoryCargoModel>
+        {
+
+        }
+    };
+}

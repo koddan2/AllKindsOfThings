@@ -11,12 +11,12 @@ restock = 0
 
 [[rules]]
 name_equals_case_insensitive = ["pot", "WeaponCleaningKit", "PortableGasStove"]
-nominal = 80
-min = 30
+nominal = 90
+min = 50
 lifetime = 14400
 restock = 0
 category = "tools"
-usages = ["Military", "Police", "Hunting", "Village"]
+usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
 
 [[rules]]
 name_equals_case_insensitive = ["Mag_SG_30Rnd", "Mag_Kimber1911_10Rnd"]
@@ -114,7 +114,13 @@ usages = ["Military"]
 flags = { count_in_map = "1", deloot = "1" }
 
 [[rules]]
-name_equals_case_insensitive = ["JugVisor", "JugHelm", "SYGUJugBoots", "SYGUJugPants", "SYGUJugVest"]
+name_equals_case_insensitive = [
+    "JugVisor",
+    "JugHelm",
+    "SYGUJugBoots",
+    "SYGUJugPants",
+    "SYGUJugVest",
+]
 nominal = 0
 min = 0
 lifetime = 14400
@@ -122,17 +128,6 @@ restock = 0
 category = "weapons"
 usages = ["Military", "ContaminatedArea"]
 flags = { count_in_map = "1", deloot = "1" }
-
-[[rules]]
-starts_with = "SNAFU"
-nominal = 1
-min = 1
-lifetime = 14400
-restock = 0
-category = "weapons"
-usages = ["Military"]
-values = ["Tier1", "Tier2", "Tier3", "Tier4"]
-flags = { count_in_map = "1" }
 
 [[rules]]
 starts_with = "TTC"
@@ -171,8 +166,8 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 starts_with = "Juggernaut"
-nominal = 6
-min = 3
+nominal = 1
+min = 1
 lifetime = 14400
 restock = 0
 category = "clothes"
@@ -211,4 +206,54 @@ restock = 0
 category = "clothes"
 usages = ["Military", "Police", "Hunting", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+
+[[rules]]
+starts_with = "SNAFU"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
+usages = []
+values = []
+flags = { count_in_map = "1" }
+
+[[rules]]
+in_file = "SNAFU_types.xml"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
+usages = []
+values = []
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_equals_case_insensitive = [
+    "SNAFU_AWM_Gun",
+    "SNAFU_AWM_Mag",
+    "SNAFU_Ammo_338",
+    "SNAFUKivaari_338_Supp",
+    "SNAFU_MPX_Suppressor_Black",
+    "SNAFU_Agram_Suppressor_Black",
+    "SNAFU_LNormalized_Suppressor_Black",
+    "SNAFU_LStandardized_Suppressor_Black",
+]
+nominal = 4
+min = 2
+lifetime = 14400
+restock = 0
+flags = { count_in_map = "1" }
+
+[[rules]]
+action = "insert"
+names = ["riflesling_quad_tan"]
+name_equals_case_insensitive = ["riflesling_quad_tan"]
+in_file = "generated_types.xml"
+nominal = 34
+min = 17
+lifetime = 14400
+restock = 0
+usages = ["Police", "Farm", "Hunting"]
 flags = { count_in_map = "1" }
