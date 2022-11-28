@@ -264,7 +264,6 @@ flags = { count_in_map = "1" }
 [[rules]]
 action = "insert"
 names = ["riflesling_quad_tan"]
-name_equals_case_insensitive = ["riflesling_quad_tan"]
 in_file = "generated_types.xml"
 nominal = 34
 min = 17

@@ -145,6 +145,9 @@ public class AdjustTypesXml
     {
         foreach (var rule in _configuration.Rules)
         {
+            if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Insert) continue;
+            else if (/**/rule.Action is AdjustTypesXmlConfigurationRuleAction.Update
+                      || rule.Action is AdjustTypesXmlConfigurationRuleAction.Remove)
             if (rule.Matches(type, pathToFile))
             {
                 rule.Apply(type);
@@ -273,10 +276,12 @@ public enum AdjustTypesXmlConfigurationRuleAction
     Remove = 1,
 
     Insert = 2,
+
+    Update = 3,
 }
 public class AdjustTypesXmlConfigurationRule
 {
-    public AdjustTypesXmlConfigurationRuleAction? Action { get; set; }
+    public AdjustTypesXmlConfigurationRuleAction? Action { get; set; } = AdjustTypesXmlConfigurationRuleAction.Update;
     public uint? Nominal { get; set; }
     public uint? Min { get; set; }
     public uint? Lifetime { get; set; }
