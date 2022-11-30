@@ -11,8 +11,8 @@ restock = 0
 
 [[rules]]
 name_equals_case_insensitive = ["pot", "WeaponCleaningKit", "PortableGasStove"]
-nominal = 90
-min = 50
+nominal = 120
+min = 90
 lifetime = 14400
 restock = 0
 category = "tools"
@@ -198,6 +198,23 @@ values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
 [[rules]]
+name_equals_case_insensitive = [
+    "MMG_MK_III_Armor_black",
+    "MMG_MK_V_Armor_black",
+    "MMG_striker_helmet_black",
+    "mmg_armored_helmet_black",
+    "mmg_armored_helmet_visor_black",
+]
+nominal = 2
+min = 1
+lifetime = 14400
+restock = 0
+category = "clothes"
+usages = ["Military", "Police"]
+values = ["Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
 name_contains_substring_case_insensitive = ["mung"]
 nominal = 52
 min = 32
@@ -280,4 +297,98 @@ lifetime = 600
 restock = 0
 usages = []
 values = []
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_equals_case_insensitive = [
+    "SNAFU_AKAimpoint_ACO",
+    "SNAFU_AKAimpoint_M5",
+    "SNAFU_AKElcan",
+    "SNAFU_AKEOTech_EXPS3",
+    "SNAFU_AKHuntingOptic",
+    "SNAFU_AKKahles",
+    "SNAFU_AKLeupold_Mark8",
+    "SNAFU_AKNightforce",
+    "SNAFU_AKTango6T_Black",
+    "SNAFU_AKTrijicon_Docter",
+    "SNAFU_AKTrijicon",
+    "SNAFU_AKWalther",
+
+    "SNAFU_MAimpoint_ACO",
+    "SNAFU_MAimpoint_M5",
+    "SNAFU_MElcan",
+    "SNAFU_MEOTech_EXPS3",
+    "SNAFU_MHuntingOptic",
+    "SNAFU_MKahles",
+    "SNAFU_MLeupold_Mark8",
+    "SNAFU_MNightforce",
+    "SNAFU_MTango6T_Black",
+    "SNAFU_MTrijicon_Docter",
+    "SNAFU_MTrijicon",
+    "SNAFU_MWalther",
+
+    "SNAFU_Aimpoint_ACO",
+    "SNAFU_Aimpoint_M5",
+    "SNAFU_Elcan",
+    "SNAFU_EOTech_EXPS3",
+    "SNAFU_HuntingOptic",
+    "SNAFU_Kahles",
+    "SNAFU_Leupold_Mark8",
+    "SNAFU_Nightforce",
+    "SNAFU_Tango6T_Black",
+    "SNAFU_Trijicon_Docter",
+    "SNAFU_Trijicon",
+    "SNAFU_Walther",
+
+    "SNAFU_HAimpoint_ACO",
+    "SNAFU_HAimpoint_M5",
+    "SNAFU_HElcan",
+    "SNAFU_HEOTech_EXPS3",
+    "SNAFU_HHuntingOptic",
+    "SNAFU_HKahles",
+    "SNAFU_HLeupold_Mark8",
+    "SNAFU_HNightforce",
+    "SNAFU_HTango6T_Black",
+    "SNAFU_HTrijicon_Docter",
+    "SNAFU_HTrijicon",
+    "SNAFU_HWalther",
+]
+nominal = 2
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_equals_case_insensitive = ["AmmoBox"]
+nominal = 10
+min = 2
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police"]
+category = "containers"
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_contains_substring_case_insensitive = ["AmmoBox_"]
+in_file = "types.xml"
+nominal = 80
+min = 20
+lifetime = 28800
+restock = 0
+usages = ["Military", "Police", "Farm", "Village", "Hunting"]
+category = "weapons"
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_equals_case_insensitive = ["Ammo_"]
+in_file = "types.xml"
+nominal = 200
+min = 90
+lifetime = 28800
+restock = 0
+category = "weapons"
+usages = ["Military", "Police", "Farm", "Village", "Hunting"]
 flags = { count_in_map = "1" }
