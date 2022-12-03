@@ -392,3 +392,22 @@ restock = 0
 category = "weapons"
 usages = ["Military", "Police", "Farm", "Village", "Hunting"]
 flags = { count_in_map = "1" }
+
+
+[[rules]]
+name_contains_substring_case_insensitive = ["MMG_MK_III_Armor_"]
+nominal = 6
+min = 4
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_contains_substring_case_insensitive = ["MMG_MK_V_Armor_", "MMG_striker_helmet_"]
+nominal = 3
+min = 2
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police"]
+flags = { count_in_map = "1" }

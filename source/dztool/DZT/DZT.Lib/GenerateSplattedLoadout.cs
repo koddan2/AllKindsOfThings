@@ -242,6 +242,7 @@ public class GenerateSplattedLoadout
         {
             ["Vest"] = new[] {
                 "MMG_JPC_Vest_black", "MMG_tt_Vest_black", "MMG_chestrig_black", "MMG_MK_III_Armor_black", "MMG_MK_V_Armor_black",
+                "MMG_JPC_Vest_green", "MMG_tt_Vest_green", "MMG_chestrig_green", "MMG_MK_III_Armor_green", "MMG_MK_V_Armor_green",
                 // "JuggernautLVL5_Suit",
                 // "JuggernautLVL5_Tan",
                 "JuggernautLVL5_Black",
@@ -251,11 +252,26 @@ public class GenerateSplattedLoadout
                 "JuggernautLVL1_Suit_Black",
                 // "JuggernautLVL1_Suit_Winter",
             },
-            ["Back"] = new[] { "MMG_carrier_backpack_black", "MMG_supplybag_black", "MMG_assault_pack_black", "MMG_camelback_black", "MMG_mmps_bag_black", },
-            ["Hips"] = new[] { "MMG_falcon_b1_belt_black", },
-            ["Headgear"] = new[] { "MMG_tactical_helmet_black", "MMG_striker_helmet_black", "mmg_armored_helmet_black", },
-            ["Body"] = new[] { "MMG_operatorshirt_black", "MMG_tactical_shirt_black", "MMG_combatshirt_black", },
-            ["Legs"] = new[] { "MMG_combatpants_black", "mmg_tactical_pants_black", },
+            ["Back"] = new[] {
+                "MMG_carrier_backpack_black", "MMG_supplybag_black", "MMG_assault_pack_black", "MMG_camelback_black", "MMG_mmps_bag_black",
+                "MMG_carrier_backpack_green", "MMG_supplybag_green", "MMG_assault_pack_green", "MMG_camelback_green", "MMG_mmps_bag_green",
+                },
+            ["Hips"] = new[] {
+                "MMG_falcon_b1_belt_black",
+                "MMG_falcon_b1_belt_green",
+                },
+            ["Headgear"] = new[] {
+                "MMG_tactical_helmet_black", "MMG_striker_helmet_black", "mmg_armored_helmet_black",
+                "MMG_tactical_helmet_green", "MMG_striker_helmet_green", "mmg_armored_helmet_green",
+                },
+            ["Body"] = new[] {
+                "MMG_operatorshirt_black", "MMG_tactical_shirt_black", "MMG_combatshirt_black",
+                "MMG_operatorshirt_green", "MMG_tactical_shirt_green", "MMG_combatshirt_green",
+                },
+            ["Legs"] = new[] {
+                "MMG_combatpants_black", "mmg_tactical_pants_black",
+                "MMG_combatpants_green", "mmg_tactical_pants_green",
+                },
         }.ToDictionary(
             kvp => kvp.Key,
             kvp => kvp.Value.Select(item => new Item
