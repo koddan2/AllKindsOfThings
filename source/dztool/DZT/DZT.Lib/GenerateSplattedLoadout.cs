@@ -93,6 +93,10 @@ public class GenerateSplattedLoadout
         "CRATE",
         "WOODEN",
         "TENT",
+        "LONGTORCH",
+        "BROOM",
+        "BEARTRAP",
+        "PITCHFORK",
     };
 
     private static readonly string[] _ExemptedFromExclusion = new[]
@@ -184,7 +188,7 @@ public class GenerateSplattedLoadout
             .Select(x => new InventoryCargoModel
             {
                 ClassName = x.Name,
-                Chance = (x.Flags ?? throw new ApplicationException())["crafted"] == "1" ? 0.03 : 0.01 * (((float)x.Nominal) / 8f),
+                Chance = x.Flags.OrFail()["crafted"] == "1" ? 0.03 : 0.01 * (((float)x.Nominal) / 8f),
                 Sets = new List<LoadoutSet>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },

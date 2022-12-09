@@ -240,9 +240,8 @@ usages = ["Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
-
 [[rules]]
-starts_with = "SNAFU"
+in_file = "SNAFU_types.xml"
 nominal = 0
 min = 0
 lifetime = 600
@@ -252,13 +251,13 @@ values = []
 flags = { count_in_map = "1" }
 
 [[rules]]
-in_file = "SNAFU_types.xml"
-nominal = 0
-min = 0
-lifetime = 600
+starts_with = "SNAFU"
+nominal = 1
+min = 1
+lifetime = 14400
 restock = 0
-usages = []
-values = []
+usages = ["Military", "Police", "Hunting", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
 [[rules]]
