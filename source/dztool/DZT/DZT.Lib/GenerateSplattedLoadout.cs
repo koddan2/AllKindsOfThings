@@ -101,6 +101,11 @@ public class GenerateSplattedLoadout
         "BROOM",
         "BEARTRAP",
         "PITCHFORK",
+        "SHOVEL",
+        "FARMINGHOE",
+        "NAILEDBASEBALLBAT",
+        "BARBEDBASEBALLBAT",
+        "BASEBALLBAT",
     };
 
     private static readonly string[] _ExemptedFromExclusion = new[]
