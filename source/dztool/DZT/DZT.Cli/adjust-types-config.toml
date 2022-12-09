@@ -252,7 +252,7 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 starts_with = "SNAFU"
-nominal = 1
+nominal = 6
 min = 1
 lifetime = 14400
 restock = 0

@@ -8,7 +8,7 @@ public static class DayzFilesHelper
     public static IEnumerable<string> GetAllSpawnableTypesXmlFileNames(string rootDir, string mpMissionName)
     {
         var files = new MpMissionFiles(rootDir, mpMissionName);
-        var baseXmlFilePath = Path.Combine(files.PathToMpMissionDirectory, DayzConstants.SubdirectoryNames.Db, DayzConstants.FileNames.CfgSpawnableTypes);
+        var baseXmlFilePath = Path.Combine(files.PathToMpMissionDirectory, DayzConstants.FileNames.CfgSpawnableTypes);
         yield return baseXmlFilePath;
 
         foreach (var also in GetCentralEconomyXmlFileNames(rootDir, mpMissionName, "spawnabletypes"))
