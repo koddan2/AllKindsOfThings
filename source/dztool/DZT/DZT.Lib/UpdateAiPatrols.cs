@@ -19,26 +19,15 @@ public class UpdateAiPatrols
         "Land_Train_Wagon_Tanker",
     };
 
-    public double BaseSpawnChanceMedium { get; set; } = 0.45;
-    public double BaseSpawnChanceSmall { get; set; } = 0.07;
-    public double BaseSpawnChanceMinimal { get; set; } = 0.004;
+    public CategorizedDouble CategorizedDouble { get; set; } = new CategorizedDouble(
+        minimal: 0.004,
+        small: 0.07,
+        medium: 0.45,
+        large: 0.7);
 
-    enum ChanceCategory
+    double Chance(CategoryValue category, double modifier = 0d)
     {
-        Minimal,
-        Small,
-        Medium,
-    }
-    double Chance(ChanceCategory sz, double modifier = 0d)
-    {
-        var v = sz switch
-        {
-            ChanceCategory.Medium => BaseSpawnChanceMedium,
-            ChanceCategory.Small => BaseSpawnChanceSmall,
-            ChanceCategory.Minimal => BaseSpawnChanceMinimal,
-            _ => 0d,
-        };
-        return Math.Clamp(v + modifier, 0, 1);
+        return CategorizedDouble.Get(category, modifier);
     }
 
     public UpdateAiPatrols(string rootDir, string mpMissionName)
@@ -71,7 +60,7 @@ public class UpdateAiPatrols
         {
             p.LoadoutFile = "SplattedLoadout";
             // p.Chance = Math.Min(1.0, BaseSpawnChanceMedium + 0.1);
-            p.Chance = Chance(ChanceCategory.Medium, 0.1);
+            p.Chance = Chance(CategoryValue.Medium, 0.1);
         });
         AddObjectPatrol("East", new[]
         {
@@ -88,7 +77,7 @@ public class UpdateAiPatrols
             p.Faction = "Raiders";
             p.LoadoutFile = "SplattedLoadout";
             // p.Chance = Math.Min(1.0, BaseSpawnChanceMedium + 0.1);
-            p.Chance = Chance(ChanceCategory.Medium, 0.1);
+            p.Chance = Chance(CategoryValue.Medium, 0.1);
         });
 
         AddObjectPatrol("East", new[] { "Land_Mil_Airfield_HQ", "Land_Mil_ATC_Small", "Land_Mil_ATC_Big" }, p =>
@@ -96,14 +85,14 @@ public class UpdateAiPatrols
             p.Faction = "Raiders";
             p.LoadoutFile = "SplattedLoadout";
             // p.Chance = BaseSpawnChanceMedium;
-            p.Chance = Chance(ChanceCategory.Medium);
+            p.Chance = Chance(CategoryValue.Medium);
             p.NumberOfAI = -4;
         });
 
         AddObjectPatrol("East", new[] { "Land_City_FireStation" }, p =>
         {
             // p.Chance = Math.Min(1.0, BaseSpawnChanceMedium + 0.0);
-            p.Chance = Chance(ChanceCategory.Medium);
+            p.Chance = Chance(CategoryValue.Medium);
             p.Faction = "Raiders";
             p.LoadoutFile = "SplattedLoadout";
             p.NumberOfAI = -4;
@@ -118,7 +107,7 @@ public class UpdateAiPatrols
             p.LoadoutFile = "SplattedLoadout";
             p.NumberOfAI = -4;
             // p.Chance = Math.Min(1.0, BaseSpawnChanceMedium - 0.0);
-            p.Chance = Chance(ChanceCategory.Medium);
+            p.Chance = Chance(CategoryValue.Medium);
         });
 
         var structureClassNames = DataHelper.GetStructureClassNames();
@@ -139,7 +128,7 @@ public class UpdateAiPatrols
                 // p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
                 // p.Chance = 0.002;
-                p.Chance = Chance(ChanceCategory.Minimal);
+                p.Chance = Chance(CategoryValue.Minimal);
                 p.NumberOfAI = -2;
             });
 
@@ -161,7 +150,7 @@ public class UpdateAiPatrols
                 p.Faction = "Mercenaries";
                 p.LoadoutFile = "SplattedLoadout";
                 // p.Chance = 0.05;
-                p.Chance = Chance(ChanceCategory.Small);
+                p.Chance = Chance(CategoryValue.Small);
                 p.NumberOfAI = -3;
             });
 
@@ -170,7 +159,7 @@ public class UpdateAiPatrols
             p.Faction = "East";
             p.LoadoutFile = "SplattedLoadout";
             // p.Chance = 0.005;
-            p.Chance = Chance(ChanceCategory.Minimal);
+            p.Chance = Chance(CategoryValue.Minimal);
             p.NumberOfAI = -3;
         });
 
@@ -180,7 +169,7 @@ public class UpdateAiPatrols
             ////p.LoadoutFile = "WestLoadout";
             p.LoadoutFile = "SplattedLoadout";
             // p.Chance = 0.005;
-            p.Chance = Chance(ChanceCategory.Minimal);
+            p.Chance = Chance(CategoryValue.Minimal);
             p.NumberOfAI = -3;
         });
 

@@ -15,6 +15,12 @@ public class GenerateSplattedLoadout
     private readonly string _rootDir;
     private readonly string _mpMissionName;
 
+    private readonly CategorizedDouble _weaponChanceCategories = new CategorizedDouble(
+        minimal: 0.004, // .4%
+        small: 0.03,    // 3%
+        medium: 0.07,   // 7%
+        large: 0.12);   // 12%
+
     public GenerateSplattedLoadout(ILogger logger, string rootDir, string mpMissionName)
     {
         _logger = logger;
@@ -22,7 +28,7 @@ public class GenerateSplattedLoadout
         _mpMissionName = mpMissionName;
         _loadoutDir = Path.Combine(rootDir, "config/ExpansionMod/Loadouts");
         _spawnableTypesHelper = new SpawnableTypesHelper(rootDir, mpMissionName);
-        _weaponSets = new WeaponSetDefs(rootDir, mpMissionName);
+        _weaponSets = new WeaponSetDefs(rootDir, mpMissionName, _weaponChanceCategories);
     }
 
     public string OutputFileName { get; set; } = "SplattedLoadout.json";
@@ -351,7 +357,7 @@ public class GenerateSplattedLoadout
                 {
                     // set.Chance = 0.23;
                     // set.Chance = 0.11;
-                    set.Chance = 0.08;
+                    set.Chance = _weaponChanceCategories.Get(CategoryValue.Medium);
                 }
                 return set;
             })
@@ -436,7 +442,7 @@ public class SpawnableTypesHelper
                         ConstructionPartsBuilt = new List<object>(),
                         Health = new List<Health>
                         {
-                                new Health{ Min=0.5, Max=0.9 },
+                                new Health{ Min = 0.5, Max = 0.9 },
                         },
                         InventoryAttachments = new List<InventoryAttachment>(),
                         InventoryCargo = new List<InventoryCargoModel>(),
@@ -467,7 +473,7 @@ public class SpawnableTypesHelper
                             ConstructionPartsBuilt = new List<object>(),
                             Health = new List<Health>
                             {
-                                new Health{ Min=0.5, Max=0.9 },
+                                new Health{ Min = 0.5, Max = 0.9 },
                             },
                             InventoryAttachments = new List<InventoryAttachment>(),
                             InventoryCargo = new List<InventoryCargoModel>(),
@@ -481,10 +487,12 @@ public class SpawnableTypesHelper
 public class WeaponSetDefs
 {
     private readonly SpawnableTypesHelper _spawnableTypesHelper;
+    private readonly CategorizedDouble _weaponChanceCategories;
 
-    public WeaponSetDefs(string rootDir, string mpMissionName)
+    public WeaponSetDefs(string rootDir, string mpMissionName, CategorizedDouble weaponChanceCategories)
     {
         _spawnableTypesHelper = new SpawnableTypesHelper(rootDir, mpMissionName);
+        _weaponChanceCategories = weaponChanceCategories;
     }
 
     public IEnumerable<LoadoutSet> All => new []
@@ -500,15 +508,15 @@ public class WeaponSetDefs
         MMAKM,
     };
 
-    public LoadoutSet MMAKM => GetLoadoutSetWeapon("TTC_AKM", 0.05, new [] {"Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
-    public LoadoutSet AK19 => GetLoadoutSetWeapon("SNAFU_AK19", 0.05, new [] {"Ammo_556x45", "Ammo_556x45", "Ammo_556x45", });
-    public LoadoutSet AK12 => GetLoadoutSetWeapon("SNAFU_AK12A", 0.05, new [] {"Ammo_545x39", "Ammo_545x39", "Ammo_545x39"});
-    public LoadoutSet ScarH => GetLoadoutSetWeapon("Snafu_ScarH_Black_GUN", 0.05, new [] {"Ammo_308Win", "Ammo_308Win"});
-    public LoadoutSet M_R700 => GetLoadoutSetWeapon("TTC_R700", 0.12, new [] {"Ammo_308Win", "Ammo_308Win"});
-    public LoadoutSet S_R700 => GetLoadoutSetWeapon("GCGN_M700", 0.12, new [] {"Ammo_308Win", "Ammo_308Win"});
-    public LoadoutSet Aek545 => GetLoadoutSetWeapon("SNAFU_AEK545_Gun", 0.12);
-    public LoadoutSet Awm => GetLoadoutSetWeapon("SNAFU_AWM_Gun", 0.08, new [] {"SNAFU_Ammo_338", "SNAFU_Ammo_338"});
-    public LoadoutSet Kiivari => GetLoadoutSetWeapon("SNAFUKivaari_Black_GUN", 0.03, new [] {"SNAFU_Ammo_338", "SNAFU_Ammo_338"});
+    public LoadoutSet MMAKM => GetLoadoutSetWeapon("TTC_AKM", _weaponChanceCategories.Get(CategoryValue.Small), new [] {"Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
+    public LoadoutSet AK19 => GetLoadoutSetWeapon("SNAFU_AK19", _weaponChanceCategories.Get(CategoryValue.Small), new [] {"Ammo_556x45", "Ammo_556x45", "Ammo_556x45", });
+    public LoadoutSet AK12 => GetLoadoutSetWeapon("SNAFU_AK12A", _weaponChanceCategories.Get(CategoryValue.Small), new [] {"Ammo_545x39", "Ammo_545x39", "Ammo_545x39"});
+    public LoadoutSet ScarH => GetLoadoutSetWeapon("Snafu_ScarH_Black_GUN", _weaponChanceCategories.Get(CategoryValue.Small), new [] {"Ammo_308Win", "Ammo_308Win"});
+    public LoadoutSet M_R700 => GetLoadoutSetWeapon("TTC_R700", _weaponChanceCategories.Get(CategoryValue.Medium), new [] {"Ammo_308Win", "Ammo_308Win"});
+    public LoadoutSet S_R700 => GetLoadoutSetWeapon("GCGN_M700", _weaponChanceCategories.Get(CategoryValue.Medium), new [] {"Ammo_308Win", "Ammo_308Win"});
+    public LoadoutSet Aek545 => GetLoadoutSetWeapon("SNAFU_AEK545_Gun", _weaponChanceCategories.Get(CategoryValue.Minimal));
+    public LoadoutSet Awm => GetLoadoutSetWeapon("SNAFU_AWM_Gun", _weaponChanceCategories.Get(CategoryValue.Minimal), new [] {"SNAFU_Ammo_338", "SNAFU_Ammo_338"});
+    public LoadoutSet Kiivari => GetLoadoutSetWeapon("SNAFUKivaari_Black_GUN", _weaponChanceCategories.Get(CategoryValue.Minimal), new [] {"SNAFU_Ammo_338", "SNAFU_Ammo_338"});
 
     private LoadoutSet GetLoadoutSetWeapon(string className, double chance = 1, string[]? extraInventory = null)
     {
