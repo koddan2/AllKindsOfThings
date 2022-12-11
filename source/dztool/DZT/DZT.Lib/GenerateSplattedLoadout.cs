@@ -197,7 +197,7 @@ public class GenerateSplattedLoadout
             .Select(x => new InventoryCargoModel
             {
                 ClassName = x.Name,
-                Chance = x.Flags.OrFail()["crafted"] == "1" ? 0.03 : 0.01 * (((float)x.Nominal) / 8f),
+                Chance = x.Flags.OrFail()["crafted"] == "1" ? 0.03 : 0.01 * (((float)x.Nominal) / 7f),
                 Sets = new List<LoadoutSet>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
@@ -350,7 +350,8 @@ public class GenerateSplattedLoadout
                 if (set.ClassName == "WEAPON")
                 {
                     // set.Chance = 0.23;
-                    set.Chance = 0.11;
+                    // set.Chance = 0.11;
+                    set.Chance = 0.08;
                 }
                 return set;
             })
@@ -364,7 +365,9 @@ public class GenerateSplattedLoadout
             .DistinctBy(x => x.InventoryAttachments[0]?.Items[0]?.ClassName)
             .ToList();
 
-        splat.Sets.Add(_weaponSets.Awm);
+        // splat.Sets.Add(_weaponSets.Awm);
+        // splat.Sets.Add(_weaponSets.Kiivari);
+        splat.Sets.AddRange(_weaponSets.All);
     }
 
     private static void AssignSets(AiLoadoutRoot splat, AiLoadoutRoot item)
@@ -484,48 +487,91 @@ public class WeaponSetDefs
         _spawnableTypesHelper = new SpawnableTypesHelper(rootDir, mpMissionName);
     }
 
-    public LoadoutSet Awm => new LoadoutSet
+    public IEnumerable<LoadoutSet> All => new []
     {
-        ClassName = "WEAPON",
-        Chance = 0.74,
-        Health = new List<Health>
+        Awm,
+        Kiivari,
+        // Aek545,
+        S_R700,
+        M_R700,
+        ScarH,
+        AK12,
+        AK19,
+        MMAKM,
+    };
+
+    public LoadoutSet MMAKM => GetLoadoutSetWeapon("TTC_AKM", 0.05, new [] {"Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
+    public LoadoutSet AK19 => GetLoadoutSetWeapon("SNAFU_AK19", 0.05, new [] {"Ammo_556x45", "Ammo_556x45", "Ammo_556x45", });
+    public LoadoutSet AK12 => GetLoadoutSetWeapon("SNAFU_AK12A", 0.05, new [] {"Ammo_545x39", "Ammo_545x39", "Ammo_545x39"});
+    public LoadoutSet ScarH => GetLoadoutSetWeapon("Snafu_ScarH_Black_GUN", 0.05, new [] {"Ammo_308Win", "Ammo_308Win"});
+    public LoadoutSet M_R700 => GetLoadoutSetWeapon("TTC_R700", 0.12, new [] {"Ammo_308Win", "Ammo_308Win"});
+    public LoadoutSet S_R700 => GetLoadoutSetWeapon("GCGN_M700", 0.12, new [] {"Ammo_308Win", "Ammo_308Win"});
+    public LoadoutSet Aek545 => GetLoadoutSetWeapon("SNAFU_AEK545_Gun", 0.12);
+    public LoadoutSet Awm => GetLoadoutSetWeapon("SNAFU_AWM_Gun", 0.08, new [] {"SNAFU_Ammo_338", "SNAFU_Ammo_338"});
+    public LoadoutSet Kiivari => GetLoadoutSetWeapon("SNAFUKivaari_Black_GUN", 0.03, new [] {"SNAFU_Ammo_338", "SNAFU_Ammo_338"});
+
+    private LoadoutSet GetLoadoutSetWeapon(string className, double chance = 1, string[]? extraInventory = null)
+    {
+        extraInventory ??= Array.Empty<string>();
+        return new LoadoutSet
         {
-            new Health {Min=0.4, Max=0.9},
-        },
-        InventoryAttachments = new List<InventoryAttachment>
-        {
-            new InventoryAttachment
+            ClassName = "WEAPON",
+            Chance = chance,
+            Health = new List<Health>
             {
-                SlotName = "Shoulder",
-                Items = new List<Item>
+                new Health {Min=0.4, Max=0.9},
+            },
+            InventoryAttachments = new List<InventoryAttachment>
+            {
+                new InventoryAttachment
                 {
-                    new Item
+                    SlotName = "Shoulder",
+                    Items = new List<Item>
                     {
-                        Chance = 1,
-                        ClassName = "SNAFU_AWM_Gun",
-                        Health = new List<Health> { new Health { Min = 0.5, Max = 0.9 } },
-                        InventoryAttachments = _spawnableTypesHelper.GetAdditionalAttachments("SNAFU_AWM_Gun").ToList(),
-                        InventoryCargo = new List<InventoryCargoModel>
+                        new Item
                         {
-                            new InventoryCargoModel
-                            {
-                                Chance = 1,
-                                ClassName = "SNAFU_AWM_Mag",
-                            },
-                            new InventoryCargoModel
-                            {
-                                Chance = 1,
-                                ClassName = "SNAFU_Ammo_338",
-                                Quantity = new Quantity {Min=10, Max=20},
-                            },
+                            Chance = 1,
+                            ClassName = className,
+                            Health = new List<Health> { new Health { Min = 0.5, Max = 0.9 } },
+                            InventoryAttachments = _spawnableTypesHelper.GetAdditionalAttachments(className).ToList(),
                         }
                     }
                 }
-            }
-        },
-        InventoryCargo = new List<InventoryCargoModel>
-        {
-
-        }
-    };
+            },
+            InventoryCargo = _spawnableTypesHelper.GetAdditionalAttachments(className)
+                .SelectMany(x =>
+                    x.Items
+                    .Where(y => y.ClassName.ToUpper().Contains("MAG"))
+                    .Select(y =>
+                        new InventoryCargoModel
+                        {
+                            Chance = 1,
+                            ClassName = y.ClassName,
+                        }))
+                        .Concat(extraInventory.Select(extra =>
+                        new InventoryCargoModel
+                        {
+                            Chance = 1,
+                            ClassName = extra,
+                        }))
+                        .ToList(),
+            // InventoryCargo = new List<InventoryCargoModel>
+            // {
+            //     new InventoryCargoModel
+            //     {
+            //         Chance = 1,
+            //         ClassName = "SNAFU_AWM_Mag",
+            //     },
+            //     new InventoryCargoModel
+            //     {
+            //         Chance = 1,
+            //         ClassName = "SNAFU_Ammo_338",
+            //         Quantity = new Quantity {Min=10, Max=20},
+            //     },
+            // }
+            // InventoryCargo = new List<InventoryCargoModel>
+            // {
+            // }
+        };
+    }
 }

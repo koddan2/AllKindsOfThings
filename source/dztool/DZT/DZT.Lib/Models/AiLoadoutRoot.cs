@@ -31,7 +31,7 @@ public class InventoryCargoModel
     public double Chance { get; set; } = 1.0;
 
     [JsonPropertyName("Quantity")]
-    public Quantity Quantity { get; set; } = new Quantity {Min=0, Max=1};
+    public Quantity Quantity { get; set; } = new Quantity { Min = 0, Max = 0 };
 
     [JsonPropertyName("Health")]
     public List<Health> Health { get; set; } = new List<Health>();
