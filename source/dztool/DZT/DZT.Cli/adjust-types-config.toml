@@ -1,14 +1,27 @@
 title = "TOML cfg for adjust-types"
 
-[[rules]]
-starts_with = "TTC"
-not_name_contains_substring_case_insensitive = ["suppressor"]
-action = "remove"
-nominal = 0
-min = 0
-lifetime = 600
-restock = 0
+## Morty
+# [[rules]]
+# starts_with = "TTC"
+# not_name_contains_substring_case_insensitive = ["suppressor"]
+# action = "remove"
+# nominal = 0
+# min = 0
+# lifetime = 600
+# restock = 0
 
+## Morty
+[[rules]]
+in_file = "Morty_types.xml"
+nominal = 4
+min = 2
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## vanilla
 [[rules]]
 name_equals_case_insensitive = ["pot", "WeaponCleaningKit", "PortableGasStove"]
 nominal = 120
@@ -18,6 +31,7 @@ restock = 0
 category = "tools"
 usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
 
+## Morty
 [[rules]]
 name_equals_case_insensitive = ["Mag_SG_30Rnd", "Mag_Kimber1911_10Rnd"]
 action = "remove"
@@ -26,6 +40,7 @@ min = 0
 lifetime = 600
 restock = 0
 
+## suppressors
 [[rules]]
 name_contains_substring_case_insensitive = ["suppressor"]
 nominal = 12
@@ -36,6 +51,7 @@ category = "weapons"
 usages = ["Military"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 
+## Morty / vanilla
 [[rules]]
 name_contains_substring_case_insensitive = ["pistolsuppressor"]
 nominal = 20
@@ -45,6 +61,7 @@ restock = 0
 category = "weapons"
 usages = ["Military", "Police"]
 
+## advanced weapon scopes
 [[rules]]
 starts_with = "AD_"
 nominal = 4
@@ -55,6 +72,7 @@ category = "weapons"
 usages = ["Military"]
 values = ["Tier2", "Tier3", "Tier4"]
 
+## advanced weapon scopes
 [[rules]]
 name_equals_case_insensitive = ["ad_rmr"]
 nominal = 12
@@ -65,6 +83,7 @@ category = "weapons"
 usages = ["Police", "Military"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 
+## advanced weapon scopes
 [[rules]]
 starts_with = "AD_"
 name_contains_substring_case_insensitive = ["pilad"]
@@ -76,6 +95,7 @@ category = "weapons"
 usages = ["Hunting"]
 values = ["Tier1", "Tier2", "Tier3"]
 
+## expansion
 [[rules]]
 starts_with = "Expansion"
 name_contains_substring_case_insensitive = [
@@ -93,6 +113,7 @@ restock = 0
 usages = ["Industrial"]
 tags = ["floor"]
 
+## namalsk
 [[rules]]
 starts_with = "dzn_"
 nominal = 15
@@ -103,6 +124,7 @@ category = "clothes"
 usages = ["Military"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 
+## namalsk
 [[rules]]
 starts_with = "dzn_platecarrier"
 nominal = 1
@@ -113,22 +135,7 @@ category = "weapons"
 usages = ["Military"]
 flags = { count_in_map = "1", deloot = "1" }
 
-[[rules]]
-name_equals_case_insensitive = [
-    "JugVisor",
-    "JugHelm",
-    "SYGUJugBoots",
-    "SYGUJugPants",
-    "SYGUJugVest",
-]
-nominal = 0
-min = 0
-lifetime = 14400
-restock = 0
-category = "weapons"
-usages = ["Military", "ContaminatedArea"]
-flags = { count_in_map = "1", deloot = "1" }
-
+## Morty
 [[rules]]
 starts_with = "TTC"
 name_contains_substring_case_insensitive = ["suppressor"]
@@ -141,6 +148,7 @@ usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## Morty
 [[rules]]
 name_equals_case_insensitive = ["TTC_PistolSuppressor"]
 nominal = 70
@@ -152,7 +160,7 @@ usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
-
+## Quad
 [[rules]]
 name_contains_substring_case_insensitive = ["quad"]
 nominal = 44
@@ -164,6 +172,7 @@ usages = ["Military", "Police", "Hunting", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## Quad
 [[rules]]
 starts_with = "Juggernaut"
 nominal = 1
@@ -175,6 +184,7 @@ usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## MMG
 [[rules]]
 starts_with = "MMG"
 nominal = 22
@@ -186,6 +196,7 @@ usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## MMG
 [[rules]]
 starts_with = "mmg"
 nominal = 22
@@ -197,6 +208,7 @@ usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## MMG
 [[rules]]
 name_equals_case_insensitive = [
     "MMG_MK_III_Armor_black",
@@ -214,6 +226,7 @@ usages = ["Military", "Police"]
 values = ["Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## munghard
 [[rules]]
 name_contains_substring_case_insensitive = ["mung"]
 nominal = 52
@@ -225,6 +238,7 @@ usages = ["Military", "Police", "Hunting", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## munghard
 [[rules]]
 name_equals_case_insensitive = [
     "csmcmillan_mung",
@@ -240,6 +254,7 @@ usages = ["Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## snafu
 [[rules]]
 in_file = "SNAFU_types.xml"
 nominal = 0
@@ -250,6 +265,7 @@ usages = []
 values = []
 flags = { count_in_map = "1" }
 
+## snafu
 [[rules]]
 starts_with = "SNAFU"
 nominal = 6
@@ -260,6 +276,7 @@ usages = ["Military", "Police", "Hunting", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## snafu
 [[rules]]
 name_equals_case_insensitive = [
     "SNAFU_AWM_Gun",
@@ -277,6 +294,7 @@ lifetime = 14400
 restock = 0
 flags = { count_in_map = "1" }
 
+## quad
 [[rules]]
 action = "insert"
 names = ["riflesling_quad_tan"]
@@ -288,6 +306,7 @@ restock = 0
 usages = ["Police", "Farm", "Hunting"]
 flags = { count_in_map = "1" }
 
+## expansion
 [[rules]]
 in_file = "expansion_types.xml"
 nominal = 0
@@ -298,6 +317,7 @@ usages = []
 values = []
 flags = { count_in_map = "1" }
 
+## snafu
 [[rules]]
 name_equals_case_insensitive = [
     "SNAFU_AKAimpoint_ACO",
@@ -360,6 +380,7 @@ usages = ["Military", "Police", "Hunting"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## vanilla
 [[rules]]
 name_equals_case_insensitive = ["AmmoBox"]
 nominal = 10
@@ -370,6 +391,7 @@ usages = ["Military", "Police"]
 category = "containers"
 flags = { count_in_map = "1" }
 
+## vanilla
 [[rules]]
 name_contains_substring_case_insensitive = ["AmmoBox_"]
 in_file = "types.xml"
@@ -381,6 +403,7 @@ usages = ["Military", "Police", "Farm", "Village", "Hunting"]
 category = "weapons"
 flags = { count_in_map = "1" }
 
+## vanilla
 [[rules]]
 name_equals_case_insensitive = ["Ammo_"]
 in_file = "types.xml"
@@ -392,7 +415,7 @@ category = "weapons"
 usages = ["Military", "Police", "Farm", "Village", "Hunting"]
 flags = { count_in_map = "1" }
 
-
+## mmg
 [[rules]]
 name_contains_substring_case_insensitive = ["MMG_MK_III_Armor_"]
 nominal = 6
@@ -402,6 +425,7 @@ restock = 0
 usages = ["Military", "Police"]
 flags = { count_in_map = "1" }
 
+## mmg
 [[rules]]
 name_contains_substring_case_insensitive = ["MMG_MK_V_Armor_", "MMG_striker_helmet_"]
 nominal = 3

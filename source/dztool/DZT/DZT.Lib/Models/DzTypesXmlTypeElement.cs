@@ -22,6 +22,18 @@ namespace DZT.Lib.Models;
 */
 public record DzTypesXmlTypeElement(XElement Element)
 {
+    public static string XmlTemplate(string name) => $@"
+    <type name=""{name}"">
+        <nominal>1</nominal>
+        <lifetime>14400</lifetime>
+        <restock>0</restock>
+        <min>1</min>
+        <quantmin>-1</quantmin>
+        <quantmax>-1</quantmax>
+        <cost>100</cost>
+        <flags count_in_map=""1"" count_in_hoarder=""0"" count_in_cargo=""0"" ount_in_player=""0"" crafted=""0"" deloot=""0"" />
+    </type>
+    ";
     public static DzTypesXmlTypeElement FromElement(XElement element) => new(element);
     public static IEnumerable<DzTypesXmlTypeElement> FromDocument(XDocument doc)
     {

@@ -90,17 +90,8 @@ public class AdjustTypesXml
         if (IsGeneratedTypesXmlFile(inputFilePath))
             foreach (var item in extraFromQuad)
             {
-                using var tempStream = StreamHelper.GenerateStreamFromString($@"
-                <type name=""{item}"">
-                    <nominal>4</nominal>
-                    <lifetime>1440</lifetime>
-                    <restock>0</restock>
-                    <min>1</min>
-                    <quantmin>-1</quantmin>
-                    <quantmax>-1</quantmax>
-                    <cost>100</cost>
-                    <flags count_in_map=""1"" count_in_hoarder=""0"" count_in_cargo=""0"" ount_in_player=""0"" crafted=""0"" deloot=""1"" />
-                </type>");
+                var xml = DzTypesXmlTypeElement.XmlTemplate(item);
+                using var tempStream = StreamHelper.GenerateStreamFromString(xml);
                 var tempXd = XDocument.Load(tempStream);
                 var tempType = DzTypesXmlTypeElement.FromElement(tempXd.Root!);
                 tempType.Category = "clothes";
