@@ -71,10 +71,10 @@ public class SpawnableTypesHelper
         else if (GetSpawnableType(item) is XElement xe)
         {
             // if (item == "MMG_JPC_Vest_black")
-            if (item == "SNAFU_AWM_Gun")
-            {
-                var a = 1;
-            }
+            // if (item == "SNAFU_AWM_Gun")
+            // {
+            //     var a = 1;
+            // }
             foreach (var attch in xe.Nodes().OfType<XElement>().Where(x => x.Name == "attachments"))
             {
                 yield return new InventoryAttachment

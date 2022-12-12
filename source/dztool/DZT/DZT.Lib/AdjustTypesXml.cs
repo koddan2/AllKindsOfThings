@@ -104,7 +104,7 @@ public class AdjustTypesXml
         {
             ProcessByConfiguration(type, xd, inputFilePath);
             GeneralAdjustments(type);
-            ProcessBaseDayzItems(type);
+            // ProcessBaseDayzItems(type);
             //ProcessExpansion(type);
             //ProcessAdvancedWeaponScopes(type);
             //ProcessSnafu(type);
