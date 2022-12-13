@@ -368,7 +368,7 @@ public class GenerateSplattedLoadout
                 {
                     // set.Chance = 0.23;
                     // set.Chance = 0.11;
-                    set.Chance = _weaponChanceCategories.Get(CategoryValue.Medium);
+                    set.Chance = _weaponChanceCategories.Get(CategoryValue.Small);
                 }
                 return set;
             })
@@ -418,8 +418,10 @@ public class WeaponSetDefs
         AK12,
         AK19,
         MMAKM,
+        MMMk47,
     };
 
+    public LoadoutSet MMMk47 => GetLoadoutSetWeapon("TTC_Mk47", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
     public LoadoutSet MMAKM => GetLoadoutSetWeapon("TTC_AKM", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
     public LoadoutSet AK19 => GetLoadoutSetWeapon("SNAFU_AK19", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_556x45", "Ammo_556x45", "Ammo_556x45", });
     public LoadoutSet AK12 => GetLoadoutSetWeapon("SNAFU_AK12A", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_545x39", "Ammo_545x39", "Ammo_545x39" });
@@ -430,9 +432,32 @@ public class WeaponSetDefs
     public LoadoutSet Awm => GetLoadoutSetWeapon("SNAFU_AWM_Gun", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "SNAFU_Ammo_338", "SNAFU_Ammo_338" });
     public LoadoutSet Kiivari => GetLoadoutSetWeapon("SNAFUKivaari_Black_GUN", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "SNAFU_Ammo_338", "SNAFU_Ammo_338" });
 
-    private LoadoutSet GetLoadoutSetWeapon(string className, double chance = 1, string[]? extraInventory = null)
+    private LoadoutSet GetLoadoutSetWeapon(string className, double chance = 1, IEnumerable<string>? extraInventory = null)
     {
-        extraInventory ??= Array.Empty<string>();
+        extraInventory ??= new List<string>();
+        var possibleAttachments = _spawnableTypesHelper.GetAdditionalAttachments(className).SelectMany(x => x.Items);
+        var additionalMags = possibleAttachments
+            .Where(y => y.ClassName.ToUpper().Contains("MAG"))
+            .Select(y => new InventoryCargoModel
+            {
+                Chance = 1,
+                ClassName = y.ClassName,
+            }).ToList();
+
+        if (additionalMags.Count == 1)
+        {
+            additionalMags.Add(additionalMags.Single());
+        }
+
+        var extraInventoryCargo = extraInventory.Select(extra =>
+            new InventoryCargoModel
+            {
+                Chance = 1,
+                ClassName = extra,
+            });
+        var inventoryCargo = additionalMags
+                        .Concat(extraInventoryCargo)
+                        .ToList();
         return new LoadoutSet
         {
             ClassName = "WEAPON",
@@ -458,23 +483,7 @@ public class WeaponSetDefs
                     }
                 }
             },
-            InventoryCargo = _spawnableTypesHelper.GetAdditionalAttachments(className)
-                .SelectMany(x =>
-                    x.Items
-                    .Where(y => y.ClassName.ToUpper().Contains("MAG"))
-                    .Select(y =>
-                        new InventoryCargoModel
-                        {
-                            Chance = 1,
-                            ClassName = y.ClassName,
-                        }))
-                        .Concat(extraInventory.Select(extra =>
-                        new InventoryCargoModel
-                        {
-                            Chance = 1,
-                            ClassName = extra,
-                        }))
-                        .ToList(),
+            InventoryCargo = inventoryCargo,
             // InventoryCargo = new List<InventoryCargoModel>
             // {
             //     new InventoryCargoModel

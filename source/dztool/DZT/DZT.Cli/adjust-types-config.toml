@@ -1,14 +1,14 @@
 title = "TOML cfg for adjust-types"
 
 ## Morty
-# [[rules]]
-# starts_with = "TTC"
-# not_name_contains_substring_case_insensitive = ["suppressor"]
-# action = "remove"
-# nominal = 0
-# min = 0
-# lifetime = 600
-# restock = 0
+[[rules]]
+in_file = "Morty_types.xml"
+not_name_contains_substring_case_insensitive = ["suppressor"]
+action = "remove"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
 
 ## Morty
 [[rules]]

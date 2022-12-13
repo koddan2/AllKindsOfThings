@@ -141,6 +141,7 @@ public class AdjustTypesXml
                       || rule.Action is AdjustTypesXmlConfigurationRuleAction.Remove)
             if (rule.Matches(type, pathToFile))
             {
+                if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Remove && type.Element.Parent is null) continue;
                 rule.Apply(type);
             }
         }
