@@ -361,16 +361,14 @@ public class GenerateSplattedLoadout
         }
 
         splat.Sets = splat.Sets
-            .Select(set =>
+            .SideEffect(set =>
             {
-                // SIDE-EFFECT SELECT because I'm lazy.
                 if (set.ClassName == "WEAPON")
                 {
                     // set.Chance = 0.23;
                     // set.Chance = 0.11;
                     set.Chance = _weaponChanceCategories.Get(CategoryValue.Small);
                 }
-                return set;
             })
             .Where(set =>
             {

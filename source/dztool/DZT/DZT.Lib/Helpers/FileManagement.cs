@@ -15,6 +15,12 @@ public static class FileManagement
         return writer;
     }
 
+    internal static string GetWorkspaceFilePath(string rootDir, string relativePath)
+    {
+        var result = Path.Combine(rootDir, GeneralInvariants.ApplicationSubDirectoryName, "workspace", relativePath);
+        return result;
+    }
+
     public record RestoreFileV2Result(string BackupFilePath, bool FileOperationCommitted);
     internal static RestoreFileV2Result TryRestoreFileV2(string rootDir, string relativePath)
     {
@@ -110,7 +116,7 @@ public static class FileManagement
         File.Copy(filePath, backupBackupFile, true);
     }
 
-    public record  CompareContentsResult(bool Same, string Hash1, string Hash2);
+    public record CompareContentsResult(bool Same, string Hash1, string Hash2);
     private static CompareContentsResult CompareContents(string file1, string file2)
     {
         using var fileStream1 = File.OpenRead(file1);

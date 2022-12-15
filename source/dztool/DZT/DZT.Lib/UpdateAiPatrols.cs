@@ -18,6 +18,7 @@ public class UpdateAiPatrols
         "Land_Dam_Concrete_20_Floodgate",
         "Land_Train_Wagon_Tanker",
     };
+    private readonly ExtraPatrols _extraPatrols = new ExtraPatrols();
 
     public CategorizedDouble CategorizedDouble { get; set; } = new CategorizedDouble(
         /// high
@@ -47,6 +48,17 @@ public class UpdateAiPatrols
         var result = FileManagement.BackupFileV2(rootDir, relativePathToFile);
         _json = File.ReadAllText(_aiPatrolSettingsJsonFile);
         _settings = JsonSerializer.Deserialize<AiPatrolSettingsRoot>(_json)!;
+
+        var extraPatrolsFilePath = FileManagement.GetWorkspaceFilePath(rootDir, "chernarusplus.AIPatrolSettings.patch.Patrols.json");
+        if (File.Exists(extraPatrolsFilePath))
+        {
+            _extraPatrols = JsonSerializer.Deserialize<ExtraPatrols>(File.ReadAllText(extraPatrolsFilePath));
+        }
+    }
+
+    class ExtraPatrols
+    {
+        public Patrol[] Patrols { get; set; } = Array.Empty<Patrol>();
     }
 
     public void Process()
@@ -186,6 +198,11 @@ public class UpdateAiPatrols
             p.ThreatDistanceLimit = -1;
             p.DamageMultiplier = -1;
         });
+
+        _settings.Patrols.AddRange(_extraPatrols.Patrols.SideEffect(x =>
+        {
+            x.Chance = 0.25;
+        }));
 
         _settings.Patrols.ToList().ForEach(p =>
         {
