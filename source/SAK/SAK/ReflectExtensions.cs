@@ -10,6 +10,25 @@ namespace SAK
     public static class ReflectExtensions
     {
         /// <summary>
+        /// Get diagnostic data for the target of the invocation.
+        /// Side-effect free.
+        /// </summary>
+        [DebuggerStepThrough]
+        public static string Here<T>(
+            this T? maybeValue,
+            string? message = null,
+            [CallerArgumentExpression("maybeValue")] string? context = null,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0)
+        {
+            var defaultValue = string.Empty;
+            var msg = message is null ? defaultValue : $" '{message}'";
+            var result = $"[{typeof(T).Name} {context ?? defaultValue}]{msg} (in {memberName}) → {sourceFilePath}:{sourceLineNumber}";
+            return result;
+        }
+
+        /// <summary>
         /// Use this extension to unwrap a nullable thing and fail with exception if it is null.
         /// </summary>
         /// <typeparam name="T">The type</typeparam>

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DZT.Lib\DZT.Lib.csproj" />
+    <ProjectReference Include="..\..\..\SAK\SAK\SAK.csproj" />
   </ItemGroup>
 
   <ItemGroup>

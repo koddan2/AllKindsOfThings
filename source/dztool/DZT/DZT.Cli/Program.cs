@@ -1,4 +1,5 @@
 ﻿using DZT.Cli.Commands;
+using SAK;
 using Microsoft.Extensions.Logging;
 using System.CommandLine;
 
@@ -19,6 +20,8 @@ UpdateAiPatrolsCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 AdjustTypesXmlCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 FixSearchForLootCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
 GenerateSplattedLoadoutCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
+
+Console.WriteLine(rootCommand.Here("Just some output"));
 
 ////return await rootCommand.InvokeAsync(args);
 return rootCommand.Invoke(args);
