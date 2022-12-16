@@ -6,7 +6,6 @@ using System.Text.Json;
 namespace DZT.Lib;
 public class UpdateAiPatrols
 {
-    private readonly Random _rng = new();
     private readonly string _json;
     private readonly string _aiPatrolSettingsJsonFile;
     private readonly AiPatrolSettingsRoot _settings;
@@ -18,7 +17,7 @@ public class UpdateAiPatrols
         "Land_Dam_Concrete_20_Floodgate",
         "Land_Train_Wagon_Tanker",
     };
-    private readonly ExtraPatrols _extraPatrols = new ExtraPatrols();
+    private readonly ExtraPatrols _extraPatrols = new();
 
     public CategorizedDouble CategorizedDouble { get; set; } = new CategorizedDouble(
         /// high
@@ -46,13 +45,17 @@ public class UpdateAiPatrols
 
         FileManagement.TryRestoreFileV2(rootDir, relativePathToFile);
         var result = FileManagement.BackupFileV2(rootDir, relativePathToFile);
+        if (result.FileOperationCommitted)
+        {
+            Console.WriteLine("File backed up: {0}", result.BackupFilePath);
+        }
         _json = File.ReadAllText(_aiPatrolSettingsJsonFile);
         _settings = JsonSerializer.Deserialize<AiPatrolSettingsRoot>(_json)!;
 
         var extraPatrolsFilePath = FileManagement.GetWorkspaceFilePath(rootDir, "chernarusplus.AIPatrolSettings.patch.Patrols.json");
         if (File.Exists(extraPatrolsFilePath))
         {
-            _extraPatrols = JsonSerializer.Deserialize<ExtraPatrols>(File.ReadAllText(extraPatrolsFilePath));
+            _extraPatrols = JsonSerializer.Deserialize<ExtraPatrols>(File.ReadAllText(extraPatrolsFilePath)) ?? new ExtraPatrols();
         }
     }
 

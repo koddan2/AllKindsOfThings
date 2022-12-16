@@ -20,7 +20,10 @@ public class SpawnableTypesHelper
     private Dictionary<string, XElement> SpawnableTypes => InitSpawnableTypes() ? _spawnableTypes.OrFail() : throw new ApplicationException("");
     private bool InitSpawnableTypes()
     {
-        if (_spawnableTypes is not null) return true;
+        if (_spawnableTypes is not null)
+        {
+            return true;
+        }
 
         _spawnableTypes = new Dictionary<string, XElement>();
         var sptfn = DayzFilesHelper.GetAllSpawnableTypesXmlFileNames(_rootDir.OrFail(), _mpMissionName.OrFail());

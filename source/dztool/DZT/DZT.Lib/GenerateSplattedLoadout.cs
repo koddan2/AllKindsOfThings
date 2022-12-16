@@ -14,6 +14,8 @@ public class GenerateSplattedLoadout
     private readonly ILogger _logger;
     private readonly string _rootDir;
     private readonly string _mpMissionName;
+    [Obsolete("Should be a constructor parameter")]
+    private readonly string _profileDirectoryName = "config";
 
     private readonly CategorizedDouble _weaponChanceCategories = new CategorizedDouble(
         minimal: 0.004, // .4%
@@ -26,7 +28,7 @@ public class GenerateSplattedLoadout
         _logger = logger;
         _rootDir = rootDir;
         _mpMissionName = mpMissionName;
-        _loadoutDir = Path.Combine(rootDir, "config/ExpansionMod/Loadouts");
+        _loadoutDir = Path.Combine(rootDir, _profileDirectoryName, "ExpansionMod/Loadouts");
         _spawnableTypesHelper = new SpawnableTypesHelper(rootDir, mpMissionName);
         _weaponSets = new WeaponSetDefs(rootDir, mpMissionName, _weaponChanceCategories);
     }

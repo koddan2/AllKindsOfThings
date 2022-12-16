@@ -51,6 +51,7 @@ public class AdjustTypesXml
         {
             _logger.LogInformation("File already backed up {file}", backupResult.BackupFilePath);
         }
+
         XDocument xd = XDocument.Load(inputFilePath);
 
         var extraFromQuad = new[] {
@@ -88,6 +89,7 @@ public class AdjustTypesXml
         };
 
         if (IsGeneratedTypesXmlFile(inputFilePath))
+        {
             foreach (var item in extraFromQuad)
             {
                 var xml = DzTypesXmlTypeElement.XmlTemplate(item);
@@ -97,6 +99,7 @@ public class AdjustTypesXml
                 tempType.Category = "clothes";
                 xd.Root!.Add(tempXd.Root);
             }
+        }
 
         var types = DzTypesXmlTypeElement.FromDocument(xd);
 
@@ -121,6 +124,7 @@ public class AdjustTypesXml
     private void ProcessInsertionsByConfiguration(XDocument xd, string pathToFile)
     {
         foreach (var rule in _configuration.Rules)
+        {
             if (rule.Action is AdjustTypesXmlConfigurationRuleAction.Insert && IsGeneratedTypesXmlFile(pathToFile))
             {
                 foreach (var nameStr in rule.Names)
@@ -130,19 +134,29 @@ public class AdjustTypesXml
                     rule.Apply(DzTypesXmlTypeElement.FromElement(xe));
                 }
             }
+        }
     }
 
-    private void ProcessByConfiguration(DzTypesXmlTypeElement type, XDocument xd, string pathToFile)
+    private void ProcessByConfiguration(DzTypesXmlTypeElement type, XDocument _, string pathToFile)
     {
         foreach (var rule in _configuration.Rules)
         {
-            if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Insert) continue;
+            if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Insert)
+            {
+                continue;
+            }
             else if (/**/rule.Action is AdjustTypesXmlConfigurationRuleAction.Update
                       || rule.Action is AdjustTypesXmlConfigurationRuleAction.Remove)
-            if (rule.Matches(type, pathToFile))
             {
-                if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Remove && type.Element.Parent is null) continue;
-                rule.Apply(type);
+                if (rule.Matches(type, pathToFile))
+                {
+                    if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Remove && type.Element.Parent is null)
+                    {
+                        continue;
+                    }
+
+                    rule.Apply(type);
+                }
             }
         }
     }
@@ -155,102 +169,6 @@ public class AdjustTypesXml
             type.Lifetime = Math.Max((int)TimeSpan.FromMinutes(15).TotalSeconds, (int)type.Lifetime / 10);
         }
         type.Restock = 0;
-    }
-
-    private static void ProcessBaseDayzItems(DzTypesXmlTypeElement type)
-    {
-        if (type.Name == "WeaponCleaningKit")
-        {
-            type.Nominal = 80;
-            type.Min = 70;
-        }
-    }
-
-    private static void ProcessAdvancedWeaponScopes(DzTypesXmlTypeElement type)
-    {
-        if (!type.Name.StartsWith("AD_"))
-        {
-            return;
-        }
-
-        if (type.Nominal == 0)
-        {
-            type.Nominal = 2;
-            type.Min = 1;
-        }
-    }
-
-    private static void ProcessExpansion(DzTypesXmlTypeElement type)
-    {
-        if (!type.Name.StartsWith("EXPANSION_"))
-        {
-            return;
-        }
-
-        var toLowerOccurenceSubstrings = new[]
-        {
-            "DOOR",
-            "WHEEL",
-            "HOOD",
-            "LEFT",
-            "RIGHT",
-            "TRUNK",
-        };
-
-        if (toLowerOccurenceSubstrings.Any(x => type.Name.Contains(x)))
-        {
-            type.Nominal = 2;
-            type.Min = 0;
-        }
-    }
-
-    private static void ProcessSnafu(DzTypesXmlTypeElement type)
-    {
-        if (!type.Name.StartsWith("SNAFU"))
-        {
-            return;
-        }
-
-        type.Nominal = 1;
-        type.Min = 1;
-        type.Restock = 0;
-        type.Flags = type.Flags?.ToDictionary(x => x.Key, y =>
-        {
-            return y.Key == "count_in_map" ? "1" : "0";
-        });
-    }
-
-    private static void ProcessDzn(DzTypesXmlTypeElement type)
-    {
-        if (!type.Name.StartsWith("dzn"))
-        {
-            return;
-        }
-
-        type.Tags = Array.Empty<string>();
-        if (type.Name.Contains("platecarriervest"))
-        {
-            type.Values = Array.Empty<string>();
-            type.Category = "weapons";
-        }
-        else
-        {
-            type.Values = new[]
-            {
-                "Tier1",
-                "Tier2",
-                "Tier3",
-                "Tier4",
-            };
-            type.Category = "clothes";
-        }
-        type.Usages = new[]
-        {
-            "Military"
-        };
-        type.Restock = 0;
-        type.Nominal = 5;
-        type.Min = 3;
     }
 }
 
