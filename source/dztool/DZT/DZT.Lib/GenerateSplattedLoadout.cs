@@ -17,7 +17,7 @@ public class GenerateSplattedLoadout
     [Obsolete("Should be a constructor parameter")]
     private readonly string _profileDirectoryName = "config";
 
-    private readonly CategorizedDouble _weaponChanceCategories = new CategorizedDouble(
+    private readonly CategorizedDouble _weaponChanceCategories = new(
         minimal: 0.004, // .4%
         small: 0.03,    // 3%
         medium: 0.07,   // 7%
@@ -191,7 +191,7 @@ public class GenerateSplattedLoadout
         }
     }
 
-    private void AssignInventoryCargo(AiLoadoutRoot splat, List<AiLoadoutRoot?> model)
+    private void AssignInventoryCargo(AiLoadoutRoot splat, List<AiLoadoutRoot?> _)
     {
         var cargoCandidates = GetCargoCandidates();
 
@@ -315,7 +315,10 @@ public class GenerateSplattedLoadout
         {
             att.Items = att.Items.DistinctBy(x => x.ClassName).ToList();
 
-            if (extraStuff.ContainsKey(att.SlotName)) att.Items.AddRange(extraStuff[att.SlotName]);
+            if (extraStuff.TryGetValue(att.SlotName, out var value) && value is not null)
+            {
+                att.Items.AddRange(value);
+            }
             // if (att.SlotName == "Vest") att.Items.AddRange(extraStuff["Vest"]);
             // else if (att.SlotName == "Headgear") att.Items.AddRange(extraStuff["Headgear"]);
         }
