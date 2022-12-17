@@ -14,7 +14,6 @@ public class GenerateSplattedLoadout
     private readonly ILogger _logger;
     private readonly string _rootDir;
     private readonly string _mpMissionName;
-    [Obsolete("Should be a constructor parameter")]
     private readonly string _profileDirectoryName = "config";
 
     private readonly CategorizedDouble _weaponChanceCategories = new(
@@ -23,11 +22,12 @@ public class GenerateSplattedLoadout
         medium: 0.07,   // 7%
         large: 0.12);   // 12%
 
-    public GenerateSplattedLoadout(ILogger logger, string rootDir, string mpMissionName)
+    public GenerateSplattedLoadout(ILogger logger, string rootDir, string mpMissionName, string profileDirectoryName)
     {
         _logger = logger;
         _rootDir = rootDir;
         _mpMissionName = mpMissionName;
+        _profileDirectoryName = profileDirectoryName;
         _loadoutDir = Path.Combine(rootDir, _profileDirectoryName, "ExpansionMod/Loadouts");
         _spawnableTypesHelper = new SpawnableTypesHelper(rootDir, mpMissionName);
         _weaponSets = new WeaponSetDefs(rootDir, mpMissionName, _weaponChanceCategories);
@@ -59,15 +59,10 @@ public class GenerateSplattedLoadout
             Chance = 1,
             Quantity = new Quantity { Min = 0, Max = 0 },
             ClassName = "",
-            ////ConstructionPartsBuilt = new List<object>(),
-            Health = ////new List<Health>
+            Health =
             {
                 new Health {Min=0.3, Max=0.9},
             },
-            ////InventoryAttachments = invAttachmentsSlotNames.Select(x => new InventoryAttachment { SlotName = x, Items=new List<Item>() }).ToList(),
-            ////InventoryAttachments = new List<InventoryAttachment>(),
-            ////InventoryCargo = new List<InventoryCargoModel>(),
-            ////Sets = new List<Set>(),
         };
 
         AssignInventoryAttachments(splat, model);
@@ -75,7 +70,7 @@ public class GenerateSplattedLoadout
         AssignSets(splat, model);
 
         var outputPath = Path.Combine(_loadoutDir, OutputFileName);
-        File.WriteAllText(outputPath, JsonSerializer.Serialize(splat, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(outputPath, JsonSerializer.Serialize(splat, DefaultSettings.JsonSerializerOptions));
     }
 
     private static readonly string[] _ForbiddenClassNamesStartsWith = new[]
@@ -116,6 +111,7 @@ public class GenerateSplattedLoadout
         "BASEBALLBAT",
         "PICKAXE",
         "CANISTERGASOLINE",
+        "GARDENLIME",
     };
 
     private static readonly string[] _ExemptedFromExclusion = new[]
@@ -174,8 +170,17 @@ public class GenerateSplattedLoadout
         {
             var xd = XDocument.Load(typesXmlFile);
             var types = DzTypesXmlTypeElement.FromDocument(xd);
+            if (typesXmlFile.Contains("SNAF"))
+            {
+                var a = types.FirstOrDefault(x => x.NameUpper.Contains("50CAL"));
+                var b = a;
+            }
             foreach (var type in types)
             {
+                if (type.NameUpper.Contains("50CAL"))
+                {
+                    var a = 1;
+                }
                 if (IsForbidden(type))
                 {
                     continue;
@@ -203,11 +208,53 @@ public class GenerateSplattedLoadout
         ////    }
         ////}
 
+        double GetChance(DzTypesXmlTypeElement x)
+        {
+            var thoseWithMoreChance = new[] {
+                "50CAL",
+                "AMMO",
+                "SNAFU_AMMO_338",
+                "GCGN_AMMO_408CHEY",
+                "TTC_AMMOBOX_50BMG_10RND",
+                "TTC_AMMO_50BMG",
+                "TTC_AMMO_338",
+                "TTC_AMMOBOX_338MM_10RND"
+            };
+            bool IsSuppressor(DzTypesXmlTypeElement x)
+            {
+                return x.NameUpper.Contains("SIL") || x.NameUpper.Contains("SUPP");
+            }
+
+            double result = 0;
+            if (x.Flags.OrFail()["crafted"] == "1")
+            {
+                result = 0.05;
+            }
+            else if (thoseWithMoreChance.Any(s => x.NameUpper.Contains(s)))
+            {
+                result = 0.1;
+            }
+            else if (IsSuppressor(x))
+            {
+                result = 0.003;
+            }
+            else if (x.NameUpper.Contains("TTC") || x.NameUpper.Contains("SNAFU"))
+            {
+                result = 0.01 * (((float)x.Nominal) / 7f);
+                result = Math.Clamp(result, 0.007, 0.04);
+            }
+            else
+            {
+                result = 0.01 * (((float)x.Nominal) / 4f);
+            }
+            return result;
+        }
+
         var extras = cargoCandidates
             .Select(x => new InventoryCargoModel
             {
                 ClassName = x.Name,
-                Chance = x.Flags.OrFail()["crafted"] == "1" ? 0.03 : 0.01 * (((float)x.Nominal) / 7f),
+                Chance = GetChance(x),
                 Sets = new List<LoadoutSet>(),
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
@@ -219,15 +266,6 @@ public class GenerateSplattedLoadout
 
         splat.InventoryCargo.AddRange(extras);
         splat.InventoryCargo = splat.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
-
-        {
-            var ttcs = splat.InventoryCargo.Where(x => x.ClassName.StartsWith("TT"));
-            var b = ttcs.Select(x => x.ClassName).ToArray();
-            foreach (var item in ttcs)
-            {
-                item.Chance = 0.01;
-            }
-        }
 
         ////SplatItems("Back", splat, extras);
         ////SplatItems("Vest", splat, extras);
@@ -385,8 +423,6 @@ public class GenerateSplattedLoadout
             .DistinctBy(x => x.InventoryAttachments[0]?.Items[0]?.ClassName)
             .ToList();
 
-        // splat.Sets.Add(_weaponSets.Awm);
-        // splat.Sets.Add(_weaponSets.Kiivari);
         splat.Sets.AddRange(_weaponSets.All);
     }
 
@@ -487,23 +523,6 @@ public class WeaponSetDefs
                 }
             },
             InventoryCargo = inventoryCargo,
-            // InventoryCargo = new List<InventoryCargoModel>
-            // {
-            //     new InventoryCargoModel
-            //     {
-            //         Chance = 1,
-            //         ClassName = "SNAFU_AWM_Mag",
-            //     },
-            //     new InventoryCargoModel
-            //     {
-            //         Chance = 1,
-            //         ClassName = "SNAFU_Ammo_338",
-            //         Quantity = new Quantity {Min=10, Max=20},
-            //     },
-            // }
-            // InventoryCargo = new List<InventoryCargoModel>
-            // {
-            // }
         };
     }
 }

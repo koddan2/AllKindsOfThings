@@ -13,14 +13,14 @@ public class FixSearchForLoot
     private readonly string _typesXmlFilePath;
     private readonly string _sflJsonRelativePath;
     private readonly string _rootDir;
-    [Obsolete("Should be a constructor parameter")]
     private readonly string _mpMissionName = "dayzOffline.chernarusplus";
-    [Obsolete("Should be a constructor parameter")]
     private readonly string _profileDirectoryName = "config";
 
-    public FixSearchForLoot(string rootDir)
+    public FixSearchForLoot(string rootDir, string mpMissionName, string profileDirectoryName)
     {
         _rootDir = rootDir;
+        _mpMissionName = mpMissionName;
+        _profileDirectoryName = profileDirectoryName;
         var typesXmlRelativePath = Path.Combine("mpmissions", _mpMissionName, "db", "types.xml");
         _typesXmlFilePath = Path.Combine(rootDir, typesXmlRelativePath);
         _sflJsonRelativePath = Path.Combine(_profileDirectoryName, "SearchForLoot", "SearchForLoot.json");

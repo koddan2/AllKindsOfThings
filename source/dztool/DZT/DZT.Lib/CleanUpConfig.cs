@@ -24,7 +24,9 @@ public class CleanUpProfile
         foreach (var fileName in allLogFiles)
         {
             if (Path.GetExtension(fileName).ToLower() is ".log")
-            DoDelete(fileName);
+            {
+                DoDelete(fileName);
+            }
         }
     }
 
@@ -42,7 +44,7 @@ public class CleanUpProfile
         }
     }
 
-    private void DoDelete(string fileName)
+    private static void DoDelete(string fileName)
     {
         File.Delete(fileName);
         Console.WriteLine("Deleted file: {0}", fileName);

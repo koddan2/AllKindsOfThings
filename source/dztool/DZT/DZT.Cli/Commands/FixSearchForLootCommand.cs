@@ -11,12 +11,22 @@ class FixSearchForLootCommand
 
         cmd.Add(optionRootDir);
 
+        Option<string> mpMissionName = new("--mp-mission-name", description: "The name of the MP mission") { IsRequired = true };
+        mpMissionName.AddAlias("-m");
+        cmd.Add(mpMissionName);
+
+        Option<string> profileDirName = new("--profile-directory-name", description: "The name of the $profile directory") { IsRequired = true };
+        profileDirName.AddAlias("-p");
+        cmd.Add(profileDirName);
+
         cmd.SetHandler(
-            (rootDir) =>
+            (rootDir, mpMissionName, profileDirName) =>
             {
-                FixSearchForLoot impl = new(rootDir);
+                FixSearchForLoot impl = new(rootDir, mpMissionName, profileDirName);
                 impl.Process();
             },
-            optionRootDir);
+            optionRootDir,
+            mpMissionName,
+            profileDirName);
     }
 }

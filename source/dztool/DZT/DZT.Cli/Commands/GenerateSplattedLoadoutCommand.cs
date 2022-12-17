@@ -19,15 +19,20 @@ internal class GenerateSplattedLoadoutCommand
         mpMissionName.AddAlias("-m");
         cmd.Add(mpMissionName);
 
+        Option<string> profileDirName = new("--profile-directory-name", description: "The name of the $profile directory") { IsRequired = true };
+        profileDirName.AddAlias("-p");
+        cmd.Add(profileDirName);
+
         cmd.SetHandler(
             Handler,
             optionRootDir,
-            mpMissionName);
+            mpMissionName,
+            profileDirName);
     }
 
-    static void Handler(string rootDir, string mpMissionName)
+    static void Handler(string rootDir, string mpMissionName, string profileDirectoryName)
     {
-        GenerateSplattedLoadout impl = new(Globals.DztLoggerFactory.CreateLogger<GenerateSplattedLoadout>(), rootDir, mpMissionName);
+        GenerateSplattedLoadout impl = new(Globals.DztLoggerFactory.CreateLogger<GenerateSplattedLoadout>(), rootDir, mpMissionName, profileDirectoryName);
         impl.Process();
     }
 }

@@ -27,6 +27,7 @@
             "args": [
                 "generate-splatted-ai-loadout",
                 "-r=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer",
+                "-p=config",
                 "-m=dayzOffline.chernarusplus"
             ],
             "cwd": "${workspaceFolder}/DZT/DZT.Cli",

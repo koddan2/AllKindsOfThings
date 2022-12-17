@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+    <xs:element name='types'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name='type' type='_Type' minOccurs='0'
+                    maxOccurs='unbounded'>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType
+        name="_Type">
+        <xs:choice maxOccurs="unbounded">
+            <xs:element name="lifetime" minOccurs="1" maxOccurs="1" type="xs:integer" />
+            <xs:element name="nominal" minOccurs="0" maxOccurs="1" type="xs:integer" />
+            <xs:element name="restock" minOccurs="0" maxOccurs="1" type="xs:integer" />
+            <xs:element name="min" minOccurs="0" maxOccurs="1" type="xs:integer" />
+            <xs:element name="nominal" minOccurs="0" maxOccurs="1" type="xs:integer" />
+            <xs:element name="quantmin" maxOccurs="1" type="xs:string" />
+            <xs:element name="quantmax" maxOccurs="1" type="xs:string" />
+            <xs:element name="cost" maxOccurs="1" type="xs:string" />
+            <xs:element name="flags" maxOccurs="1" type="_Flags" />
+        
+            <xs:element name="category" maxOccurs="unbounded" type="_NameType" />
+            <xs:element name="usage" maxOccurs="unbounded" type="_NameType" />
+            <xs:element name="value" maxOccurs="unbounded" type="_NameType" />
+            <xs:element name="tag" maxOccurs="unbounded" type="_NameType" />
+        </xs:choice>
+        
+        <xs:attribute name="name" type="xs:string"></xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType
+        name="_NameType">
+        <xs:attribute name="name" type="xs:string"></xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType
+        name="_Flags">
+        <xs:attribute name="count_in_cargo" type="xs:integer"></xs:attribute>
+        <xs:attribute name="count_in_hoarder" type="xs:integer"></xs:attribute>
+        <xs:attribute name="count_in_player" type="xs:integer"></xs:attribute>
+        <xs:attribute name="count_in_map" type="xs:integer"></xs:attribute>
+        <xs:attribute name="crafted" type="xs:integer"></xs:attribute>
+        <xs:attribute name="deloot" type="xs:integer"></xs:attribute>
+    </xs:complexType>
+</xs:schema>

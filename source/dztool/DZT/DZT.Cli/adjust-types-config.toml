@@ -267,7 +267,8 @@ flags = { count_in_map = "1" }
 
 ## snafu
 [[rules]]
-starts_with = "SNAFU"
+# starts_with = "SNAFU"
+in_file = "SNAFU_types.xml"
 nominal = 6
 min = 1
 lifetime = 14400
