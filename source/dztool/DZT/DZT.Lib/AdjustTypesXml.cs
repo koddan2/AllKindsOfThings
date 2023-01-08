@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Text.Json;
+using System.Xml.Linq;
 using DZT.Lib.Helpers;
 using DZT.Lib.Models;
 using Microsoft.Extensions.Logging;
@@ -58,16 +59,16 @@ public class AdjustTypesXml
             // "tacticalbelt_quad_black",
             // "tacticalbelt_quad_green",
             // "tacticalbelt_quad_tan",
-            "riflesling_quad_black",
-            "riflesling_quad_green",
+            // "riflesling_quad_black",
+            // "riflesling_quad_green",
             // "riflesling_quad_tan",
             // "riflesling_quad_winter",
-            "rifleslingfront_quad_black",
-            "rifleslingfront_quad_green",
+            // "rifleslingfront_quad_black",
+            // "rifleslingfront_quad_green",
             // "rifleslingfront_quad_tan",
             // "rifleslingfront_quad_winter",
-            "rifleslingback_quad_black",
-            "rifleslingback_quad_green",
+            // "rifleslingback_quad_black",
+            // "rifleslingback_quad_green",
             // "rifleslingback_quad_tan",
             // "rifleslingback_quad_winter",
             // "JuggernautLVL5_Suit",
@@ -193,21 +194,24 @@ public class AdjustTypesXmlConfigurationRule
 {
     public AdjustTypesXmlConfigurationRuleAction? Action { get; set; } = AdjustTypesXmlConfigurationRuleAction.Update;
     public uint? Nominal { get; set; }
+    public uint? NominalModifyDiv { get; set; }
     public uint? Min { get; set; }
+    public uint? MinModifyDiv { get; set; }
     public uint? Lifetime { get; set; }
     public uint? Restock { get; set; }
     public string? Category { get; set; }
 
     public AdjustTypesXmlConfigurationRuleFlags? Flags { get; set; }
 
-    public List<string> Values { get; set; } = new List<string>();
-    public List<string> Usages { get; set; } = new List<string>();
-    public List<string> Tags { get; set; } = new List<string>();
+    public List<string>? Values { get; set; } = null;
+    public List<string>? Usages { get; set; } = null;
+    public List<string>? Tags { get; set; } = null;
 
     /// Names for insertion
     public List<string> Names { get; set; } = new List<string>();
     public string? InFile { get; set; }
     public string? StartsWith { get; set; }
+    public string? StartsWithCaseInsensitive { get; set; }
     public List<string> NameEqualsCaseInsensitive { get; set; } = new List<string>();
     public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
     public List<string> NotNameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
@@ -215,7 +219,8 @@ public class AdjustTypesXmlConfigurationRule
 
     public override string ToString()
     {
-        return $"SW:{StartsWith}|EQ:({string.Join(":", NameEqualsCaseInsensitive)})|CON:{string.Join(":", NameContainsSubstringCaseInsensitive)}";
+        // return $"SW:{StartsWith}|EQ:({string.Join(":", NameEqualsCaseInsensitive)})|CON:{string.Join(":", NameContainsSubstringCaseInsensitive)}";
+        return JsonSerializer.Serialize(this, DefaultSettings.JsonSerializerOptions);
     }
 }
 
@@ -238,10 +243,18 @@ public static class AdjustTypesXmlConfigurationExtensions
         {
             type.Nominal = Convert.ToInt32(nominal);
         }
+        if (rule.NominalModifyDiv is uint nominalModifyDiv)
+        {
+            type.Nominal = Math.Max(0, Convert.ToInt32(type.Nominal / nominalModifyDiv));
+        }
 
         if (rule.Min is uint min)
         {
             type.Min = Convert.ToInt32(min);
+        }
+        if (rule.MinModifyDiv is uint minModifyDiv)
+        {
+            type.Min = Math.Max(0, Convert.ToInt32(type.Min / minModifyDiv));
         }
 
         if (rule.Lifetime is uint lifetime)
@@ -254,10 +267,14 @@ public static class AdjustTypesXmlConfigurationExtensions
             type.Restock = Convert.ToInt32(restock);
         }
 
-        type.Values = rule.Values.ToArray();
-        type.Usages = rule.Usages.ToArray();
-        type.Tags = rule.Tags.ToArray();
-        type.Category = rule.Category;
+        if (rule.Values is List<string> values)
+            type.Values = values.ToArray();
+        if (rule.Usages is List<string> usages)
+            type.Usages = usages.ToArray();
+        if (rule.Tags is List<string> tags)
+            type.Tags = tags.ToArray();
+        if (rule.Category is string category)
+            type.Category = category;
 
         if (rule.Flags is AdjustTypesXmlConfigurationRuleFlags flags)
         {
@@ -305,6 +322,14 @@ public static class AdjustTypesXmlConfigurationExtensions
         else if (rule.StartsWith is string startsWith)
         {
             if (!type.Name.StartsWith(startsWith))
+            {
+                match = false;
+                return match;
+            }
+        }
+        else if (rule.StartsWithCaseInsensitive is string startsWithCaseInsensitive)
+        {
+            if (!type.NameUpper.StartsWith(startsWithCaseInsensitive.ToUpperInvariant()))
             {
                 match = false;
                 return match;

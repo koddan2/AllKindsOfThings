@@ -92,8 +92,11 @@ public class SpawnableTypesHelper
                             //     ? 1
                             //     : (attch.Attribute("chance")?.Value.AsDouble() ?? 1d) * (itm.Attribute("chance")?.Value.AsDouble() ?? 1d),
                             // Chance = 1,
-                            Chance = itm.Attribute("name")?.Value?.ToUpper()?.Contains("SUPP") is true
-                                ? 0.02
+                            Chance = (
+                                itm.Attribute("name")?.Value?.ToUpper()?.Contains("SUPP") is true
+                                || 
+                                itm.Attribute("name")?.Value?.ToUpper()?.Contains("SIL") is true
+                            ) ? 0.005
                                 : 1,
                             ClassName = itm.Attribute("name").OrFail().Value,
                             ConstructionPartsBuilt = new List<object>(),

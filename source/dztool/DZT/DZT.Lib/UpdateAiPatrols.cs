@@ -72,9 +72,10 @@ public class UpdateAiPatrols
         _settings.AccuracyMax = 0.82;
         _settings.DespawnRadius = 1200;
         _settings.DespawnTime = 20;
+        _settings.RespawnTime = 300;
         _settings.MinDistRadius = 80;
         _settings.MaxDistRadius = 950;
-        _settings.ThreatDistanceLimit = 250;
+        _settings.ThreatDistanceLimit = 120;
         _settings.DamageMultiplier = 1.0;
 
         AddObjectPatrol("East", new[] {
@@ -200,6 +201,7 @@ public class UpdateAiPatrols
             p.LoadoutFile = "SplattedLoadout";
             p.ThreatDistanceLimit = -1;
             p.DamageMultiplier = -1;
+            p.RespawnTime = 300;
         });
 
         _settings.Patrols.AddRange(_extraPatrols.Patrols.SideEffect(x =>

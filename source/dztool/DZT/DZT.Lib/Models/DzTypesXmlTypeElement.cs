@@ -52,7 +52,7 @@ public record DzTypesXmlTypeElement(XElement Element)
     {
         get
         {
-            _nodes ??= Element.Nodes().OfType<XElement>().ToArray();
+            _nodes ??= Element.Nodes().OfType<XElement>();
             return _nodes;
         }
     }

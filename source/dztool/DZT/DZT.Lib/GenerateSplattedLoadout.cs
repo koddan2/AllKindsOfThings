@@ -17,10 +17,10 @@ public class GenerateSplattedLoadout
     private readonly string _profileDirectoryName = "config";
 
     private readonly CategorizedDouble _weaponChanceCategories = new(
-        minimal: 0.004, // .4%
-        small: 0.03,    // 3%
-        medium: 0.07,   // 7%
-        large: 0.12);   // 12%
+        minimal:/**/0.002,
+        small:/*  */0.015,
+        medium:/*  */0.03,
+        large:/*   */0.05);
 
     public GenerateSplattedLoadout(ILogger logger, string rootDir, string mpMissionName, string profileDirectoryName)
     {
@@ -28,9 +28,9 @@ public class GenerateSplattedLoadout
         _rootDir = rootDir;
         _mpMissionName = mpMissionName;
         _profileDirectoryName = profileDirectoryName;
-        _loadoutDir = Path.Combine(rootDir, _profileDirectoryName, "ExpansionMod/Loadouts");
-        _spawnableTypesHelper = new SpawnableTypesHelper(rootDir, mpMissionName);
-        _weaponSets = new WeaponSetDefs(rootDir, mpMissionName, _weaponChanceCategories);
+        _loadoutDir = Path.Combine(_rootDir, _profileDirectoryName, "ExpansionMod/Loadouts");
+        _spawnableTypesHelper = new SpawnableTypesHelper(_rootDir, _mpMissionName);
+        _weaponSets = new WeaponSetDefs(_rootDir, _mpMissionName, _weaponChanceCategories);
     }
 
     public string OutputFileName { get; set; } = "SplattedLoadout.json";
@@ -61,7 +61,7 @@ public class GenerateSplattedLoadout
             ClassName = "",
             Health =
             {
-                new Health {Min=0.3, Max=0.9},
+                new Health { Min = 0.3, Max = 0.9 },
             },
         };
 
@@ -118,6 +118,7 @@ public class GenerateSplattedLoadout
     {
         "BOTTLE",
         "SUPPRESS",
+        "_SIL",
         "ARMBAND",
     };
 
@@ -155,7 +156,7 @@ public class GenerateSplattedLoadout
         var hasUsage = type.Usages?.Length > 0;
         var hasNominal = type.Nominal > 0;
 
-        if (hasCategory || (hasUsage || hasNominal))
+        if (hasCategory || hasUsage || hasNominal)
         {
             return false;
         }
@@ -170,17 +171,17 @@ public class GenerateSplattedLoadout
         {
             var xd = XDocument.Load(typesXmlFile);
             var types = DzTypesXmlTypeElement.FromDocument(xd);
-            if (typesXmlFile.Contains("SNAF"))
-            {
-                var a = types.FirstOrDefault(x => x.NameUpper.Contains("50CAL"));
-                var b = a;
-            }
+            // if (typesXmlFile.Contains("SNAF"))
+            // {
+            //     var a = types.FirstOrDefault(x => x.NameUpper.Contains("50CAL"));
+            //     var b = a;
+            // }
             foreach (var type in types)
             {
-                if (type.NameUpper.Contains("50CAL"))
-                {
-                    var a = 1;
-                }
+                // if (type.NameUpper.Contains("50CAL"))
+                // {
+                //     var a = 1;
+                // }
                 if (IsForbidden(type))
                 {
                     continue;
@@ -240,12 +241,12 @@ public class GenerateSplattedLoadout
             }
             else if (x.NameUpper.Contains("TTC") || x.NameUpper.Contains("SNAFU"))
             {
-                result = 0.01 * (((float)x.Nominal) / 7f);
-                result = Math.Clamp(result, 0.007, 0.04);
+                result = 0.01 * (((float)x.Nominal) / 9f);
+                result = Math.Clamp(result, 0.001, 0.05);
             }
             else
             {
-                result = 0.01 * (((float)x.Nominal) / 4f);
+                result = 0.01 * (((float)x.Nominal) / 5f);
             }
             return result;
         }
@@ -305,6 +306,7 @@ public class GenerateSplattedLoadout
             ["Vest"] = new[] {
                 "MMG_JPC_Vest_black", "MMG_tt_Vest_black", "MMG_chestrig_black", "MMG_MK_III_Armor_black", "MMG_MK_V_Armor_black",
                 "MMG_JPC_Vest_green", "MMG_tt_Vest_green", "MMG_chestrig_green", "MMG_MK_III_Armor_green", "MMG_MK_V_Armor_green",
+                "MMG_tt_Vest_police",
                 // "JuggernautLVL5_Suit",
                 // "JuggernautLVL5_Tan",
                 "JuggernautLVL5_Black",
@@ -322,24 +324,30 @@ public class GenerateSplattedLoadout
             ["Hips"] = new[] {
                 "MMG_falcon_b1_belt_black",
                 "MMG_falcon_b1_belt_green",
+                "mmg_cargobelt_black",
+                "mmg_cargobelt_green",
+                "mmg_cargobelt_tan",
                 },
             ["Headgear"] = new[] {
                 "MMG_tactical_helmet_black", "MMG_striker_helmet_black", "mmg_armored_helmet_black",
                 "MMG_tactical_helmet_green", "MMG_striker_helmet_green", "mmg_armored_helmet_green",
+                "MMG_tactical_helmet_police",
                 },
             ["Body"] = new[] {
                 "MMG_operatorshirt_black", "MMG_tactical_shirt_black", "MMG_combatshirt_black",
                 "MMG_operatorshirt_green", "MMG_tactical_shirt_green", "MMG_combatshirt_green",
+                "MMG_combatshirt_police",
                 },
             ["Legs"] = new[] {
                 "MMG_combatpants_black", "mmg_tactical_pants_black",
                 "MMG_combatpants_green", "mmg_tactical_pants_green",
+                "MMG_combatpants_police",
                 },
         }.ToDictionary(
             kvp => kvp.Key,
             kvp => kvp.Value.Select(item => new Item
             {
-                Chance = _weaponChanceCategories.Get(CategoryValue.Large),
+                Chance = _weaponChanceCategories.Get(CategoryValue.Medium),
                 ClassName = item,
                 Quantity = new Quantity { Min = 0, Max = 0 },
                 Sets = new List<LoadoutSet>(),
@@ -410,7 +418,7 @@ public class GenerateSplattedLoadout
                 {
                     // set.Chance = 0.23;
                     // set.Chance = 0.11;
-                    set.Chance = _weaponChanceCategories.Get(CategoryValue.Small);
+                    set.Chance = _weaponChanceCategories.Get(CategoryValue.Minimal);
                 }
             })
             .Where(set =>
@@ -460,11 +468,11 @@ public class WeaponSetDefs
         MMMk47,
     };
 
-    public LoadoutSet MMMk47 => GetLoadoutSetWeapon("TTC_Mk47", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
-    public LoadoutSet MMAKM => GetLoadoutSetWeapon("TTC_AKM", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
-    public LoadoutSet AK19 => GetLoadoutSetWeapon("SNAFU_AK19", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_556x45", "Ammo_556x45", "Ammo_556x45", });
-    public LoadoutSet AK12 => GetLoadoutSetWeapon("SNAFU_AK12A", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_545x39", "Ammo_545x39", "Ammo_545x39" });
-    public LoadoutSet ScarH => GetLoadoutSetWeapon("Snafu_ScarH_Black_GUN", _weaponChanceCategories.Get(CategoryValue.Small), new[] { "Ammo_308Win", "Ammo_308Win" });
+    public LoadoutSet MMMk47 => GetLoadoutSetWeapon("TTC_Mk47", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
+    public LoadoutSet MMAKM => GetLoadoutSetWeapon("TTC_AKM", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
+    public LoadoutSet AK19 => GetLoadoutSetWeapon("SNAFU_AK19", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_556x45", "Ammo_556x45", "Ammo_556x45", });
+    public LoadoutSet AK12 => GetLoadoutSetWeapon("SNAFU_AK12A", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_545x39", "Ammo_545x39", "Ammo_545x39" });
+    public LoadoutSet ScarH => GetLoadoutSetWeapon("Snafu_ScarH_Black_GUN", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_308Win", "Ammo_308Win" });
     public LoadoutSet M_R700 => GetLoadoutSetWeapon("TTC_R700", _weaponChanceCategories.Get(CategoryValue.Medium), new[] { "Ammo_308Win", "Ammo_308Win" });
     public LoadoutSet S_R700 => GetLoadoutSetWeapon("GCGN_M700", _weaponChanceCategories.Get(CategoryValue.Medium), new[] { "Ammo_308Win", "Ammo_308Win" });
     public LoadoutSet Aek545 => GetLoadoutSetWeapon("SNAFU_AEK545_Gun", _weaponChanceCategories.Get(CategoryValue.Minimal));
