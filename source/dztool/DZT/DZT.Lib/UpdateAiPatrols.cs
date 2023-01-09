@@ -72,7 +72,7 @@ public class UpdateAiPatrols
         _settings.AccuracyMax = 0.82;
         _settings.DespawnRadius = 1200;
         _settings.DespawnTime = 20;
-        _settings.RespawnTime = 300;
+        _settings.RespawnTime = 700;
         _settings.MinDistRadius = 80;
         _settings.MaxDistRadius = 950;
         _settings.ThreatDistanceLimit = 120;
@@ -177,6 +177,23 @@ public class UpdateAiPatrols
                 p.NumberOfAI = -3;
             });
 
+
+        AddObjectPatrol(
+            "East",
+            new[]
+            {
+                "Land_Misc_FeedShack",
+                "Land_Misc_DeerStand2",
+                "Land_Misc_DeerStand1",
+            },
+            p =>
+            {
+                p.Faction = "Mercenaries";
+                p.LoadoutFile = "SplattedLoadout";
+                p.Chance = Chance(CategoryValue.Max);
+                p.NumberOfAI = -2;
+            });
+
         AddObjectPatrol("East", structureClassNames["**Military**"].ToArray(), p =>
         {
             p.Faction = "East";
@@ -201,22 +218,26 @@ public class UpdateAiPatrols
             p.LoadoutFile = "SplattedLoadout";
             p.ThreatDistanceLimit = -1;
             p.DamageMultiplier = -1;
-            p.RespawnTime = 300;
+            p.RespawnTime = -2;
         });
 
         _settings.Patrols.AddRange(_extraPatrols.Patrols.SideEffect(x =>
         {
-            x.Chance = 0.25;
+            ////x.Chance = 0.25;
         }));
 
         _settings.Patrols.ToList().ForEach(p =>
         {
+            p.Chance = 1.0;
+            p.NumberOfAI = -4;
+
             p.Faction = "Mercenaries";
             p.UnlimitedReload = 1;
             p.Behaviour = "ALTERNATE";
             p.LoadoutFile = "SplattedLoadout";
             p.ThreatDistanceLimit = -1;
             p.DamageMultiplier = -1;
+            p.RespawnTime = -2;
         });
 
         using var fs = FileManagement.Utf8WithoutBomWriter(_aiPatrolSettingsJsonFile);
