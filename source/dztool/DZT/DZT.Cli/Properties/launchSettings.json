@@ -10,7 +10,7 @@
     },
     "DZT.Cli (manipulate-territory)": {
       "commandName": "Project",
-      "commandLineArgs": "manipulate-territory -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -m=dayzOffline.chernarusplus -e=bear --set-dmin=1 --set-dmax=1"
+      "commandLineArgs": "manipulate-territory -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -m=dayzOffline.chernarusplus -e=bear --set-dmin=1 --set-dmax=3"
     },
     "DZT.Cli (update-ai-patrols)": {
       "commandName": "Project",
