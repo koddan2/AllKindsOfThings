@@ -197,6 +197,16 @@ public class GenerateSplattedLoadout
         }
     }
 
+    private bool IsSuppressor(string className)
+    {
+        return className.ToUpper().Contains("SIL") || className.ToUpper().Contains("SUPP");
+    }
+
+    private bool IsSuppressor(DzTypesXmlTypeElement typeElement)
+    {
+        return typeElement.NameUpper.Contains("SIL") || typeElement.NameUpper.Contains("SUPP");
+    }
+
     private void AssignInventoryCargo(AiLoadoutRoot splat, List<AiLoadoutRoot?> _)
     {
         var cargoCandidates = GetCargoCandidates();
@@ -221,10 +231,6 @@ public class GenerateSplattedLoadout
                 "TTC_AMMO_338",
                 "TTC_AMMOBOX_338MM_10RND"
             };
-            bool IsSuppressor(DzTypesXmlTypeElement x)
-            {
-                return x.NameUpper.Contains("SIL") || x.NameUpper.Contains("SUPP");
-            }
 
             double result = 0;
             if (x.Flags.OrFail()["crafted"] == "1")
@@ -261,7 +267,16 @@ public class GenerateSplattedLoadout
                 Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
                 ConstructionPartsBuilt = new List<object>(),
                 // InventoryAttachments = new List<InventoryAttachment>(),
-                InventoryAttachments = _spawnableTypesHelper.GetAdditionalAttachments(x.Name).ToList(),
+                InventoryAttachments = _spawnableTypesHelper.GetAdditionalAttachments(x.Name).ToList().SideEffect(x =>
+                {
+                    x.Items.ForEach(y =>
+                    {
+                        if (!IsSuppressor(y.ClassName))
+                        {
+                            y.Chance = 0.2;
+                        }
+                    });
+                }).ToList(),
                 InventoryCargo = new List<InventoryCargoModel>(),
             });
 
