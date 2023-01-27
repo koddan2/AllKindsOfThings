@@ -3,7 +3,7 @@ namespace SAK;
 
 public static class CodeReadabilityExtensions
 {
-    public static double? AsInt(this string str, CultureInfo? cultureInfo)
+    public static int? AsInt(this string str, CultureInfo? cultureInfo)
     {
         return int.TryParse(str, cultureInfo ?? CultureInfo.InvariantCulture, out int result) ? result : null;
     }
