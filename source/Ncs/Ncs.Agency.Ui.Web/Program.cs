@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Options;
-using Ncs.Model.Configuration;
+using Ncs.Model.Configuration.Keycloak;
 using SAK;
 using System.IdentityModel.Tokens.Jwt;
 
