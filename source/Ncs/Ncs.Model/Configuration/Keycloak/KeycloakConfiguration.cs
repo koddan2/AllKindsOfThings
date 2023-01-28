@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Ncs.Model.Configuration
+﻿namespace Ncs.Model.Configuration.Keycloak
 {
     public class KeycloakConfiguration
     {
@@ -8,12 +6,7 @@ namespace Ncs.Model.Configuration
         public string? Auth_Server_Url { get; set; }
         public string? Ssl_Required { get; set; }
         public string? Resource { get; set; }
-        public Credentials? Credentials { get; set; }
+        public KeycloakCredentials? Credentials { get; set; }
         public int? ConfidentialPort { get; set; }
-    }
-
-    public class Credentials
-    {
-        public string? Secret { get; set; }
     }
 }
