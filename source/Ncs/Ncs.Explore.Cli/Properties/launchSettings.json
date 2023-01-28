@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "Ncs.Explore.Cli": {
+      "commandName": "Project"
+    }
+  }
+}
