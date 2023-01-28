@@ -26,17 +26,6 @@ services:
   #   command: ["start", "--optimized"]
   #   # command: ["show-config"]
 
-  ncs-postgres:
-    hostname: ncs-postgres
-    image: docker.io/postgres:15.1-alpine
-    env_file: "./Configuration/ncs-postgres.env"
-    ports:
-      - "5432:5432/tcp"
-    volumes:
-      # - ncs-postgres:/var/lib/postgresql/data
-      - ./Instance/ncs-postgres/postgresql/data:/var/lib/postgresql/data
-    restart: unless-stopped
-
   # redis:
   #   hostname: redis
   #   image: docker.io/redis:7.0.8
@@ -79,6 +68,19 @@ services:
   #   volumes:
   #     - ./Instance/prometheus/etc:/etc/prometheus
   #     - ./Instance/prometheus/data:/prometheus
-# volumes:
+
+  ncs-postgres:
+    hostname: ncs-postgres
+    image: localhost/kustom/postgres:latest
+    build:
+      context: ./Services/postgres
+      dockerfile: Dockerfile
+    env_file: "./Configuration/ncs-postgres.env"
+    ports:
+      - "5432:5432/tcp"
+    volumes:
+      - ncs-postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+volumes:
 #   keycloak-postgres:
-#   ncs-postgres:
+  ncs-postgres:

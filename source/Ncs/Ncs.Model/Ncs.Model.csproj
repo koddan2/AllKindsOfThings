@@ -10,4 +10,10 @@
     <PackageReference Include="SmartAnalyzers.CSharpExtensions.Annotations" Version="4.2.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Database\Settlement\Commission\" />
+    <Folder Include="Database\Settlement\" />
+    <Folder Include="Database\Settlement\Payment\" />
+  </ItemGroup>
+
 </Project>

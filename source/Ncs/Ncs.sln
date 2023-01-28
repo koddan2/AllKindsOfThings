@@ -5,19 +5,25 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Model", "Ncs.Model\Ncs.Model.csproj", "{AEA0F526-5BE9-4EF4-87B9-3108D9B1C9F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Solicitor.Ui.Web", "Ncs.Solicitor.Ui.Web\Ncs.Solicitor.Ui.Web.csproj", "{E55045DB-6067-4127-97A1-FE53312592BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Agency.Ui.Web", "Ncs.Agency.Ui.Web\Ncs.Agency.Ui.Web.csproj", "{E55045DB-6067-4127-97A1-FE53312592BA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Integration.Core", "Ncs.Integration.Core\Ncs.Integration.Core.csproj", "{131D744E-DC6E-42FC-8AFF-4A27D8E42BE3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Solicitor.Data", "Ncs.Solicitor.Data\Ncs.Solicitor.Data.csproj", "{3535B9CC-664C-4C2A-B21B-0A8593E053F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Agency.Data", "Ncs.Agency.Data\Ncs.Agency.Data.csproj", "{3535B9CC-664C-4C2A-B21B-0A8593E053F4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Solicitor.Data.DbManagement", "Ncs.Solicitor.Data.DbManagement\Ncs.Solicitor.Data.DbManagement.csproj", "{3A2BE5C3-7C4C-46B0-9959-FCBA7735FB4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Agency.Data.DbManagement", "Ncs.Agency.Data.DbManagement\Ncs.Agency.Data.DbManagement.csproj", "{3A2BE5C3-7C4C-46B0-9959-FCBA7735FB4F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Explore.Cli", "Ncs.Explore.Cli\Ncs.Explore.Cli.csproj", "{3A4AD3D7-C808-4961-8C3F-D72B8F9F8685}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ncs.EventSourcing", "Ncs.EventSourcing\Ncs.EventSourcing.csproj", "{720D5FDA-510D-4D64-BF9F-68C0C8931F46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.EventSourcing", "Ncs.EventSourcing\Ncs.EventSourcing.csproj", "{720D5FDA-510D-4D64-BF9F-68C0C8931F46}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAK", "..\SAK\SAK\SAK.csproj", "{D2DB8BDA-8798-4F6D-A1CF-78A49728A9DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ncs.DebtCollectionClient.Ui.Web", "Ncs.DebtCollectionClient.Ui.Web\Ncs.DebtCollectionClient.Ui.Web.csproj", "{C586284E-851F-4288-A216-62848858B519}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ncs.DebtCollectionDebtor.Ui.Web", "Ncs.DebtCollectionDebtor.Ui.Web\Ncs.DebtCollectionDebtor.Ui.Web.csproj", "{4BF90D3C-B6E3-44C2-858F-01F47A4308C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ncs.Integration.Service.Web", "Ncs.Integration.Service.Web\Ncs.Integration.Service.Web.csproj", "{C397625B-70C1-4902-A752-FB948ECC7E77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +63,18 @@ Global
 		{D2DB8BDA-8798-4F6D-A1CF-78A49728A9DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2DB8BDA-8798-4F6D-A1CF-78A49728A9DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2DB8BDA-8798-4F6D-A1CF-78A49728A9DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C586284E-851F-4288-A216-62848858B519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C586284E-851F-4288-A216-62848858B519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C586284E-851F-4288-A216-62848858B519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C586284E-851F-4288-A216-62848858B519}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BF90D3C-B6E3-44C2-858F-01F47A4308C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BF90D3C-B6E3-44C2-858F-01F47A4308C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BF90D3C-B6E3-44C2-858F-01F47A4308C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BF90D3C-B6E3-44C2-858F-01F47A4308C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C397625B-70C1-4902-A752-FB948ECC7E77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C397625B-70C1-4902-A752-FB948ECC7E77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C397625B-70C1-4902-A752-FB948ECC7E77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C397625B-70C1-4902-A752-FB948ECC7E77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
