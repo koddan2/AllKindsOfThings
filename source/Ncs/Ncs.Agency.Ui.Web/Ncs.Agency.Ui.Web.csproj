@@ -7,16 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.2" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.26.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ncs.Agency.Data\Ncs.Agency.Data.csproj" />
-    <ProjectReference Include="..\Ncs.Integration.Core\Ncs.Integration.Core.csproj" />
+    <ProjectReference Include="..\..\SAK\SAK\SAK.csproj" />
+    <ProjectReference Include="..\Ncs.Integration.Core\Ncs.IntegrationEngine.Core.csproj" />
     <ProjectReference Include="..\Ncs.Model\Ncs.Model.csproj" />
   </ItemGroup>
 

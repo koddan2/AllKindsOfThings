@@ -1,12 +1,15 @@
 ﻿using SmartAnalyzers.CSharpExtensions.Annotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace Ncs.Model.Database.Core
+namespace Ncs.Model.Database.Abstractions
 {
     [InitRequired]
     public abstract class BaseTransactionalDatabaseModelWithIdentifiers : BaseTransactionalDatabaseModel
     {
-        public Guid UniqueId { get; set; }
-
+        [Key]
         public long Id { get; set; }
+
+        [Required]
+        public Guid UniqueId { get; set; }
     }
 }

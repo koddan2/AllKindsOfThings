@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "mig (list)": {
+      "commandName": "Project",
+      "commandLineArgs": "list"
+    },
+    "mig (up)": {
+      "commandName": "Project",
+      "commandLineArgs": "up"
+    },
+    "mig (wipe)": {
+      "commandName": "Project",
+      "commandLineArgs": "wipe"
+    },
+    "mig (dev-reset)": {
+      "commandName": "Project",
+      "commandLineArgs": "dev-reset"
+    }
+  }
+}

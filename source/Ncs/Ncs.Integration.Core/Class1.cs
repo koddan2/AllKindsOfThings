@@ -1,4 +1,4 @@
-﻿namespace Ncs.Integration.Core
+﻿namespace Ncs.IntegrationEngine.Core
 {
     public class Class1
     {

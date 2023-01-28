@@ -1,7 +1,8 @@
-﻿using SmartAnalyzers.CSharpExtensions.Annotations;
+﻿using Ncs.Model.Database.Abstractions;
+using SmartAnalyzers.CSharpExtensions.Annotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Ncs.Model.Database.Core
+namespace Ncs.Model.Database.Core.Parties
 {
     [InitRequired]
     public class DebtCollectionAgency : BaseTransactionalDatabaseModelWithIdentifiers

@@ -1,6 +1,6 @@
 ﻿using SmartAnalyzers.CSharpExtensions.Annotations;
 
-namespace Ncs.Model.Database.Core
+namespace Ncs.Model.Database.Abstractions
 {
     [InitRequired]
     public abstract class BaseTransactionalDatabaseModel

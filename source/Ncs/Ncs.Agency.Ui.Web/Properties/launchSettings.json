@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Solicitor UI Web :: http": {
+    "Agency Web UI :: http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
@@ -9,7 +9,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Solicitor UI Web :: https": {
+    "Agency Web UI :: https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

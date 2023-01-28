@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Ncs.Solicitor.Ui.Web.Pages
+namespace Ncs.Agency.Ui.Web.Pages
 {
     public class PrivacyModel : PageModel
     {
