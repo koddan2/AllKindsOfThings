@@ -1,0 +1,45 @@
+version: '3'
+services:
+  keycloak-postgres:
+    hostname: keycloak-postgres
+    image: docker.io/postgres:15.1-alpine
+    env_file: "./Configuration/keycloak-postgres.env"
+    ports:
+      - "15432:5432/tcp"
+    volumes:
+      - keycloak-postgres:/var/lib/postgresql/data
+      - ./Startup/postgres/init-db:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+  keycloak:
+    hostname: keycloak
+    image: kustom/keycloak:latest 
+    env_file: ./Configuration/keycloak.env
+    build:
+      context: ./Services/keycloak
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - 8080:8080/tcp
+      - 8443:8443/tcp
+    restart: unless-stopped
+    command: ["start", "--optimized"]
+    # command: ["show-config"]
+  ncs-postgres:
+    hostname: ncs-postgres
+    image: docker.io/postgres:15.1-alpine
+    env_file: "./Configuration/ncs-postgres.env"
+    ports:
+      - "5432:5432/tcp"
+    volumes:
+      - ncs-postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+  redis:
+    hostname: redis
+    image: docker.io/redis:7.0.8
+    command: ["redis-server", "--appendonly", "no"]
+    volumes:
+      - ./Instance/redis:/data
+    restart: unless-stopped
+volumes:
+  keycloak-postgres:
