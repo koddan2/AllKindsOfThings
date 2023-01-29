@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Model", "Ncs.Model\Ncs.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Agency.Ui.Web", "Ncs.Agency.Ui.Web\Ncs.Agency.Ui.Web.csproj", "{E55045DB-6067-4127-97A1-FE53312592BA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.IntegrationEngine.Core", "Ncs.Integration.Core\Ncs.IntegrationEngine.Core.csproj", "{131D744E-DC6E-42FC-8AFF-4A27D8E42BE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.IntegrationEngine.Core", "Ncs.IntegrationEngine.Core\Ncs.IntegrationEngine.Core.csproj", "{131D744E-DC6E-42FC-8AFF-4A27D8E42BE3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Agency.DataContext", "Ncs.Agency.DataContext\Ncs.Agency.DataContext.csproj", "{3A2BE5C3-7C4C-46B0-9959-FCBA7735FB4F}"
 EndProject
@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Claimant.Ui.Web", "Ncs.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.Debtor.Ui.Web", "Ncs.Debtor.Ui.Web\Ncs.Debtor.Ui.Web.csproj", "{4BF90D3C-B6E3-44C2-858F-01F47A4308C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.IntegrationEngine.ServiceHost", "Ncs.Integration.Service.Web\Ncs.IntegrationEngine.ServiceHost.csproj", "{C397625B-70C1-4902-A752-FB948ECC7E77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.IntegrationEngine.ServiceHost", "Ncs.IntegrationEngine.ServiceHost\Ncs.IntegrationEngine.ServiceHost.csproj", "{C397625B-70C1-4902-A752-FB948ECC7E77}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ncs.ActionEngine.ServiceHost", "Ncs.ActionEngine.Host\Ncs.ActionEngine.ServiceHost.csproj", "{A58D59B7-E70E-437A-9B9F-908425DB91F6}"
 EndProject
