@@ -34,6 +34,9 @@
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\Ncs.ActionEngine.Core\Ncs.ActionEngine.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
 	  <None Update="appsettings.ini">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
