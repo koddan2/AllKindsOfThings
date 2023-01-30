@@ -8,5 +8,7 @@ namespace Ncs.EventSourcing
 		Task<IWriteResult> StoreEventAsync(IDomainEvent domainEvent, CancellationToken cancellationToken = default);
 
 		IAsyncEnumerable<EventRecord> ReadStreamFullAsync(string aggregateName, string id, CancellationToken cancellationToken = default);
+
+		IAsyncEnumerable<EventRecord> ReadCategoryStreamFullAsync(string aggregateName, CancellationToken cancellationToken = default);
 	}
 }

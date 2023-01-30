@@ -24,10 +24,12 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="7.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Serilog" Version="2.12.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
@@ -45,6 +47,7 @@
 		<ProjectReference Include="..\..\SAK\SAK\SAK.csproj" />
 		<ProjectReference Include="..\Ncs.Domain\Ncs.Domain.csproj" />
 		<ProjectReference Include="..\Ncs.EventSourcing\Ncs.EventSourcing.csproj" />
+		<ProjectReference Include="..\Ncs.L10n\Ncs.L10n.csproj" />
 		<ProjectReference Include="..\Ncs.Model\Ncs.Model.csproj" />
 	</ItemGroup>
 

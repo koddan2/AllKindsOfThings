@@ -1,4 +1,12 @@
 ﻿@using Ncs.Agency.Ui.Web
 @using Ncs.Domain.Model
+@using Ncs.L10n
+
+@using Ncs.Agency.Ui.Web.Controllers;
+
+@using Microsoft.AspNetCore.Mvc.Localization;
+
+@inject IHtmlLocalizer<SharedBasicResource> SharedBasicLocalizer
+
 @namespace Ncs.Agency.Ui.Web.Views
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

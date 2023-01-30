@@ -1,10 +1,21 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model DebtCollectionClientAggregate
+﻿@model DebtCollectionClientAggregate
 @{
 }
 
 <div>
-    <span>@this.Model.Name</span>
+	<div>
+		<label asp-for="Id">@SharedBasicLocalizer["Identity"]</label>
+		<input disabled="disabled" asp-for="Id" />
+	</div>
+	<div>
+		<span>@SharedBasicLocalizer["Name"]: @Model.Name</span>
+	</div>
+	<div>
+		<span>@SharedBasicLocalizer["Personal identification number"]: @Model.PersonalIdentificationNumber</span>
+	</div>
+
+	<form asp-controller="Home" asp-action="SoftDelete" asp-route-id="@Model.Id">
+		<input type="hidden" disabled="disabled" name="SoftDelete.Id" value="@Model.Id" />
+		<button type="submit">@SharedBasicLocalizer["Delete"]</button>
+	</form>
 </div>

@@ -11,9 +11,6 @@ namespace Ncs.Domain.Model
 		uint Version { get; }
 
 		[Required]
-		DateTimeOffset Timestamp { get; }
-
-		[Required]
 		string AggregateName { get; }
 
 		[Required]

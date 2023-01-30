@@ -18,11 +18,26 @@ namespace Ncs.EventSourcing
 			_eventStoreClient = eventStoreClient;
 		}
 
+		async IAsyncEnumerable<EventRecord> IEventStore.ReadCategoryStreamFullAsync(string aggregateName, [EnumeratorCancellation] CancellationToken cancellationToken)
+		{
+			var readResult = _eventStoreClient.ReadStreamAsync(
+				Direction.Forwards,
+				new AggregateStreamCategory(aggregateName).FormatStreamName(),
+				StreamPosition.Start,
+				////resolveLinkTos: true,
+				cancellationToken: cancellationToken);
+
+			await foreach (var @event in readResult)
+			{
+				yield return @event.Event;
+			}
+		}
+
 		async IAsyncEnumerable<EventRecord> IEventStore.ReadStreamFullAsync(string aggregateName, string id, [EnumeratorCancellation] CancellationToken cancellationToken)
 		{
 			var readResult = _eventStoreClient.ReadStreamAsync(
 				Direction.Forwards,
-				(DebtCollectionClientAggregate.AggregateName, id).FormatStreamName(),
+				new AggregateStream(DebtCollectionClientAggregate.AggregateName, id).FormatStreamName(),
 				StreamPosition.Start,
 				cancellationToken: cancellationToken);
 
@@ -40,10 +55,10 @@ namespace Ncs.EventSourcing
 				JsonSerializer.SerializeToUtf8Bytes((object)@event)
 			);
 
-			{
-				var dat = JsonSerializer.Deserialize<DebtCollectionClientCreatedEvent_V1>(eventData.Data.ToArray());
-				var a = dat;
-			}
+			////{
+			////	var dat = JsonSerializer.Deserialize<DebtCollectionClientCreatedEvent_V1>(eventData.Data.ToArray());
+			////	var a = dat;
+			////}
 
 			var result = await _eventStoreClient.AppendToStreamAsync(
 				@event.FormatStreamName(),

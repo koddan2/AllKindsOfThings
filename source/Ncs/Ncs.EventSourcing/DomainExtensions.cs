@@ -3,6 +3,8 @@ using System.Diagnostics;
 
 namespace Ncs.EventSourcing
 {
+	public record AggregateStream(string Name, string Id);
+	public record AggregateStreamCategory(string Name);
 	public static class DomainExtensions
 	{
 		public static string FormatStreamName(this IDomainEvent @event)
@@ -10,15 +12,14 @@ namespace Ncs.EventSourcing
 			return $"{@event.AggregateName}-{@event.Id}";
 		}
 
-		public static string FormatStreamName(this (string, string) aggregateNameIdPair, string? maybePrefix = default)
+		public static string FormatStreamName(this AggregateStream metadata)
 		{
-			if (maybePrefix is string prefix)
-			{
-				Debug.Assert(new[] { "$ce-" }.Contains(prefix), "Must be valid prefix");
-				return $"{prefix}{aggregateNameIdPair.Item1}-{aggregateNameIdPair.Item2}";
-			}
+			return $"{metadata.Name}-{metadata.Id}";
+		}
 
-			return $"{aggregateNameIdPair.Item1}-{aggregateNameIdPair.Item2}";
+		public static string FormatStreamName(this AggregateStreamCategory metadata)
+		{
+			return $"$ce-{metadata.Name}";
 		}
 	}
 }

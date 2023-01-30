@@ -1,0 +1,21 @@
+﻿@model DebtCollectionClientCreateModel_V1
+@{
+}
+
+<div>
+	<form asp-controller="Home" asp-action="Create" method="post">
+		<div>
+			<label asp-for="Name"></label>
+			<input asp-for="Name">
+		</div>
+
+		<div>
+			<label asp-for="PersonalIdentificationNumber"></label>
+			<input asp-for="PersonalIdentificationNumber">
+
+		</div>
+		<div>
+			<button type="submit">@SharedBasicLocalizer["Create client"]</button>
+		</div>
+	</form>
+</div>

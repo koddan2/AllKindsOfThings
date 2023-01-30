@@ -2,6 +2,6 @@
 {
 	public class EventStoreDbConfiguration
 	{
-		public string ConnectionString { get; set; }
+		public string? ConnectionString { get; set; }
 	}
 }
