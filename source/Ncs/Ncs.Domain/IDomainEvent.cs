@@ -9,5 +9,14 @@ namespace Ncs.Domain.Model
 
 		[Required]
 		uint Version { get; }
+
+		[Required]
+		DateTimeOffset Timestamp { get; }
+
+		[Required]
+		string AggregateName { get; }
+
+		[Required]
+		string EventName { get; }
 	}
 }

@@ -102,10 +102,10 @@ internal class Application
 				var result2 = client.ReadStreamAsync(
 					Direction.Forwards,
 					//"$by_category",
-					"$streams",
+					"$ce-debt",
 					StreamPosition.Start,
 					cancellationToken: cts.Token);
-				var events2 = await result.ToListAsync(cts.Token);
+				var events2 = await result2.ToListAsync(cts.Token);
 				Log.Information("JSON: {json}", events2.ToJson());
 				foreach (var @event in events2)
 				{

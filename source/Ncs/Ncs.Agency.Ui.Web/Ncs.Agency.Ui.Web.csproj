@@ -27,6 +27,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Serilog" Version="2.12.0" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+		<PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+		<PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
 		<PackageReference Include="EventStore.Client.Grpc.Streams" Version="22.0.0" />
 		<PackageReference Include="EventStore.Client.Grpc.ProjectionManagement" Version="22.0.0" />
@@ -35,6 +44,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\SAK\SAK\SAK.csproj" />
 		<ProjectReference Include="..\Ncs.Domain\Ncs.Domain.csproj" />
+		<ProjectReference Include="..\Ncs.EventSourcing\Ncs.EventSourcing.csproj" />
 		<ProjectReference Include="..\Ncs.Model\Ncs.Model.csproj" />
 	</ItemGroup>
 

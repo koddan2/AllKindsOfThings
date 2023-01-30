@@ -1,10 +1,17 @@
 using EventStore.Client;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Ncs.EventSourcing;
 using Ncs.Model.Configuration.Keycloak;
 using SAK;
 using SAK.Files;
+using Serilog;
 using System.Reflection;
+
+Log.Logger = new LoggerConfiguration()
+	.WriteTo.Console()
+	.Enrich.FromLogContext()
+	.CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +30,14 @@ if (builder.Environment.IsDevelopment())
 // Add services to the container.
 var services = builder.Services;
 
-_ = services.AddTransient<EventStoreClient>((c) =>
+_ = services.AddLogging(loggingBuilder =>
 {
-	var esdbConnString = builder.Configuration.GetValue<string>("EventStoreDB:ConnectionString");
-	var settings = EventStoreClientSettings
-		.Create(esdbConnString);
-	var client = new EventStoreClient(settings);
-	return client;
+	_ = loggingBuilder.AddSerilog(Log.Logger);
 });
+services.AddTransient<Serilog.ILogger>((_) => Log.Logger);
+
+////var esdbConnString = builder.Configuration.GetValue<string>("EventStoreDB:ConnectionString");
+_ = services.AddNcsEventSourcingEventStoreDb(builder.Configuration.GetSection("EventStoreDB"));
 
 var mvc = services.AddMvc();
 ////var mvc = services.AddRazorPages();

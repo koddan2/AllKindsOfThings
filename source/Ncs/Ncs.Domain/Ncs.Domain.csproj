@@ -10,4 +10,8 @@
     <PackageReference Include="SmartAnalyzers.CSharpExtensions.Annotations" Version="4.2.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\SAK\SAK\SAK.csproj" />
+  </ItemGroup>
+
 </Project>

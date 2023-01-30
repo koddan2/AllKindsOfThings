@@ -4,30 +4,44 @@ using Microsoft.AspNetCore.Mvc;
 using Ncs.Domain.Model;
 using System.Text.Json;
 using SAK;
+using Ncs.EventSourcing;
+using System.Text;
 
 namespace Ncs.Agency.Ui.Web.Controllers
 {
 	public class HomeController : Controller
 	{
 		private readonly ILogger _logger;
-		private readonly EventStoreClient _eventStoreClient;
+		private readonly IEventStore _eventStore;
+		private readonly IUniqueIdGenerator _uniqueIdGenerator;
 
-		public HomeController(ILogger<HomeController> logger, EventStoreClient eventStoreClient)
+		public HomeController(ILogger<HomeController> logger, IEventStore eventStore, IUniqueIdGenerator uniqueIdGenerator)
 		{
 			_logger = logger;
-			_eventStoreClient = eventStoreClient;
+			_eventStore = eventStore;
+			_uniqueIdGenerator = uniqueIdGenerator;
 		}
 
 		public async Task<ActionResult> Index()
 		{
-			var metadata = await _eventStoreClient.GetStreamMetadataAsync("debt-collection-client");
+			await Task.CompletedTask;
 			return View();
 		}
 
-		public async Task<ActionResult> Details(string id)
+		public async Task<ActionResult> Details([FromQuery] string clientId)
 		{
-			var metadata = await _eventStoreClient.GetStreamMetadataAsync("debt-collection-client");
-			return View();
+			var currentClient = new DebtCollectionClientAggregate(clientId);
+			var eventsAsync = _eventStore.ReadStreamFullAsync(DebtCollectionClientAggregate.AggregateName, clientId);
+			//await foreach (var @event in eventsAsync)
+			//{
+			//	currentClient.Apply(@event.EventType, Encoding.UTF8.GetString(@event.Data.ToArray()));
+			//}
+			var events = await eventsAsync.ToListAsync();
+			foreach (var @event in events)
+			{
+				currentClient.Apply(@event.EventType, Encoding.UTF8.GetString(@event.Data.ToArray()));
+			}
+			return View(currentClient);
 		}
 
 		[HttpPost]
@@ -35,22 +49,12 @@ namespace Ncs.Agency.Ui.Web.Controllers
 		public async Task<ActionResult> Create([FromForm] DebtCollectionClientCreateModel_V1 modelCreate)
 		{
 			var @event = new DebtCollectionClientCreatedEvent_V1(
-				Guid.NewGuid().ToString("N"),
-				modelCreate);
-
-			var eventData = new EventData(
-				Uuid.NewUuid(),
-				nameof(DebtCollectionClientCreatedEvent_V1),
-				JsonSerializer.SerializeToUtf8Bytes(@event)
-			);
-
-			var result = await _eventStoreClient.AppendToStreamAsync(
-				"debt-collection-client",
-				StreamState.Any,
-				new[] { eventData },
-				cancellationToken: HttpContext.RequestAborted);
+				_uniqueIdGenerator.MakeOne(),
+				modelCreate.PersonalIdentificationNumber,
+				modelCreate.Name);
+			var result = await _eventStore.StoreEventAsync(@event, HttpContext.RequestAborted);
 			_logger.LogInformation("Result: {result}", result.ToJson());
-			return RedirectToAction(nameof(Index), new { ClientId = @event.Id });
+			return RedirectToAction(nameof(Details), new { clientId = @event.Id });
 		}
 	}
 }
