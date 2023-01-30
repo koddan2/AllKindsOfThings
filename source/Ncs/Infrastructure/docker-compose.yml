@@ -36,6 +36,24 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
+  eventstore.db:
+    image: docker.io/eventstore/eventstore:21.10.0-buster-slim
+    env_file:
+      - ./Configuration/esdb.env
+    environment:
+      - EVENTSTORE_EXT_TCP_PORT=1113
+      - EVENTSTORE_HTTP_PORT=2113
+    ports:
+      - "1113:1113"
+      - "2113:2113"
+    volumes:
+      - type: bind # volume
+        source: ./Instance/esdb/lib # eventstore-volume-data
+        target: /var/lib/eventstore
+      - type: bind # volume
+        source: ./Instance/esdb/log # eventstore-volume-logs
+        target: /var/log/eventstore
+
   # prometheus:
   #   hostname: prometheus
   #   image: quay.io/prometheus/prometheus:v2.41.0

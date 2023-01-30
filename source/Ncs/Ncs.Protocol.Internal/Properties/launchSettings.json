@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Ncs.Protocol.Internal": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:65014;http://localhost:65015"
+    }
+  }
+}

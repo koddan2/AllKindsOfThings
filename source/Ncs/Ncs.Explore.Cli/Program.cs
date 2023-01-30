@@ -1,3 +1,3 @@
 ﻿using Ncs.Explore.Cli;
 
-Ncs.Explore.Cli.Application.Run();
+await Ncs.Explore.Cli.Application.RunAsync();
