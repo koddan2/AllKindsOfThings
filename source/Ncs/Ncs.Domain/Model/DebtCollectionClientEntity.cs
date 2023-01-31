@@ -3,11 +3,11 @@ using System.Text.Json;
 
 namespace Ncs.Domain.Model
 {
-	public class DebtCollectionClientAggregate
+	public class DebtCollectionClientEntity : IAggregate
 	{
-		public static readonly string AggregateName = "DebtCollectionClient";
+		public static readonly string EntityName = "DebtCollectionClient";
 
-		public DebtCollectionClientAggregate(string id)
+		public DebtCollectionClientEntity(string id)
 		{
 			Id = id;
 		}
@@ -26,6 +26,18 @@ namespace Ncs.Domain.Model
 					.OrFail();
 				Name = data.Name;
 				PersonalIdentificationNumber = data.PersonalIdentificationNumber;
+			}
+		}
+
+		public bool CanApply(ICommand command)
+		{
+			if (command is CreateDebtCollectionCommand)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 	}

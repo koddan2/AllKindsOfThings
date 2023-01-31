@@ -4,6 +4,6 @@
 	{
 		public uint Version => 1;
 		public string EventName => nameof(DebtCollectionClientDeletedEvent_V1);
-		public string AggregateName => DebtCollectionClientAggregate.AggregateName;
+		public string AggregateName => DebtCollectionClientEntity.EntityName;
 	}
 }

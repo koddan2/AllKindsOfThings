@@ -37,7 +37,7 @@ namespace Ncs.EventSourcing
 		{
 			var readResult = _eventStoreClient.ReadStreamAsync(
 				Direction.Forwards,
-				new AggregateStream(DebtCollectionClientAggregate.AggregateName, id).FormatStreamName(),
+				new AggregateStream(DebtCollectionClientEntity.EntityName, id).FormatStreamName(),
 				StreamPosition.Start,
 				cancellationToken: cancellationToken);
 

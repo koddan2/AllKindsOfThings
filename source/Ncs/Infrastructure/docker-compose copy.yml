@@ -1,12 +1,40 @@
 version: "3"
 services:
-  redis:
-    hostname: redis
-    image: docker.io/redis:7.0.8
-    command: ["redis-server", "--appendonly", "no"]
+  # redis:
+  #   hostname: redis
+  #   image: docker.io/redis:7.0.8
+  #   command: ["redis-server", "--appendonly", "no"]
+  #   volumes:
+  #     - ./Instance/redis:/data
+  #   restart: unless-stopped
+
+  zookeeper:
+    hostname: zookeeper
+    image: docker.io/confluentinc/cp-zookeeper:7.3.0
     volumes:
-      - ./Instance/redis:/data
-    restart: unless-stopped
+      - ./Instance/zookeeper:/var/lib/zookeeper/data
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 22181:2181
+  broker:
+    image: docker.io/confluentinc/cp-kafka:7.3.0
+    container_name: broker
+    volumes:
+      - ./Instance/kafka:/var/lib/kafka/data
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
   eventstore.db:
     image: docker.io/eventstore/eventstore:21.10.0-buster-slim
@@ -25,6 +53,15 @@ services:
       - type: bind # volume
         source: ./Instance/esdb/log # eventstore-volume-logs
         target: /var/log/eventstore
+
+  # prometheus:
+  #   hostname: prometheus
+  #   image: quay.io/prometheus/prometheus:v2.41.0
+  #   ports:
+  #     - 9090:9090/tcp
+  #   volumes:
+  #     - ./Instance/prometheus/etc:/etc/prometheus
+  #     - ./Instance/prometheus/data:/prometheus
 
   keycloak-postgres:
     hostname: keycloak-postgres
@@ -52,6 +89,7 @@ services:
       - 8443:8443/tcp
     restart: unless-stopped
     command: ["start", "--optimized"]
+    # command: ["show-config"]
 
   ncs-postgres:
     hostname: ncs-postgres
@@ -66,5 +104,5 @@ services:
       - ncs-postgres:/var/lib/postgresql/data
     restart: unless-stopped
 volumes:
-  keycloak-postgres:
+#   keycloak-postgres:
   ncs-postgres:

@@ -2,6 +2,13 @@
 
 namespace Ncs.Domain.Model
 {
+	public interface IAggregate
+	{
+		string Id { get; }
+		bool CanApply(ICommand command);
+		void Apply(string eventName, string eventData);
+	}
+	public interface ICommand { }
 	public interface IDomainEvent
 	{
 		[Required]

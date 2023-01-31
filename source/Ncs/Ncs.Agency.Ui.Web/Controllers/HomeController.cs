@@ -18,19 +18,26 @@ namespace Ncs.Agency.Ui.Web.Controllers
 		private readonly ILogger _logger;
 		private readonly IEventStore _eventStore;
 		private readonly IUniqueIdGenerator _uniqueIdGenerator;
+		private readonly DebtCollectionClientCommandHandler _debtCollectionClientCommandHandler;
 		private readonly IStringLocalizer<SharedBasicResource> _sharedBasicLocalizer;
 
-		public HomeController(ILogger<HomeController> logger, IStringLocalizer<SharedBasicResource> sharedBasicLocalizer, IEventStore eventStore, IUniqueIdGenerator uniqueIdGenerator)
+		public HomeController(
+			ILogger<HomeController> logger,
+			IStringLocalizer<SharedBasicResource> sharedBasicLocalizer,
+			IEventStore eventStore,
+			IUniqueIdGenerator uniqueIdGenerator,
+			DebtCollectionClientCommandHandler debtCollectionClientCommandHandler)
 		{
 			_logger = logger;
 			_sharedBasicLocalizer = sharedBasicLocalizer;
 			_eventStore = eventStore;
 			_uniqueIdGenerator = uniqueIdGenerator;
+			_debtCollectionClientCommandHandler = debtCollectionClientCommandHandler;
 		}
 
 		public async Task<ActionResult> Index()
 		{
-			var eventsAsync = _eventStore.ReadCategoryStreamFullAsync(DebtCollectionClientAggregate.AggregateName);
+			var eventsAsync = _eventStore.ReadCategoryStreamFullAsync(DebtCollectionClientEntity.EntityName);
 			var events = await eventsAsync.ToListAsync();
 
 			List<ListEntry> result = new();
@@ -54,8 +61,8 @@ namespace Ncs.Agency.Ui.Web.Controllers
 		[Route("Details/{id}")]
 		public async Task<ActionResult> Details([FromRoute] string id)
 		{
-			var currentClient = new DebtCollectionClientAggregate(id);
-			var eventsAsync = _eventStore.ReadStreamFullAsync(DebtCollectionClientAggregate.AggregateName, id);
+			var currentClient = new DebtCollectionClientEntity(id);
+			var eventsAsync = _eventStore.ReadStreamFullAsync(DebtCollectionClientEntity.EntityName, id);
 			var events = await eventsAsync.ToListAsync();
 			foreach (var @event in events)
 			{
@@ -75,13 +82,12 @@ namespace Ncs.Agency.Ui.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> Create([FromForm] DebtCollectionClientCreateModel_V1 modelCreate)
 		{
-			var @event = new DebtCollectionClientCreatedEvent_V1(
-				_uniqueIdGenerator.MakeOne(),
+			var entity = new DebtCollectionClientEntity(_uniqueIdGenerator.MakeOne());
+			var command = new CreateDebtCollectionCommand(
 				modelCreate.PersonalIdentificationNumber,
 				modelCreate.Name);
-			var result = await _eventStore.StoreEventAsync(@event, HttpContext.RequestAborted);
-			_logger.LogInformation("Result: {result}", result.ToJson());
-			return RedirectToAction(nameof(Details), new { @event.Id });
+			await _debtCollectionClientCommandHandler.Handle(entity, command);
+			return RedirectToAction(nameof(Details), new { entity.Id });
 		}
 
 		[Route("SoftDelete/{id}")]

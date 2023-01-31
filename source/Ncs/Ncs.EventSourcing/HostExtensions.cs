@@ -21,6 +21,7 @@ namespace Ncs.EventSourcing
 				return client;
 			})
 				.AddScoped<IEventStore, EventStoreDbMediator>()
+				.AddScoped<DebtCollectionClientCommandHandler>()
 				.AddTransient<IUniqueIdGenerator, ShortGuidGenerator>()
 				;
 		}
