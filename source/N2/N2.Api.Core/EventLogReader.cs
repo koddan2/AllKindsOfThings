@@ -18,7 +18,7 @@ public abstract class EventLogReader<TAggregate, TCommand, TEvent>
 
 	public async Task<IEnumerable<EventReadResult>> ReadFrom(string identity, ulong position)
 	{
-		return await _eventReader.ReadFrom(NewAggregate(identity).GetStreamNameForAggregate(), position);
+		return await _eventReader.ReadFromPosition(NewAggregate(identity).GetStreamNameForAggregate(), position);
 	}
 
 	public IAsyncEnumerable<EventReadResult> ReadAllEvents(string eventType, ulong position, ulong count)
@@ -30,6 +30,6 @@ public abstract class EventLogReader<TAggregate, TCommand, TEvent>
 			// etc.
 		}.Contains(eventType), "Must be of correct event type");
 #endif
-		return _eventReader.ReadAllEvents(eventType, position, count);
+		return _eventReader.ReadAllEventsOfType(eventType, position, count);
 	}
 }

@@ -18,7 +18,7 @@ public class CaseAggregateCommandHandler : ICommandHandler<CaseAggregate, ICaseC
 		IEnumerable<EventReadResult> events;
 		if (aggregate.Revision > 0)
 		{
-			events = await _reader.ReadFrom(
+			events = await _reader.ReadFromPosition(
 			   aggregate.GetStreamNameForAggregate(),
 			   aggregate.Revision);
 		}
@@ -30,6 +30,7 @@ public class CaseAggregateCommandHandler : ICommandHandler<CaseAggregate, ICaseC
 		}
 		aggregate.Hydrate(events);
 	}
+
 	public async Task Handle(CaseAggregate aggregate, ICaseCommand command)
 	{
 		await Hydrate(aggregate, command is CreateNewCaseCommand ? ExpectedStateOfStream.Absent : ExpectedStateOfStream.Exist);

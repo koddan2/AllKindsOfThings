@@ -1,6 +1,7 @@
 ﻿using N2.Domain.DcCase.Commands;
 using N2.Domain.DcCase.Events;
 using N2.Model;
+using System.Net.Http.Headers;
 
 namespace N2.Domain.DcCase;
 public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
@@ -21,6 +22,8 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 
 	public DcCaseEntity? Root { get; private set; }
 	private DcCaseEntity CheckedRoot => Root ?? throw new AggregateRootIsNullException();
+
+	public CollectionProcess? CollectionProcess { get; private set; }
 
 	public ISet<DebtorCost> Costs { get; } = new HashSet<DebtorCost>();
 	public IList<DcCaseNote> Notes { get; } = new List<DcCaseNote>();
@@ -48,6 +51,7 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 
 		if (command is CreateNewCaseCommand createNewCaseCommand)
 		{
+			ValidateIsOkForCreate(createNewCaseCommand);
 			var @event = new CaseCreated(
 				CaseId,
 				createNewCaseCommand.ClientIdentity,
@@ -62,6 +66,20 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 		else if (command is GenerateNewPaymentReferenceCommand)
 		{
 			await AcceptGenerateNewPaymentReference(sender);
+		}
+	}
+
+	private void ValidateIsOkForCreate(CreateNewCaseCommand createNewCaseCommand)
+	{
+		List<AggregateInvariantViolated> violations = new();
+		if (createNewCaseCommand.DebtIdentities?.Any() is false)
+		{
+			violations.Add(new AggregateInvariantViolated("Missing debts", nameof(CreateNewCaseCommand.DebtIdentities)));
+		}
+		// etc
+		if (violations.Any())
+		{
+			throw new AggregateInvariantViolationException() { ViolatedInvariants = violations };
 		}
 	}
 
@@ -83,7 +101,6 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 				caseCreated.ClientIdentity,
 				caseCreated.DebtorIdentities,
 				caseCreated.DebtIdentities,
-				caseCreated.CollectionProcess,
 				caseCreated.PaymentReference);
 		}
 		else if (@event is PaymentReferenceGenerated paymentReferenceGenerated)

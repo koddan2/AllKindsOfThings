@@ -6,9 +6,9 @@ namespace N2.Domain.DcCase.Events;
 
 [N2Event]
 public readonly record struct CaseCreated(
-	string Identity,
-	string ClientIdentity,
+	[Required]string Identity,
+	[Required]string ClientIdentity,
 	[property: MinLength(1)] ISet<string> DebtorIdentities,
 	[property: MinLength(1)] ISet<string> DebtIdentities,
-	CollectionProcess CollectionProcess,
-	string PaymentReference) : ICaseEvent;
+	CollectionProcess? CollectionProcess,
+	[Required]string PaymentReference) : ICaseEvent;

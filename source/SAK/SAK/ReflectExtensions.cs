@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-#nullable enable
 namespace SAK
 {
     /// <summary>

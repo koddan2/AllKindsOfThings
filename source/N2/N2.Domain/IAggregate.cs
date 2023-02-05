@@ -5,8 +5,8 @@
 		string Identity { get; }
 		ulong Revision { get; }
 
-		void Hydrate(IEnumerable<EventReadResult> events);
+		internal void Hydrate(IEnumerable<EventReadResult> events);
 
-		Task Receive(IEventSender sender, TCommand command);
+		internal Task Receive(IEventSender sender, TCommand command);
 	}
 }

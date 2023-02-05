@@ -1,4 +1,7 @@
 ﻿namespace N2.EventSourcing
 {
-	public record N2EventSourcingConfiguration(string EventStoreDbConnectionString);
+	public class N2EventSourcingConfiguration
+	{
+		public string? EventStoreDbConnectionString { get; init; }
+	}
 }

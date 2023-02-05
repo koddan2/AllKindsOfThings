@@ -38,6 +38,7 @@ public static class WindowsUtilities
     {
         [WellKnownWindowsSymbolicPaths.AllUsersProfile] = "%ALLUSERSPROFILE%",
         [WellKnownWindowsSymbolicPaths.AppData] = "%APPDATA%",
+        // etc.
     };
 
     /// <summary>

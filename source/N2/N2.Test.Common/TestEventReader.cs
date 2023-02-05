@@ -12,13 +12,13 @@ namespace N2.Test.Common
 			_eventLog = eventLog;
 		}
 
-		async Task<IEnumerable<EventReadResult>> IEventReader.ReadFrom(string streamName, ulong position)
+		async Task<IEnumerable<EventReadResult>> IEventReader.ReadFromPosition(string streamName, ulong position)
 		{
 			await ValueTask.CompletedTask;
 			return ReadInner(streamName, position);
 		}
 
-		async IAsyncEnumerable<EventReadResult> IEventReader.ReadAllEvents(string eventType, ulong position, ulong count)
+		async IAsyncEnumerable<EventReadResult> IEventReader.ReadAllEventsOfType(string eventType, ulong position, ulong count)
 		{
 			await ValueTask.CompletedTask;
 			var outerCounter = 0UL;
@@ -35,7 +35,10 @@ namespace N2.Test.Common
 				var counter = 0UL;
 				foreach (var item in kvp.Value)
 				{
-					yield return new EventReadResult(item, counter++);
+					if (item.GetType().Name == eventType)
+					{
+						yield return new EventReadResult(item, counter++);
+					}
 				}
 			}
 		}

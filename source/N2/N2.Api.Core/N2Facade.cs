@@ -23,7 +23,7 @@ public class N2Facade
 		return await _caseAggregateEventReader.ReadFrom(caseIdentity, position);
 	}
 
-	public async Task<IEnumerable<EventReadResult>> DcCaseGetLogOf(string eventType, ulong skip, ulong take)
+	public async Task<IEnumerable<EventReadResult>> DcCaseGetLogOf(string eventType, ulong skip, ulong take = ulong.MaxValue)
 	{
 		var result = await _caseAggregateEventReader.ReadAllEvents(eventType, skip, take).ToListAsync();
 		return result;
@@ -36,6 +36,13 @@ public class N2Facade
 		{
 			ClientIdentity = model.ClientIdentity,
 		};
+		await _caseAggregateCommandHandler.Handle(aggregate, command);
+	}
+
+	public async Task DcCaseGenerateNewPaymentRef(string caseId)
+	{
+		var aggregate = new CaseAggregate(caseId);
+		var command = new GenerateNewPaymentReferenceCommand();
 		await _caseAggregateCommandHandler.Handle(aggregate, command);
 	}
 }

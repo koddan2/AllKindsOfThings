@@ -23,7 +23,7 @@ namespace N2.EventSourcing
 			_registry = registry;
 		}
 
-		async Task<IEnumerable<EventReadResult>> IEventReader.ReadFrom(string streamName, ulong position)
+		async Task<IEnumerable<EventReadResult>> IEventReader.ReadFromPosition(string streamName, ulong position)
 		{
 			var readStreamResult = _client.ReadStreamAsync(
 				Direction.Forwards,
@@ -35,7 +35,7 @@ namespace N2.EventSourcing
 			return resolvedEvents.Select(Deserialize);
 		}
 
-		IAsyncEnumerable<EventReadResult> IEventReader.ReadAllEvents(string eventType, ulong position, ulong count)
+		IAsyncEnumerable<EventReadResult> IEventReader.ReadAllEventsOfType(string eventType, ulong position, ulong count)
 		{
 			var eventMetadata = new EventMetadata(eventType);
 			var readStreamResult = _client.ReadStreamAsync(
@@ -50,12 +50,12 @@ namespace N2.EventSourcing
 				{
 					if (eventMetadata.Validate(x.Event) is false)
 					{
-						throw new InvalidOperationException("The name does not ");
+						throw new InvalidOperationException($"Requested events of eventType {eventType} but found a {x.Event.GetType().Name}.");
 					}
 					return true;
 				})
 #endif
-				;
+				; // ends the return
 		}
 
 		async Task<IEnumerable<EventReadResult>> IEventReader.Read(string streamName, ExpectedStateOfStream expectedState)
@@ -71,16 +71,22 @@ namespace N2.EventSourcing
 				case ExpectedStateOfStream.Absent:
 					if (readState != ReadState.StreamNotFound)
 					{
-						throw new ExpectationFailedException($"Expectation was: {expectedState} but stream exists.");
+						throw new ExpectationFailedException($"Expectation was: {expectedState} but stream exists.")
+						{
+							ErrorCode = ExpectationFailedException.Code.StreamExists,
+						};
 					}
 					else
 					{
-						break;
+						return Array.Empty<EventReadResult>();
 					}
 				case ExpectedStateOfStream.Exist:
 					if (readState != ReadState.Ok)
 					{
-						throw new ExpectationFailedException($"Expectation was: {expectedState} but stream does not exist.");
+						throw new ExpectationFailedException($"Expectation was: {expectedState} but stream does not exist.")
+						{
+							ErrorCode = ExpectationFailedException.Code.StreamDoesNotExist,
+						};
 					}
 					else
 					{
@@ -110,7 +116,7 @@ namespace N2.EventSourcing
 		{
 			var json = JsonSerializer.Serialize((object)@event, _JsonSerializerOptions);
 			var body = Encoding.UTF8.GetBytes(json);
-			var eventData = new EventData(Uuid.NewUuid(), streamName, body);
+			var eventData = new EventData(Uuid.NewUuid(), @event.GetType().Name, body);
 
 			var writeResult = await _client.AppendToStreamAsync(
 				streamName,

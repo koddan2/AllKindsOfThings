@@ -17,12 +17,14 @@ namespace SAK
     /// </example>
     /// <seealso cref="https://github.com/dotnet/roslyn/issues/47066#issuecomment-1124926236"/>
     /// </summary>
+    [Serializable]
     public class InvariantFailedException : Exception
     {
-        public InvariantFailedException(string? msg = null)
-            : base(msg ?? "An invariant was violated")
-        {
-
-        }
+        public InvariantFailedException() { }
+        public InvariantFailedException(string message) : base(message) { }
+        public InvariantFailedException(string message, Exception inner) : base(message, inner) { }
+        protected InvariantFailedException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 }

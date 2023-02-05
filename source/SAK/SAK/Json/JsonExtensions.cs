@@ -2,9 +2,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SAK;
+namespace SAK.Deser;
 
-public static class TextExtensions
+public static class JsonExtensions
 {
     private static readonly JsonSerializerOptions _DefaultPretty = new JsonSerializerOptions { WriteIndented = true };
 

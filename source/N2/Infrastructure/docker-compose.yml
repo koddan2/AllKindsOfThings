@@ -1,0 +1,70 @@
+version: "3"
+services:
+  redis:
+    hostname: redis
+    image: docker.io/redis:7.0.8
+    command: ["redis-server", "--appendonly", "no"]
+    volumes:
+      - ./Instance/redis:/data
+    restart: unless-stopped
+
+  eventstore.db:
+    image: docker.io/eventstore/eventstore:21.10.0-buster-slim
+    env_file:
+      - ./Configuration/esdb.env
+    environment:
+      - EVENTSTORE_EXT_TCP_PORT=1113
+      - EVENTSTORE_HTTP_PORT=2113
+    ports:
+      - "1113:1113"
+      - "2113:2113"
+    volumes:
+      - type: bind # volume
+        source: ./Instance/esdb/lib # eventstore-volume-data
+        target: /var/lib/eventstore
+      - type: bind # volume
+        source: ./Instance/esdb/log # eventstore-volume-logs
+        target: /var/log/eventstore
+
+  keycloak-postgres:
+    hostname: keycloak-postgres
+    image: docker.io/postgres:15.1-alpine
+    env_file: "./Configuration/keycloak-postgres.env"
+    ports:
+      - "15432:5432/tcp"
+    volumes:
+      - keycloak-postgres:/var/lib/postgresql/data
+      - ./Startup/postgres/init-db:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+  keycloak:
+    hostname: keycloak
+    image: kustom/keycloak:latest
+    env_file: ./Configuration/keycloak.env
+    build:
+      context: ./Services/keycloak
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./Instance/keycloak/dump:/dump
+    ports:
+      - 8080:8080/tcp
+      - 8443:8443/tcp
+    restart: unless-stopped
+    command: ["start", "--optimized"]
+
+  ncs-postgres:
+    hostname: ncs-postgres
+    image: localhost/kustom/postgres:latest
+    build:
+      context: ./Services/postgres
+      dockerfile: Dockerfile
+    env_file: "./Configuration/ncs-postgres.env"
+    ports:
+      - "5432:5432/tcp"
+    volumes:
+      - ncs-postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+volumes:
+  keycloak-postgres:
+  ncs-postgres:

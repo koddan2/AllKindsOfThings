@@ -7,6 +7,5 @@ namespace N2.Model
 		string ClientIdentity,
 		[property: MinLength(1)] ISet<string> DebtorIdentities,
 		[property: MinLength(1)] ISet<string> DebtIdentities,
-		CollectionProcess CollectionProcess,
 		string PaymentReference) : IEntity;
 }

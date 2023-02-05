@@ -30,7 +30,9 @@ namespace N2.EventSourcing
 			{
 				if (type.GetCustomAttribute<N2EventAttribute>() is not null)
 				{
+#if DEBUG
 					ValidateType(type);
+#endif
 					eventsDict[type.Name] = type;
 				}
 			}
