@@ -20,20 +20,30 @@ namespace N2.Domain.Test
 		public async Task Test1()
 		{
 			var caseId = MakeUniqueIdentityString();
-			var initialPaymentRef = "";
+			string? initialPaymentRef;
 			{
-				var agg = new CaseAggregate(caseId);
+				var agg = await new CaseAggregate(caseId).Hydrate(reader: _eventReader, ExpectedStateOfStream.Absent);
 				agg.Revision.Should().Be(0);
 				await agg.Handle(sender: _eventSender, new CreateNewCaseCommand());
-				agg.Root!.PaymentReference.Should().NotBeNull();
+				agg.Root!.PaymentReference.Should().NotBeNullOrWhiteSpace();
 				Console.WriteLine($"{agg.Root}");
 				initialPaymentRef = agg.Root!.PaymentReference;
 			}
 			{
 				var agg = await new CaseAggregate(caseId).Hydrate(reader: _eventReader);
 				agg.Revision.Should().Be(1);
-				agg.Root!.PaymentReference.Should().NotBeNull();
+				agg.Root!.PaymentReference.Should().NotBeNullOrWhiteSpace();
 				agg.Root!.PaymentReference.Should().Be(initialPaymentRef);
+				Console.WriteLine($"{agg.Root}");
+			}
+			{
+				var agg = await new CaseAggregate(caseId).Hydrate(reader: _eventReader);
+				agg.Revision.Should().Be(1);
+				await agg.Handle(_eventSender, new GenerateNewPaymentReferenceCommand());
+				await agg.Hydrate(reader: _eventReader);
+				agg.Revision.Should().Be(2);
+				agg.Root!.PaymentReference.Should().NotBeNullOrWhiteSpace();
+				agg.Root!.PaymentReference.Should().NotBe(initialPaymentRef);
 				Console.WriteLine($"{agg.Root}");
 			}
 		}

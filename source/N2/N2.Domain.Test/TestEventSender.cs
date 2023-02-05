@@ -9,7 +9,7 @@
 			_eventLog = eventLog;
 		}
 
-		async Task IEventSender.Send(string streamName, IEvent @event)
+		async Task<ulong> IEventSender.Send(string streamName, IEvent @event)
 		{
 			await Task.CompletedTask;
 			IList<IEvent> eventList;
@@ -24,6 +24,7 @@
 			}
 
 			eventList.Add(@event);
+			return (ulong)eventList.Count;
 		}
 	}
 }

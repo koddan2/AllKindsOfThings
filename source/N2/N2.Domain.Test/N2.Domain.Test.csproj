@@ -18,6 +18,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="EventStore.Client.Grpc.Streams" Version="22.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\N2.Domain\N2.Domain.csproj" />
 		<ProjectReference Include="..\N2.Model\N2.Model.csproj" />
 	</ItemGroup>

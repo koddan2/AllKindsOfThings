@@ -1,4 +1,6 @@
-﻿namespace N2.Domain.Test
+﻿using N2.EventSourcing.Common;
+
+namespace N2.Domain.Test
 {
 	internal class TestEventReader : IEventReader
 	{
@@ -9,10 +11,27 @@
 			_eventLog = eventLog;
 		}
 
-		async Task<IEnumerable<IEvent>> IEventReader.Read(string id)
+		async Task<IEnumerable<EventReadResult>> IEventReader.Read(string streamName, ExpectedStateOfStream expectedState)
 		{
-			await Task.CompletedTask;
-			return _eventLog.Database[id].ToList();
+			await ValueTask.CompletedTask;
+			return expectedState switch
+			{
+				ExpectedStateOfStream.Any => _eventLog.Database.ContainsKey(streamName)
+					? ReadInner(streamName)
+					: Array.Empty<EventReadResult>(),
+				ExpectedStateOfStream.Exist => _eventLog.Database.ContainsKey(streamName)
+					? ReadInner(streamName)
+					: throw new ExpectationFailedException($"Expectation was: {expectedState} but stream does not exist."),
+				ExpectedStateOfStream.Absent => _eventLog.Database.ContainsKey(streamName)
+					? throw new ExpectationFailedException($"Expectation was: {expectedState} but stream exists.")
+					: Array.Empty<EventReadResult>(),
+			};
+		}
+
+		private IEnumerable<EventReadResult> ReadInner(string streamName)
+		{
+			return _eventLog.Database[streamName]
+				.Select((x, i) => new EventReadResult(x, (ulong)i + 1));
 		}
 	}
 }

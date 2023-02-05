@@ -2,6 +2,6 @@
 {
 	public interface IEventSender
 	{
-		Task Send(string streamName, IEvent @event);
+		Task<ulong> Send(string streamName, IEvent @event);
 	}
 }
