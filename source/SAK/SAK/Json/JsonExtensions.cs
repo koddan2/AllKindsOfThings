@@ -6,7 +6,7 @@ namespace SAK.Deser;
 
 public static class JsonExtensions
 {
-    private static readonly JsonSerializerOptions _DefaultPretty = new JsonSerializerOptions { WriteIndented = true };
+    private static readonly JsonSerializerOptions _DefaultPretty = new() { WriteIndented = true };
 
     public static string ToJson<T>(this T obj, JsonSerializerOptions serializerOptions) =>
         JsonSerializer.Serialize(obj, serializerOptions);

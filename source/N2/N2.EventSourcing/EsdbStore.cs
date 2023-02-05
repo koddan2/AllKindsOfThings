@@ -1,6 +1,7 @@
 ﻿using EventStore.Client;
 using Microsoft.Extensions.Options;
 using N2.Domain;
+using N2.Domain.Services;
 using N2.EventSourcing.Common;
 using System.Text;
 using System.Text.Json;

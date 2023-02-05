@@ -2,6 +2,7 @@ using FluentAssertions;
 using N2.Domain;
 using N2.Domain.DcCase;
 using N2.Domain.DcCase.Events;
+using N2.Domain.Services.DcCase;
 using N2.Test.Common;
 
 namespace N2.Api.Core.Test
@@ -61,8 +62,8 @@ namespace N2.Api.Core.Test
 					toCheckGenerate.AddRange(events);
 				}
 			}
-			toCheckCreate.Count().Should().Be(count);
-			toCheckGenerate.Count().Should().Be(count * 2);
+			toCheckCreate.Count.Should().Be(count);
+			toCheckGenerate.Count.Should().Be(count * 2);
 		}
 	}
 }

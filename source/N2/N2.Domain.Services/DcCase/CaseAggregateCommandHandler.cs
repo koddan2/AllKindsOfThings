@@ -1,6 +1,8 @@
-﻿using N2.Domain.DcCase.Commands;
+﻿using N2.Domain.DcCase;
+using N2.Domain.DcCase.Commands;
+using N2.Domain.Services;
 
-namespace N2.Domain.DcCase;
+namespace N2.Domain.Services.DcCase;
 
 public class CaseAggregateCommandHandler : ICommandHandler<CaseAggregate, ICaseCommand>
 {
@@ -34,6 +36,6 @@ public class CaseAggregateCommandHandler : ICommandHandler<CaseAggregate, ICaseC
 	public async Task Handle(CaseAggregate aggregate, ICaseCommand command)
 	{
 		await Hydrate(aggregate, command is CreateNewCaseCommand ? ExpectedStateOfStream.Absent : ExpectedStateOfStream.Exist);
-		await aggregate.Receive(_sender, command);
+		await aggregate.ReceiveCommand(async (@event) => await _sender.Send(aggregate.GetStreamNameForAggregate(), @event), command);
 	}
 }

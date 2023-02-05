@@ -1,6 +1,7 @@
 using FluentAssertions;
 using N2.Domain.DcCase;
 using N2.Domain.DcCase.Commands;
+using N2.Domain.Services.DcCase;
 using N2.Test.Common;
 
 namespace N2.Domain.Test

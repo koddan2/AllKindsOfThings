@@ -1,11 +1,6 @@
-﻿namespace N2.Domain;
+﻿using N2.Domain;
 
-public enum ExpectedStateOfStream
-{
-	Any,
-	Exist,
-	Absent,
-}
+namespace N2.Domain.Services;
 public interface IEventReader
 {
 	Task<IEnumerable<EventReadResult>> Read(string streamName, ExpectedStateOfStream expectedState = ExpectedStateOfStream.Any);

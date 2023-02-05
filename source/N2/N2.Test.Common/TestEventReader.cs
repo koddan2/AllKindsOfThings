@@ -1,4 +1,5 @@
 ﻿using N2.Domain;
+using N2.Domain.Services;
 using N2.EventSourcing.Common;
 
 namespace N2.Test.Common

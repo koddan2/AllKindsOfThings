@@ -1,4 +1,4 @@
-﻿namespace N2.Domain;
+﻿namespace N2.Domain.Services;
 
 public interface ICommandHandler<TAggregate, TCommand>
 {

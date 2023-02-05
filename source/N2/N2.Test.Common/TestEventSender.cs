@@ -1,4 +1,5 @@
 ﻿using N2.Domain;
+using N2.Domain.Services;
 
 namespace N2.Test.Common
 {

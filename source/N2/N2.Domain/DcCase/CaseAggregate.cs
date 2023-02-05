@@ -1,7 +1,6 @@
 ﻿using N2.Domain.DcCase.Commands;
 using N2.Domain.DcCase.Events;
 using N2.Model;
-using System.Net.Http.Headers;
 
 namespace N2.Domain.DcCase;
 public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
@@ -13,12 +12,10 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 		CaseId = caseId;
 	}
 
+	public string CaseId { get; }
+
 	public string Identity => CaseId;
 	public ulong Revision { get; set; } = 0UL;
-
-	public string CaseId { get; }
-	private string StreamName => this.GetStreamNameForAggregate();
-
 
 	public DcCaseEntity? Root { get; private set; }
 	private DcCaseEntity CheckedRoot => Root ?? throw new AggregateRootIsNullException();
@@ -42,7 +39,7 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 		_hydrated = true;
 	}
 
-	public async Task Receive(IEventSender sender, ICaseCommand command)
+	public async Task ReceiveCommand(Func<ICaseEvent, Task<ulong>> send, ICaseCommand command)
 	{
 		if (!_hydrated)
 		{
@@ -59,17 +56,17 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 				createNewCaseCommand.DebtIdentities,
 				createNewCaseCommand.CollectionProcess,
 				GeneratePaymentReference());
-			var revision = await sender.Send(StreamName, @event);
+			var revision = await send(@event);
 			Apply(@event);
 			Revision = revision;
 		}
 		else if (command is GenerateNewPaymentReferenceCommand)
 		{
-			await AcceptGenerateNewPaymentReference(sender);
+			await AcceptGenerateNewPaymentReference(send);
 		}
 	}
 
-	private void ValidateIsOkForCreate(CreateNewCaseCommand createNewCaseCommand)
+	private static void ValidateIsOkForCreate(CreateNewCaseCommand createNewCaseCommand)
 	{
 		List<AggregateInvariantViolated> violations = new();
 		if (createNewCaseCommand.DebtIdentities?.Any() is false)
@@ -83,11 +80,11 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 		}
 	}
 
-	private async Task AcceptGenerateNewPaymentReference(IEventSender sender)
+	private async Task AcceptGenerateNewPaymentReference(Func<ICaseEvent, Task<ulong>> send)
 	{
 		var newRef = GeneratePaymentReference();
 		var @event = new PaymentReferenceGenerated(newRef);
-		var revision = await sender.Send(StreamName, @event);
+		var revision = await send(@event);
 		Apply(@event);
 		Revision = revision;
 	}

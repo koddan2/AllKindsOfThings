@@ -1,4 +1,6 @@
-﻿namespace N2.Domain
+﻿using N2.Domain;
+
+namespace N2.Domain.Services
 {
 	public interface IEventSender
 	{

@@ -1,11 +1,14 @@
 ﻿using N2.Domain;
 using N2.Domain.DcCase.Events;
+using N2.Domain.Services;
+using N2.EventSourcing;
 using System.Diagnostics;
 
 namespace N2.Api.Core;
 
 public abstract class EventLogReader<TAggregate, TCommand, TEvent>
 	where TAggregate : IAggregate<TCommand, TEvent>
+	where TEvent : IEvent
 {
 	private readonly IEventReader _eventReader;
 

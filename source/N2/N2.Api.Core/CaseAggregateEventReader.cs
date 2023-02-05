@@ -1,7 +1,7 @@
-﻿using N2.Domain;
-using N2.Domain.DcCase;
+﻿using N2.Domain.DcCase;
 using N2.Domain.DcCase.Commands;
 using N2.Domain.DcCase.Events;
+using N2.Domain.Services;
 
 namespace N2.Api.Core;
 

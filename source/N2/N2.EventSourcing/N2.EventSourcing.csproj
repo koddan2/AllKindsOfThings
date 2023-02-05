@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -11,6 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\N2.Domain.Services\N2.Domain.Services.csproj" />
 	  <ProjectReference Include="..\N2.Domain\N2.Domain.csproj" />
 	  <ProjectReference Include="..\N2.EventSourcing.Common\N2.EventSourcing.Common.csproj" />
 	</ItemGroup>
