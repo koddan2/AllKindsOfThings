@@ -1,10 +1,10 @@
-﻿using N2.Domain.Events;
+﻿using N2.Domain.DebtCollectionCase.Commands;
+using N2.Domain.DebtCollectionCase.Events;
 using N2.Model;
 
-namespace N2.Domain;
+namespace N2.Domain.DebtCollectionCase;
 
-
-public class CaseAggregate : IAggregate
+public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 {
 	private bool _hydrated = false;
 
@@ -17,16 +17,18 @@ public class CaseAggregate : IAggregate
 	public ulong Revision { get; set; } = 0UL;
 
 	public string CaseId { get; }
-	public string StreamName => $"{nameof(CaseAggregate)}-{CaseId}";
+	public string StreamName => GetStreamName(CaseId);
+
+	public static string GetStreamName(string caseId) => $"{nameof(CaseAggregate)}-{caseId}";
 
 	public DebtCollectionCaseEntity? Root { get; private set; }
+	private DebtCollectionCaseEntity CheckedRoot => Root ?? throw new AggregateRootIsNullException();
 
 	public ISet<DebtorCost> Costs { get; } = new HashSet<DebtorCost>();
 	public IList<DebtCollectionCaseNote> Notes { get; } = new List<DebtCollectionCaseNote>();
 
-	public async Task<CaseAggregate> Hydrate(IEventReader reader, ExpectedStateOfStream expectedState = ExpectedStateOfStream.Exist)
+	public void Hydrate(IEnumerable<EventReadResult> events)
 	{
-		var events = await reader.Read(StreamName, expectedState);
 		foreach (var eventReadResult in events)
 		{
 			if (eventReadResult.Event is ICaseEvent caseEvent)
@@ -37,8 +39,6 @@ public class CaseAggregate : IAggregate
 		}
 
 		_hydrated = true;
-
-		return this;
 	}
 
 	public async Task Handle(IEventSender sender, ICaseCommand command)
@@ -50,21 +50,15 @@ public class CaseAggregate : IAggregate
 
 		if (command is CreateNewCaseCommand createNewCaseCommand)
 		{
-			Root = new DebtCollectionCaseEntity(
+			var @event = new CaseCreated(
 				CaseId,
 				createNewCaseCommand.ClientIdentity,
 				createNewCaseCommand.DebtorIdentities,
 				createNewCaseCommand.DebtIdentities,
 				createNewCaseCommand.CollectionProcess,
 				GeneratePaymentReference());
-			var @event = new CaseCreated(
-				Root.Identity,
-				Root.ClientIdentity,
-				Root.DebtorIdentities,
-				Root.DebtIdentities,
-				Root.CollectionProcess,
-				Root.PaymentReference);
 			await sender.Send(StreamName, @event);
+			Apply(@event);
 		}
 		else if (command is GenerateNewPaymentReferenceCommand)
 		{
@@ -75,9 +69,9 @@ public class CaseAggregate : IAggregate
 	private async Task AcceptGenerateNewPaymentReference(IEventSender sender)
 	{
 		var newRef = GeneratePaymentReference();
-		// the following line of code is unnecessary, but added so that VS doesn't complain about the method could be static.
-		Root = Root! with { PaymentReference = newRef };
-		await sender.Send(StreamName, new PaymentReferenceGenerated(newRef));
+		var @event = new PaymentReferenceGenerated(newRef);
+		await sender.Send(StreamName, @event);
+		Apply(@event);
 	}
 
 	private void Apply(ICaseEvent @event)
@@ -94,7 +88,7 @@ public class CaseAggregate : IAggregate
 		}
 		else if (@event is PaymentReferenceGenerated paymentReferenceGenerated)
 		{
-			Root = Root! with { PaymentReference = paymentReferenceGenerated.PaymentReference };
+			Root = CheckedRoot with { PaymentReference = paymentReferenceGenerated.PaymentReference };
 		}
 	}
 

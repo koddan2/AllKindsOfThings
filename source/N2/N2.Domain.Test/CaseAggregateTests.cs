@@ -1,4 +1,6 @@
 using FluentAssertions;
+using N2.Domain.DebtCollectionCase;
+using N2.Domain.DebtCollectionCase.Commands;
 using System.Diagnostics;
 
 namespace N2.Domain.Test
@@ -20,27 +22,31 @@ namespace N2.Domain.Test
 		public async Task Test1()
 		{
 			var caseId = MakeUniqueIdentityString();
+			var commandHandler = new CaseAggregateCommandHandler(_eventReader, _eventSender);
 			string? initialPaymentRef;
 			{
-				var agg = await new CaseAggregate(caseId).Hydrate(reader: _eventReader, ExpectedStateOfStream.Absent);
+				var agg = new CaseAggregate(caseId);
 				agg.Revision.Should().Be(0);
-				await agg.Handle(sender: _eventSender, new CreateNewCaseCommand());
+				await commandHandler.Handle(agg, new CreateNewCaseCommand());
 				agg.Root!.PaymentReference.Should().NotBeNullOrWhiteSpace();
 				Console.WriteLine($"{agg.Root}");
 				initialPaymentRef = agg.Root!.PaymentReference;
 			}
 			{
-				var agg = await new CaseAggregate(caseId).Hydrate(reader: _eventReader);
+				var agg = new CaseAggregate(caseId);
+				await commandHandler.Hydrate(agg);
 				agg.Revision.Should().Be(1);
 				agg.Root!.PaymentReference.Should().NotBeNullOrWhiteSpace();
 				agg.Root!.PaymentReference.Should().Be(initialPaymentRef);
 				Console.WriteLine($"{agg.Root}");
 			}
 			{
-				var agg = await new CaseAggregate(caseId).Hydrate(reader: _eventReader);
+				var agg = new CaseAggregate(caseId);
+				await commandHandler.Hydrate(agg);
 				agg.Revision.Should().Be(1);
 				await agg.Handle(_eventSender, new GenerateNewPaymentReferenceCommand());
-				await agg.Hydrate(reader: _eventReader);
+				agg = new CaseAggregate(caseId);
+				await commandHandler.Hydrate(agg);
 				agg.Revision.Should().Be(2);
 				agg.Root!.PaymentReference.Should().NotBeNullOrWhiteSpace();
 				agg.Root!.PaymentReference.Should().NotBe(initialPaymentRef);
