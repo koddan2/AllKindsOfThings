@@ -44,10 +44,22 @@ namespace N2.Domain.Test
 				var agg = new CaseAggregate(caseId);
 				await commandHandler.Hydrate(agg);
 				agg.Revision.Should().Be(1);
-				await agg.Handle(_eventSender, new GenerateNewPaymentReferenceCommand());
+				await commandHandler.Hydrate(agg);
+				agg.Revision.Should().Be(1);
+				await commandHandler.Handle(agg, new GenerateNewPaymentReferenceCommand());
+				await commandHandler.Hydrate(agg);
+				agg.Revision.Should().Be(2);
 				agg = new CaseAggregate(caseId);
 				await commandHandler.Hydrate(agg);
 				agg.Revision.Should().Be(2);
+				agg.Root!.PaymentReference.Should().NotBeNullOrWhiteSpace();
+				agg.Root!.PaymentReference.Should().NotBe(initialPaymentRef);
+				Console.WriteLine($"{agg.Root}");
+			}
+			{
+				var agg = new CaseAggregate(caseId);
+				await commandHandler.Handle(agg, new GenerateNewPaymentReferenceCommand());
+				agg.Revision.Should().Be(3);
 				agg.Root!.PaymentReference.Should().NotBeNullOrWhiteSpace();
 				agg.Root!.PaymentReference.Should().NotBe(initialPaymentRef);
 				Console.WriteLine($"{agg.Root}");

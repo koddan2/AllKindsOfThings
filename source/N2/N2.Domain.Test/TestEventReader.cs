@@ -11,6 +11,12 @@ namespace N2.Domain.Test
 			_eventLog = eventLog;
 		}
 
+		async Task<IEnumerable<EventReadResult>> IEventReader.ReadFrom(string streamName, ulong position)
+		{
+			await ValueTask.CompletedTask;
+			return ReadInner(streamName, position);
+		}
+
 		async Task<IEnumerable<EventReadResult>> IEventReader.Read(string streamName, ExpectedStateOfStream expectedState)
 		{
 			await ValueTask.CompletedTask;
@@ -28,10 +34,11 @@ namespace N2.Domain.Test
 			};
 		}
 
-		private IEnumerable<EventReadResult> ReadInner(string streamName)
+		private IEnumerable<EventReadResult> ReadInner(string streamName, ulong position = 0)
 		{
 			return _eventLog.Database[streamName]
-				.Select((x, i) => new EventReadResult(x, (ulong)i + 1));
+				.Skip((int)position)
+				.Select((x, i) => new EventReadResult(x, position + (ulong)i + 1));
 		}
 	}
 }

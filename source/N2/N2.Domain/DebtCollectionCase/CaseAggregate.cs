@@ -4,6 +4,11 @@ using N2.Model;
 
 namespace N2.Domain.DebtCollectionCase;
 
+public static class AggregateExtensions
+{
+	public static string GetStreamNameForAggregate<TCommand, TEvent>(this IAggregate<TCommand, TEvent> aggregate)
+		=> $"{aggregate.GetType().Name}-{aggregate.Identity}";
+}
 public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 {
 	private bool _hydrated = false;
@@ -17,15 +22,14 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 	public ulong Revision { get; set; } = 0UL;
 
 	public string CaseId { get; }
-	public string StreamName => GetStreamName(CaseId);
+	private string StreamName => this.GetStreamNameForAggregate();
 
-	public static string GetStreamName(string caseId) => $"{nameof(CaseAggregate)}-{caseId}";
 
-	public DebtCollectionCaseEntity? Root { get; private set; }
-	private DebtCollectionCaseEntity CheckedRoot => Root ?? throw new AggregateRootIsNullException();
+	public DcCaseEntity? Root { get; private set; }
+	private DcCaseEntity CheckedRoot => Root ?? throw new AggregateRootIsNullException();
 
 	public ISet<DebtorCost> Costs { get; } = new HashSet<DebtorCost>();
-	public IList<DebtCollectionCaseNote> Notes { get; } = new List<DebtCollectionCaseNote>();
+	public IList<DcCaseNote> Notes { get; } = new List<DcCaseNote>();
 
 	public void Hydrate(IEnumerable<EventReadResult> events)
 	{
@@ -41,7 +45,7 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 		_hydrated = true;
 	}
 
-	public async Task Handle(IEventSender sender, ICaseCommand command)
+	public async Task Receive(IEventSender sender, ICaseCommand command)
 	{
 		if (!_hydrated)
 		{
@@ -57,8 +61,9 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 				createNewCaseCommand.DebtIdentities,
 				createNewCaseCommand.CollectionProcess,
 				GeneratePaymentReference());
-			await sender.Send(StreamName, @event);
+			var revision = await sender.Send(StreamName, @event);
 			Apply(@event);
+			Revision = revision;
 		}
 		else if (command is GenerateNewPaymentReferenceCommand)
 		{
@@ -70,15 +75,16 @@ public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 	{
 		var newRef = GeneratePaymentReference();
 		var @event = new PaymentReferenceGenerated(newRef);
-		await sender.Send(StreamName, @event);
+		var revision = await sender.Send(StreamName, @event);
 		Apply(@event);
+		Revision = revision;
 	}
 
 	private void Apply(ICaseEvent @event)
 	{
 		if (@event is CaseCreated caseCreated)
 		{
-			Root = new DebtCollectionCaseEntity(
+			Root = new DcCaseEntity(
 				CaseId,
 				caseCreated.ClientIdentity,
 				caseCreated.DebtorIdentities,

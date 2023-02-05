@@ -7,6 +7,6 @@
 
 		void Hydrate(IEnumerable<EventReadResult> events);
 
-		Task Handle(IEventSender sender, TCommand command);
+		Task Receive(IEventSender sender, TCommand command);
 	}
 }

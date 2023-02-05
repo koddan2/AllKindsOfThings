@@ -1,6 +1,6 @@
 ﻿namespace N2.Model
 {
-	public enum DebtCollectionDebtorJuridicalType
+	public enum SwedishCorporateForm
 	{
 		Aktiebolag = 1,
 		Handelsbolag = 2,

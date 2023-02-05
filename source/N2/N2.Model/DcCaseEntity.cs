@@ -2,7 +2,7 @@
 
 namespace N2.Model
 {
-	public record DebtCollectionCaseEntity(
+	public record DcCaseEntity(
 		string Identity,
 		string ClientIdentity,
 		[property: MinLength(1)] ISet<string> DebtorIdentities,

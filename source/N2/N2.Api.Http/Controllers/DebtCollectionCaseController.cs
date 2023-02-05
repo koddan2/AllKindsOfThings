@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using N2.Domain;
-using N2.Domain.DebtCollectionCase;
-using N2.Domain.DebtCollectionCase.Commands;
-using N2.EventSourcing;
+using N2.Api.Core;
+using System.Net;
 
 namespace N2.Api.Http.Controllers
 {
@@ -11,35 +9,33 @@ namespace N2.Api.Http.Controllers
 	public class DebtCollectionCaseController : ControllerBase
 	{
 		private readonly ILogger<DebtCollectionCaseController> _logger;
-		private readonly CaseAggregateCommandHandler _caseAggregateCommandHandler;
+		private readonly N2Facade _n2Facade;
 
-		public DebtCollectionCaseController(ILogger<DebtCollectionCaseController> logger, CaseAggregateCommandHandler caseAggregateCommandHandler)
+		public DebtCollectionCaseController(ILogger<DebtCollectionCaseController> logger, N2Facade n2Facade)
 		{
 			_logger = logger;
-			_caseAggregateCommandHandler = caseAggregateCommandHandler;
+			_n2Facade = n2Facade;
 		}
 
-		public record DebtCollectionCaseViewModel(string Identity, string PaymentReference);
 		[HttpGet("{identity}")]
-		public async Task<DebtCollectionCaseViewModel> GetSingle(string identity)
+		[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
+		public async Task<DcCaseViewModel> GetSingle(string identity)
 		{
-			var aggregate = new CaseAggregate(identity);
-			_logger.LogInformation("Hydrating");
-			await _caseAggregateCommandHandler.Hydrate(aggregate);
-			return new DebtCollectionCaseViewModel(identity, aggregate.Root!.PaymentReference);
+			_logger.LogInformation("Getting single");
+			var a = await _n2Facade.GetSingleDcCase(identity);
+			return new DcCaseViewModel(identity, a.Root!.PaymentReference);
 		}
 
-		public record CreateCaseViewModel(string Identity, string ClientIdentity);
 		[HttpPost("Sync/{identity}")]
-		public async Task CreateSync(CreateCaseViewModel vm)
+		[ProducesResponseType((int)HttpStatusCode.NoContent)]
+		[ProducesResponseType(typeof(ValidationProblemDetails), (int)HttpStatusCode.BadRequest)]
+		[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
+		[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.InternalServerError)]
+		[ProducesErrorResponseType(typeof(ProblemDetails))]
+		public async Task CreateSync(CreateDcCaseViewModel vm)
 		{
-			var aggregate = new CaseAggregate(vm.Identity);
-			var command = new CreateNewCaseCommand
-			{
-				ClientIdentity = vm.ClientIdentity,
-			};
 			_logger.LogInformation("Handling command");
-			await _caseAggregateCommandHandler.Handle(aggregate, command);
+			await _n2Facade.CreateDcCase(vm);
 		}
 	}
 }

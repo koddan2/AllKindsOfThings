@@ -23,6 +23,18 @@ namespace N2.EventSourcing
 			_registry = registry;
 		}
 
+		async Task<IEnumerable<EventReadResult>> IEventReader.ReadFrom(string streamName, ulong position)
+		{
+			var readStreamResult = _client.ReadStreamAsync(
+				Direction.Forwards,
+				streamName,
+				StreamPosition.FromInt64((long)position));
+
+			var resolvedEvents = await readStreamResult.ToListAsync();
+
+			return resolvedEvents.Select(Deserialize);
+		}
+
 		async Task<IEnumerable<EventReadResult>> IEventReader.Read(string streamName, ExpectedStateOfStream expectedState)
 		{
 			var readStreamResult = _client.ReadStreamAsync(

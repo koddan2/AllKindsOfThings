@@ -1,3 +1,5 @@
+using N2.Api.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services
+	.AddN2ApiApplication(builder.Configuration.GetSection("N2"))
+	;
 
 var app = builder.Build();
 

@@ -1,6 +1,6 @@
 ﻿namespace N2.Model
 {
-	public record DebtCollectionClientEntity(string Identity) : IEntity
+	public record DcClientEntity(string Identity) : IEntity
 	{
 		public string? Name { get; private set; }
 		public string? NationalIdentification { get; private set; }
