@@ -1,14 +1,8 @@
-﻿using N2.Domain.DebtCollectionCase.Commands;
-using N2.Domain.DebtCollectionCase.Events;
+﻿using N2.Domain.DcCase.Commands;
+using N2.Domain.DcCase.Events;
 using N2.Model;
 
-namespace N2.Domain.DebtCollectionCase;
-
-public static class AggregateExtensions
-{
-	public static string GetStreamNameForAggregate<TCommand, TEvent>(this IAggregate<TCommand, TEvent> aggregate)
-		=> $"{aggregate.GetType().Name}-{aggregate.Identity}";
-}
+namespace N2.Domain.DcCase;
 public class CaseAggregate : IAggregate<ICaseCommand, ICaseEvent>
 {
 	private bool _hydrated = false;

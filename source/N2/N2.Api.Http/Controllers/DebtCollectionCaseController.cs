@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using N2.Api.Core;
+using N2.Domain;
 using System.Net;
 
 namespace N2.Api.Http.Controllers
@@ -19,11 +20,11 @@ namespace N2.Api.Http.Controllers
 
 		[HttpGet("{identity}")]
 		[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
-		public async Task<DcCaseViewModel> GetSingle(string identity)
+		public async Task<IEnumerable<EventReadResult>> GetLogForSingle(string identity)
 		{
-			_logger.LogInformation("Getting single");
-			var a = await _n2Facade.GetSingleDcCase(identity);
-			return new DcCaseViewModel(identity, a.Root!.PaymentReference);
+			_logger.LogInformation("Getting log");
+			var listOfEventReadResults = await _n2Facade.DcCaseGetLogSingle(identity);
+			return listOfEventReadResults;
 		}
 
 		[HttpPost("Sync/{identity}")]
@@ -32,10 +33,10 @@ namespace N2.Api.Http.Controllers
 		[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.Conflict)]
 		[ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.InternalServerError)]
 		[ProducesErrorResponseType(typeof(ProblemDetails))]
-		public async Task CreateSync(CreateDcCaseViewModel vm)
+		public async Task CreateSync(DcCaseViewModelCreate vm)
 		{
 			_logger.LogInformation("Handling command");
-			await _n2Facade.CreateDcCase(vm);
+			await _n2Facade.DcCaseCreate(vm);
 		}
 	}
 }

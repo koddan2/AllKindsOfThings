@@ -1,7 +1,7 @@
 using FluentAssertions;
-using N2.Domain.DebtCollectionCase;
-using N2.Domain.DebtCollectionCase.Commands;
-using System.Diagnostics;
+using N2.Domain.DcCase;
+using N2.Domain.DcCase.Commands;
+using N2.Test.Common;
 
 namespace N2.Domain.Test
 {

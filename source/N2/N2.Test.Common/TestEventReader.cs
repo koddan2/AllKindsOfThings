@@ -1,8 +1,9 @@
-﻿using N2.EventSourcing.Common;
+﻿using N2.Domain;
+using N2.EventSourcing.Common;
 
-namespace N2.Domain.Test
+namespace N2.Test.Common
 {
-	internal class TestEventReader : IEventReader
+	public class TestEventReader : IEventReader
 	{
 		private readonly TestEventLog _eventLog;
 
@@ -15,6 +16,28 @@ namespace N2.Domain.Test
 		{
 			await ValueTask.CompletedTask;
 			return ReadInner(streamName, position);
+		}
+
+		async IAsyncEnumerable<EventReadResult> IEventReader.ReadAllEvents(string eventType, ulong position, ulong count)
+		{
+			await ValueTask.CompletedTask;
+			var outerCounter = 0UL;
+			foreach (var kvp in _eventLog.Database)
+			{
+				if (position < outerCounter++)
+				{
+					continue;
+				}
+				if (outerCounter >= count)
+				{
+					break;
+				}
+				var counter = 0UL;
+				foreach (var item in kvp.Value)
+				{
+					yield return new EventReadResult(item, counter++);
+				}
+			}
 		}
 
 		async Task<IEnumerable<EventReadResult>> IEventReader.Read(string streamName, ExpectedStateOfStream expectedState)

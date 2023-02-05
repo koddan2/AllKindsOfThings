@@ -1,6 +1,6 @@
-﻿using N2.Domain.DebtCollectionCase.Commands;
+﻿using N2.Domain.DcCase.Commands;
 
-namespace N2.Domain.DebtCollectionCase;
+namespace N2.Domain.DcCase;
 
 public class CaseAggregateCommandHandler : ICommandHandler<CaseAggregate, ICaseCommand>
 {

@@ -1,26 +1,35 @@
-﻿using N2.Domain.DebtCollectionCase;
-using N2.Domain.DebtCollectionCase.Commands;
+﻿using N2.Domain;
+using N2.Domain.DcCase;
+using N2.Domain.DcCase.Commands;
 
 namespace N2.Api.Core;
 
-public record DcCaseViewModel(string Identity, string PaymentReference);
-public record CreateDcCaseViewModel(string Identity, string ClientIdentity);
+public record DcCaseViewModelCreate(string Identity, string ClientIdentity);
 public class N2Facade
 {
+	private readonly CaseAggregateEventReader _caseAggregateEventReader;
 	private readonly CaseAggregateCommandHandler _caseAggregateCommandHandler;
-	public N2Facade(CaseAggregateCommandHandler caseAggregateCommandHandler)
+
+	public N2Facade(
+		CaseAggregateEventReader caseAggregateEventReader,
+		CaseAggregateCommandHandler caseAggregateCommandHandler)
 	{
+		_caseAggregateEventReader = caseAggregateEventReader;
 		_caseAggregateCommandHandler = caseAggregateCommandHandler;
 	}
 
-	public async Task<CaseAggregate> GetSingleDcCase(string caseIdentity)
+	public async Task<IEnumerable<EventReadResult>> DcCaseGetLogSingle(string caseIdentity, ulong position = 0UL)
 	{
-		var aggregate = new CaseAggregate(caseIdentity);
-		await _caseAggregateCommandHandler.Hydrate(aggregate);
-		return aggregate;
+		return await _caseAggregateEventReader.ReadFrom(caseIdentity, position);
 	}
 
-	public async Task CreateDcCase(CreateDcCaseViewModel model)
+	public async Task<IEnumerable<EventReadResult>> DcCaseGetLogOf(string eventType, ulong skip, ulong take)
+	{
+		var result = await _caseAggregateEventReader.ReadAllEvents(eventType, skip, take).ToListAsync();
+		return result;
+	}
+
+	public async Task DcCaseCreate(DcCaseViewModelCreate model)
 	{
 		var aggregate = new CaseAggregate(model.Identity);
 		var command = new CreateNewCaseCommand

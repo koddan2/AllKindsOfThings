@@ -35,6 +35,29 @@ namespace N2.EventSourcing
 			return resolvedEvents.Select(Deserialize);
 		}
 
+		IAsyncEnumerable<EventReadResult> IEventReader.ReadAllEvents(string eventType, ulong position, ulong count)
+		{
+			var eventMetadata = new EventMetadata(eventType);
+			var readStreamResult = _client.ReadStreamAsync(
+				Direction.Forwards,
+				eventMetadata.GetStreamNameForEvent(),
+				StreamPosition.FromInt64((long)position),
+				maxCount: (long)count);
+
+			return readStreamResult.Select(Deserialize)
+#if DEBUG
+				.Where(x =>
+				{
+					if (eventMetadata.Validate(x.Event) is false)
+					{
+						throw new InvalidOperationException("The name does not ");
+					}
+					return true;
+				})
+#endif
+				;
+		}
+
 		async Task<IEnumerable<EventReadResult>> IEventReader.Read(string streamName, ExpectedStateOfStream expectedState)
 		{
 			var readStreamResult = _client.ReadStreamAsync(

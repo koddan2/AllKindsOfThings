@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using N2.Domain;
-using N2.Domain.DebtCollectionCase;
+using N2.Domain.DcCase;
 using N2.EventSourcing.Common;
 using System.Collections.Concurrent;
 using System.Reflection;

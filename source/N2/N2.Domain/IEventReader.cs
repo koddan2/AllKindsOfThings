@@ -13,4 +13,8 @@ public interface IEventReader
 	//
 	// Implies that the caller expects the stream to exist.
 	Task<IEnumerable<EventReadResult>> ReadFrom(string streamName, ulong position);
+
+	//
+	// Read all events of a certain type.
+	IAsyncEnumerable<EventReadResult> ReadAllEvents(string eventType, ulong position = 0, ulong count = ulong.MaxValue);
 }

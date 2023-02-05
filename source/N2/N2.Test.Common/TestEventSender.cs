@@ -1,6 +1,8 @@
-﻿namespace N2.Domain.Test
+﻿using N2.Domain;
+
+namespace N2.Test.Common
 {
-	internal class TestEventSender : IEventSender
+	public class TestEventSender : IEventSender
 	{
 		private readonly TestEventLog _eventLog;
 

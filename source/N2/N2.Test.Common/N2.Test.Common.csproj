@@ -7,12 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\N2.Domain\N2.Domain.csproj" />
     <ProjectReference Include="..\N2.EventSourcing.Common\N2.EventSourcing.Common.csproj" />
     <ProjectReference Include="..\N2.Model\N2.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DcClient\" />
   </ItemGroup>
 
 </Project>
