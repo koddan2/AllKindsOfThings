@@ -10,6 +10,6 @@
 		  System.Runtime.Serialization.SerializationInfo info,
 		  System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
 
-		public IReadOnlyCollection<AggregateInvariantViolated> ViolatedInvariants { get; set; }
+		public IReadOnlyCollection<AggregateInvariantViolated> ViolatedInvariants { get; set; } = new List<AggregateInvariantViolated>();
 	}
 }

@@ -8,6 +8,10 @@ services:
       - ./Instance/redis:/data
     restart: unless-stopped
 
+  # rabbit:
+  #   hostname: rabbit
+  #   image: docker.io/rabbitmq:3.11.8-alpine
+
   eventstore.db:
     image: docker.io/eventstore/eventstore:21.10.0-buster-slim
     env_file:
