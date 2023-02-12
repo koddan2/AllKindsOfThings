@@ -15,11 +15,11 @@ namespace N3.Modell.Test
 		[TestCase(1, 1.25)]
 		[TestCase(400, 500)]
 		[TestCase(400.04, 500.05)]
-		public void TestaSvenskaKronorOchMoms1(decimal ingÂendeBelopp, decimal fˆrv‰ntatBelopp)
+		public void TestaSvenskaKronorOchMoms1(decimal ing√•endeBelopp, decimal f√∂rv√§ntatBelopp)
 		{
-			SvenskaKronor sek = ingÂendeBelopp;
+			SvenskaKronor sek = ing√•endeBelopp;
 			SvenskaKronorOchMoms sekMoms = new(sek, Moms._25);
-			Assert.That(sekMoms.TotalBelopp, Is.EqualTo((SvenskaKronor)fˆrv‰ntatBelopp));
+			Assert.That(sekMoms.TotalBelopp, Is.EqualTo((SvenskaKronor)f√∂rv√§ntatBelopp));
 
 			TestaSerialiseringTurOchRetur(sekMoms);
 		}
@@ -28,10 +28,10 @@ namespace N3.Modell.Test
 		[TestCase(0, 0)]
 		[TestCase(1, 0.25)]
 		[TestCase(400, 100)]
-		public void TestaMoms1(decimal ingÂendeBelopp, decimal fˆrv‰ntatBelopp)
+		public void TestaMoms1(decimal ing√•endeBelopp, decimal f√∂rv√§ntatBelopp)
 		{
-			SvenskaKronor sek = ingÂendeBelopp;
-			Assert.That(sek.R‰knaUtMomsDel(Moms._25), Is.EqualTo((SvenskaKronor)fˆrv‰ntatBelopp));
+			SvenskaKronor sek = ing√•endeBelopp;
+			Assert.That(sek.R√§knaUtMomsDel(Moms._25), Is.EqualTo((SvenskaKronor)f√∂rv√§ntatBelopp));
 
 			TestaSerialiseringTurOchRetur(sek);
 		}
@@ -40,10 +40,10 @@ namespace N3.Modell.Test
 		[TestCase(0, 0)]
 		[TestCase(1, 0.8)]
 		[TestCase(400, 320)]
-		public void TestaMoms3(decimal ingÂendeBelopp, decimal fˆrv‰ntatBelopp)
+		public void TestaMoms3(decimal ing√•endeBelopp, decimal f√∂rv√§ntatBelopp)
 		{
-			SvenskaKronor sek = ingÂendeBelopp;
-			Assert.That(sek.R‰knaUtMomsBas(Moms._25), Is.EqualTo((SvenskaKronor)fˆrv‰ntatBelopp));
+			SvenskaKronor sek = ing√•endeBelopp;
+			Assert.That(sek.R√§knaUtMomsBas(Moms._25), Is.EqualTo((SvenskaKronor)f√∂rv√§ntatBelopp));
 
 			TestaSerialiseringTurOchRetur(sek);
 		}
@@ -52,10 +52,10 @@ namespace N3.Modell.Test
 		[TestCase(0, 0)]
 		[TestCase(1, 1.25)]
 		[TestCase(400, 500)]
-		public void TestaMoms2(decimal ingÂendeBelopp, decimal fˆrv‰ntatBelopp)
+		public void TestaMoms2(decimal ing√•endeBelopp, decimal f√∂rv√§ntatBelopp)
 		{
-			SvenskaKronor sek = ingÂendeBelopp;
-			Assert.That(sek.L‰ggPÂ(Moms._25), Is.EqualTo((SvenskaKronor)fˆrv‰ntatBelopp));
+			SvenskaKronor sek = ing√•endeBelopp;
+			Assert.That(sek.L√§ggP√•(Moms._25), Is.EqualTo((SvenskaKronor)f√∂rv√§ntatBelopp));
 
 			TestaSerialiseringTurOchRetur(sek);
 		}
@@ -64,16 +64,16 @@ namespace N3.Modell.Test
 		[TestCase(0)]
 		[TestCase(99)]
 		[TestCase(100_000.9999)]
-		public void TestaSvenskaKronor1(decimal ingÂendeBelopp)
+		public void TestaSvenskaKronor1(decimal ing√•endeBelopp)
 		{
-			SvenskaKronor sek1 = ingÂendeBelopp;
-			SvenskaKronor sek2 = ingÂendeBelopp;
+			SvenskaKronor sek1 = ing√•endeBelopp;
+			SvenskaKronor sek2 = ing√•endeBelopp;
 			Assert.Multiple(() =>
 			{
 				Assert.That(sek1, Is.EqualTo(sek2));
 				Assert.That(sek1, Is.EqualTo(sek2));
-				Assert.That(sek1, Is.EqualTo((SvenskaKronor)ingÂendeBelopp));
-				Assert.That(sek2, Is.EqualTo((SvenskaKronor)ingÂendeBelopp));
+				Assert.That(sek1, Is.EqualTo((SvenskaKronor)ing√•endeBelopp));
+				Assert.That(sek2, Is.EqualTo((SvenskaKronor)ing√•endeBelopp));
 			});
 		}
 
@@ -83,30 +83,30 @@ namespace N3.Modell.Test
 		[TestCase(0.9, 1, 0.9)]
 		[TestCase(1.001, 1, 1.00)]
 		[TestCase(1.005, 1, 1.01)]
-		public void TestaSvenskaKronor2(decimal ingÂendeV‰rde, decimal fˆrv‰ntadeHelaKronor, decimal fˆrv‰ntadeHelaKronorOch÷ren)
+		public void TestaSvenskaKronor2(decimal ing√•endeV√§rde, decimal f√∂rv√§ntadeHelaKronor, decimal f√∂rv√§ntadeHelaKronorOch√ñren)
 		{
 			static void Test(SvenskaKronor? p)
 			{
 				Assert.That(p, Is.Not.Null);
 			}
 
-			SvenskaKronor ingÂendeSek = ingÂendeV‰rde;
-			SvenskaKronor sek1 = ingÂendeSek.AvrundaHelaKronor;
-			SvenskaKronor sek2 = ingÂendeSek.AvrundaHelaKronorOch÷ren;
+			SvenskaKronor ing√•endeSek = ing√•endeV√§rde;
+			SvenskaKronor sek1 = ing√•endeSek.AvrundaHelaKronor;
+			SvenskaKronor sek2 = ing√•endeSek.AvrundaHelaKronorOch√ñren;
 			Assert.Multiple(() =>
 			{
-				Test(ingÂendeV‰rde);
-				Assert.That(sek1, Is.EqualTo((SvenskaKronor)fˆrv‰ntadeHelaKronor));
-				Assert.That(sek2, Is.EqualTo((SvenskaKronor)fˆrv‰ntadeHelaKronorOch÷ren));
+				Test(ing√•endeV√§rde);
+				Assert.That(sek1, Is.EqualTo((SvenskaKronor)f√∂rv√§ntadeHelaKronor));
+				Assert.That(sek2, Is.EqualTo((SvenskaKronor)f√∂rv√§ntadeHelaKronorOch√ñren));
 			});
 		}
 
 		[Test]
 		[TestCase("4QDKqvHAPEldy3ijc1HX95")]
 		[TestCase("xBIimss7CkAszsCokUzHv")]
-		public void TestaUnikIdentifierare1(string str‰ngV‰rde)
+		public void TestaUnikIdentifierare1(string str√§ngV√§rde)
 		{
-			string s = str‰ngV‰rde;
+			string s = str√§ngV√§rde;
 			UnikIdentifierare unikId1 = s;
 			string t = unikId1;
 			UnikIdentifierare unikId2 = t;
@@ -131,20 +131,23 @@ namespace N3.Modell.Test
 
 		[TestCase("4QDKqvHAPEldy3ijc1HX95")]
 		[TestCase("xBIimss7CkAszsCokUzHv")]
-		public void TestaUnikIdentifierare2(string str‰ngV‰rde)
+		public void TestaUnikIdentifierare2(string str√§ngV√§rde)
 		{
-			UnikIdentifierare ui1 = str‰ngV‰rde;
+			UnikIdentifierare ui1 = str√§ngV√§rde;
 			Guid g1 = ui1;
-			Assert.That(str‰ngV‰rde, Is.EqualTo((string)ui1));	
-			Assert.That(ui1, Is.EqualTo((UnikIdentifierare)g1));	
-			Assert.That(g1, Is.EqualTo((Guid)ui1));	
+			Assert.Multiple(() =>
+			{
+				Assert.That(str√§ngV√§rde, Is.EqualTo((string)ui1));
+				Assert.That(ui1, Is.EqualTo((UnikIdentifierare)g1));
+				Assert.That(g1, Is.EqualTo((Guid)ui1));
+			});
 		}
 
-		static void TestaSerialiseringTurOchRetur<T>(T ingÂendeV‰rde)
+		static void TestaSerialiseringTurOchRetur<T>(T ing√•endeV√§rde)
 		{
-			var json = JsonSerializer.Serialize(ingÂendeV‰rde);
+			var json = JsonSerializer.Serialize(ing√•endeV√§rde);
 			var tillbaka = JsonSerializer.Deserialize<T>(json);
-			Assert.That(tillbaka, Is.EqualTo(ingÂendeV‰rde));
+			Assert.That(tillbaka, Is.EqualTo(ing√•endeV√§rde));
 		}
 	}
 }

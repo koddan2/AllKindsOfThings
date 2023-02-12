@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.Modell", "N3.Modell\N3.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.Modell.Test", "N3.Modell.Test\N3.Modell.Test.csproj", "{8FB7DE45-460E-4898-A180-E9CBDACA28ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.SkrivModell", "N3.SkrivModell\N3.SkrivModell.csproj", "{3C0CD59F-EB65-41D5-8193-E976A75FD467}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.CqrsEs", "N3.CqrsEs\N3.CqrsEs.csproj", "{3C0CD59F-EB65-41D5-8193-E976A75FD467}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSlite", "..\..\submodules\CQRSlite\Framework\CQRSlite\CQRSlite.csproj", "{64E1E795-46EB-42A6-92E3-C609124C57EA}"
 EndProject
@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3.CqrsEs.Test", "N3.CqrsEs.Test\N3.CqrsEs.Test.csproj", "{452E053C-44C7-4DC6-A1AF-556DEB6A0FFD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{64E1E795-46EB-42A6-92E3-C609124C57EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64E1E795-46EB-42A6-92E3-C609124C57EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64E1E795-46EB-42A6-92E3-C609124C57EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{452E053C-44C7-4DC6-A1AF-556DEB6A0FFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{452E053C-44C7-4DC6-A1AF-556DEB6A0FFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{452E053C-44C7-4DC6-A1AF-556DEB6A0FFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{452E053C-44C7-4DC6-A1AF-556DEB6A0FFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
