@@ -8,11 +8,13 @@ namespace N3.SkrivModell.Händelser
 			UnikIdentifierare identifierare, 
 			UnikIdentifierare klientReferens,
 			UnikIdentifierare[] gäldenärsReferenser,
-			int ärendeNummer)
+			Faktura[] fakturor,
+			long ärendeNummer)
 		{
 			Id = identifierare;
 			KlientReferens = klientReferens;
 			GäldenärsReferenser = gäldenärsReferenser;
+			Fakturor = fakturor;
 			ÄrendeNummer = ärendeNummer;
 		}
 
@@ -23,6 +25,7 @@ namespace N3.SkrivModell.Händelser
 
 		public UnikIdentifierare KlientReferens { get; }
 		public UnikIdentifierare[] GäldenärsReferenser { get; }
-		public int ÄrendeNummer { get; }
+		public Faktura[] Fakturor { get; }
+		public long ÄrendeNummer { get; }
 	}
 }

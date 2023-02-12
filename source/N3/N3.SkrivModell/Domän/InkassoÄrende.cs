@@ -12,10 +12,11 @@ namespace N3.SkrivModell.Domän
 			UnikIdentifierare identifierare, 
 			UnikIdentifierare klientReferens, 
 			UnikIdentifierare[] gäldenärsReferenser,
-			int ärendeNummer)
+			Faktura[] fakturor,
+			long ärendeNummer)
 		{
 			Id = identifierare;
-			ApplyChange(new InkassoÄrendeSkapades(identifierare, klientReferens, gäldenärsReferenser, ärendeNummer));
+			ApplyChange(new InkassoÄrendeSkapades(identifierare, klientReferens, gäldenärsReferenser, fakturor, ärendeNummer));
 		}
 	}
 }
