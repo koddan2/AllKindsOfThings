@@ -5,9 +5,18 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3", "N3\N3.csproj", "{281DECF4-1FB0-44C4-AEC4-2F1F4C0D822F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3.Model", "N3.Model\N3.Model.csproj", "{99161758-A6B5-40A5-A80D-28840526FED4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.Modell", "N3.Modell\N3.Modell.csproj", "{99161758-A6B5-40A5-A80D-28840526FED4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3.Model.Test", "N3.Model.Test\N3.Model.Test.csproj", "{8FB7DE45-460E-4898-A180-E9CBDACA28ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.Modell.Test", "N3.Modell.Test\N3.Modell.Test.csproj", "{8FB7DE45-460E-4898-A180-E9CBDACA28ED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.SkrivModell", "N3.SkrivModell\N3.SkrivModell.csproj", "{3C0CD59F-EB65-41D5-8193-E976A75FD467}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CQRSlite", "..\..\submodules\CQRSlite\Framework\CQRSlite\CQRSlite.csproj", "{64E1E795-46EB-42A6-92E3-C609124C57EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EFEA6C52-987F-4BF3-A819-A66DEDB275E0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +36,14 @@ Global
 		{8FB7DE45-460E-4898-A180-E9CBDACA28ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FB7DE45-460E-4898-A180-E9CBDACA28ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8FB7DE45-460E-4898-A180-E9CBDACA28ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C0CD59F-EB65-41D5-8193-E976A75FD467}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C0CD59F-EB65-41D5-8193-E976A75FD467}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C0CD59F-EB65-41D5-8193-E976A75FD467}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C0CD59F-EB65-41D5-8193-E976A75FD467}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64E1E795-46EB-42A6-92E3-C609124C57EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64E1E795-46EB-42A6-92E3-C609124C57EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64E1E795-46EB-42A6-92E3-C609124C57EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64E1E795-46EB-42A6-92E3-C609124C57EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

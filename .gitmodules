@@ -4,3 +4,6 @@
 [submodule "submodules/DayZ_SA_ClassName_Dump"]
 	path = submodules/DayZ_SA_ClassName_Dump
 	url = https://github.com/ravmustang/DayZ_SA_ClassName_Dump.git
+[submodule "submodules/CQRSlite"]
+	path = submodules/CQRSlite
+	url = https://github.com/gautema/CQRSlite.git

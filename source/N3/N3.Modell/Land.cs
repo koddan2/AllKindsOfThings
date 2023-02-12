@@ -1,4 +1,4 @@
-﻿namespace N3.Model
+﻿namespace N3.Modell
 {
 	public readonly record struct Land(string Namn)
 	{

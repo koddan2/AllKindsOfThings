@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace N3.Model
+namespace N3.Modell
 {
 	public readonly record struct Procent(decimal Enheter)
 	{

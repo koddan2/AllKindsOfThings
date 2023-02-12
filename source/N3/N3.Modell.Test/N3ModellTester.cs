@@ -1,6 +1,7 @@
+using N3.Modell;
 using System.Text.Json;
 
-namespace N3.Model.Test
+namespace N3.Modell.Test
 {
 	public class N3ModelTests
 	{
@@ -101,8 +102,6 @@ namespace N3.Model.Test
 		}
 
 		[Test]
-		[TestCase("abc")]
-		[TestCase("123")]
 		[TestCase("4QDKqvHAPEldy3ijc1HX95")]
 		[TestCase("xBIimss7CkAszsCokUzHv")]
 		public void TestaUnikIdentifierare1(string strängVärde)
@@ -128,6 +127,17 @@ namespace N3.Model.Test
 				TestaSerialiseringTurOchRetur(unikId1);
 				TestaSerialiseringTurOchRetur(unikId2);
 			});
+		}
+
+		[TestCase("4QDKqvHAPEldy3ijc1HX95")]
+		[TestCase("xBIimss7CkAszsCokUzHv")]
+		public void TestaUnikIdentifierare2(string strängVärde)
+		{
+			UnikIdentifierare ui1 = strängVärde;
+			Guid g1 = ui1;
+			Assert.That(strängVärde, Is.EqualTo((string)ui1));	
+			Assert.That(ui1, Is.EqualTo((UnikIdentifierare)g1));	
+			Assert.That(g1, Is.EqualTo((Guid)ui1));	
 		}
 
 		static void TestaSerialiseringTurOchRetur<T>(T ingåendeVärde)

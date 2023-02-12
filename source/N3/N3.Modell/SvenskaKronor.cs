@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace N3.Model
+namespace N3.Modell
 {
 	public readonly record struct SvenskaKronorOchMoms(SvenskaKronor MomsBas, Moms Moms)
 	{
@@ -9,7 +9,7 @@ namespace N3.Model
 	}
 
 	[DataContract]
-	public readonly record struct SvenskaKronor([property: DataMember]decimal Belopp) : IPengar
+	public readonly record struct SvenskaKronor([property: DataMember] decimal Belopp) : IPengar
 	{
 		[DataMember]
 		public string ValutaKod => "SEK";

@@ -1,4 +1,4 @@
-﻿namespace N3.Model
+﻿namespace N3.Modell
 {
 	public readonly record struct Moms(Procent Procent)
 	{
@@ -14,7 +14,7 @@
 			=> sek with { Belopp = sek.Belopp * (1 + moms.Procent.Faktor) };
 
 		public static SvenskaKronor RäknaUtMomsDel(this SvenskaKronor sek, Moms moms)
-			=> sek with { Belopp = sek.Belopp is 0 ? 0 : sek.Belopp * (moms.Procent.Faktor) };
+			=> sek with { Belopp = sek.Belopp is 0 ? 0 : sek.Belopp * moms.Procent.Faktor };
 
 		public static SvenskaKronor RäknaUtMomsBas(this SvenskaKronor sek, Moms moms)
 			=> sek with { Belopp = sek.Belopp is 0 ? 0 : sek.Belopp / (1 + moms.Procent.Faktor) };

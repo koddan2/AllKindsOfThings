@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Base62-Net" Version="1.2.157201" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\submodules\CQRSlite\Framework\CQRSlite\CQRSlite.csproj" />
+		<ProjectReference Include="..\N3.Modell\N3.Modell.csproj" />
+	</ItemGroup>
+
+</Project>

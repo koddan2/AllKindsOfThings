@@ -1,4 +1,4 @@
-﻿namespace N3.Model
+﻿namespace N3.Modell
 {
 	/// <summary>
 	/// Ett globalt unikt värde, bestående av alfanumeriska tecken
@@ -16,6 +16,14 @@
 	public readonly record struct UnikIdentifierare(string Värde)
 	{
 		public static implicit operator string(UnikIdentifierare u) => u.Värde;
-		public static implicit operator UnikIdentifierare(string s) => new(s);
+		public static implicit operator UnikIdentifierare(string s)
+			=>
+#if DEBUG // tvinga att Värdet i grunden är en System.Guid
+			((Guid?)new Guid(Base62.EncodingExtensions.FromBase62(s))) ??
+#endif
+			new(s);
+
+		public static implicit operator Guid(UnikIdentifierare u) => new(Base62.EncodingExtensions.FromBase62(u.Värde));
+		public static implicit operator UnikIdentifierare(Guid g) => new(Base62.EncodingExtensions.ToBase62(g.ToByteArray()));
 	}
 }
