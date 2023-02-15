@@ -1,6 +1,6 @@
 ﻿using CQRSlite.Events;
 
-namespace N3.CqrsEs.Test
+namespace N3.CqrsEs.Test.Malpåse
 {
     internal class TestEventStore : IEventStore
     {

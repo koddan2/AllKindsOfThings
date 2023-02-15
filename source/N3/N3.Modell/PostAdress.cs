@@ -11,7 +11,7 @@ namespace N3.Modell
 		string PostNummer,
 		Land Land)
 	{
-		private static readonly Regex Whitespace = GenerellaRegexUttryck.AllaBlankTecken();
-		public int NumerisktPostNummer => int.Parse(Whitespace.Replace(PostNummer, string.Empty));
+		private static readonly Regex _Whitespace = GenerellaRegexUttryck.AllaBlankTecken();
+		public int NumerisktPostNummer => int.Parse(_Whitespace.Replace(PostNummer, string.Empty));
 	}
 }

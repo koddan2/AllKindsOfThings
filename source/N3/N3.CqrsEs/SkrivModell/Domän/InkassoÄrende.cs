@@ -16,7 +16,8 @@ namespace N3.CqrsEs.SkrivModell.Domän
             long ärendeNummer)
         {
             Id = identifierare;
-            ApplyChange(new InkassoÄrendeSkapades(identifierare, klientReferens, gäldenärsReferenser, fakturor, ärendeNummer));
+            var @event = new InkassoÄrendeSkapades(identifierare, klientReferens, gäldenärsReferenser, fakturor, ärendeNummer);
+            ApplyChange(@event);
         }
     }
 }

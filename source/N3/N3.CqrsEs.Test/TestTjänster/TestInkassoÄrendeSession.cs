@@ -1,7 +1,7 @@
 ﻿using CQRSlite.Domain;
 using N3.CqrsEs.SkrivModell;
 
-namespace N3.CqrsEs.Test
+namespace N3.CqrsEs.Test.TestTjänster
 {
     internal class TestInkassoÄrendeSession : IInkassoÄrendeSession
     {
