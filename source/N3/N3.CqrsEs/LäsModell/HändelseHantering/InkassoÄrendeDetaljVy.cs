@@ -1,14 +1,11 @@
-﻿using CQRSlite.Events;
-using CQRSlite.Queries;
-using N3.CqrsEs.Händelser;
+﻿using N3.CqrsEs.Händelser;
 using N3.CqrsEs.LäsModell.DataÖverföring;
 using N3.CqrsEs.LäsModell.Frågor;
 using N3.CqrsEs.LäsModell.Infrastruktur;
 
 namespace N3.CqrsEs.LäsModell.HändelseHantering
 {
-    public class InkassoÄrendeDetaljVy :
-        ICancellableEventHandler<InkassoÄrendeSkapades>
+    public class InkassoÄrendeDetaljVy
     {
         private readonly IVyLagring _vyLagring;
 

@@ -1,5 +1,4 @@
-﻿using CQRSlite.Queries;
-using N3.CqrsEs.LäsModell.DataÖverföring;
+﻿using N3.CqrsEs.LäsModell.DataÖverföring;
 using N3.CqrsEs.LäsModell.Frågor;
 using N3.CqrsEs.LäsModell.Infrastruktur;
 using N3.CqrsEs.SkrivModell.Hantering;
@@ -12,7 +11,6 @@ namespace N3.CqrsEs.Test.TestTjänster
     }
 
     internal class TestVyLagring :
-        ICancellableQueryHandler<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>,
         IVyLagring,
         IÄrendeNummerUträknare
     {

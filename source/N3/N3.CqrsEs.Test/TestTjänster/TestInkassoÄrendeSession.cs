@@ -1,30 +1,40 @@
-﻿using CQRSlite.Domain;
+﻿using Cqrs.Domain;
 using N3.CqrsEs.SkrivModell;
 
 namespace N3.CqrsEs.Test.TestTjänster
 {
     internal class TestInkassoÄrendeSession : IInkassoÄrendeSession
     {
-        private readonly ISession _session;
+        private readonly IUnitOfWork<string> _session;
 
-        public TestInkassoÄrendeSession(ISession session)
+        public TestInkassoÄrendeSession(IUnitOfWork<string> session)
         {
             _session = session;
         }
 
-        public async Task Add<T>(T aggregate, CancellationToken cancellationToken = default) where T : AggregateRoot
+        public void Add<TAggregateRoot>(TAggregateRoot aggregate, bool useSnapshots = false) where TAggregateRoot : IAggregateRoot<string>
         {
-            await _session.Add(aggregate, cancellationToken);
+            throw new NotImplementedException();
         }
 
-        public async Task Commit(CancellationToken cancellationToken = default)
+        public void Commit()
         {
-            await _session.Commit(cancellationToken);
+            throw new NotImplementedException();
         }
 
-        public async Task<T> Get<T>(Guid id, int? expectedVersion = null, CancellationToken cancellationToken = default) where T : AggregateRoot
+        public TAggregateRoot Get<TAggregateRoot>(Guid id, int? expectedVersion = null, bool useSnapshots = false) where TAggregateRoot : IAggregateRoot<string>
         {
-            return await _session.Get<T>(id, expectedVersion, cancellationToken);
+            throw new NotImplementedException();
+        }
+
+        public TAggregateRoot GetToDate<TAggregateRoot>(Guid id, DateTime versionedDate) where TAggregateRoot : IAggregateRoot<string>
+        {
+            throw new NotImplementedException();
+        }
+
+        public TAggregateRoot GetToVersion<TAggregateRoot>(Guid id, int version) where TAggregateRoot : IAggregateRoot<string>
+        {
+            throw new NotImplementedException();
         }
     }
 }

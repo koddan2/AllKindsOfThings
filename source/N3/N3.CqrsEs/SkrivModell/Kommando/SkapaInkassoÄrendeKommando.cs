@@ -1,25 +1,38 @@
-﻿using CQRSlite.Commands;
+﻿using Cqrs.Commands;
 using N3.Modell;
 
 namespace N3.CqrsEs.SkrivModell.Kommando
 {
-	public class SkapaInkassoÄrendeKommando : ICommand
-	{
-		public SkapaInkassoÄrendeKommando(
-			UnikIdentifierare identifierare,
-			UnikIdentifierare klientReferens,
-			UnikIdentifierare[] gäldenärsReferenser,
-			Faktura[] fakturor)
-		{
-			Identifierare = identifierare;
-			KlientReferens = klientReferens;
-			GäldenärsReferenser = gäldenärsReferenser;
-			Fakturor = fakturor;
-		}
+    public class SkapaInkassoÄrendeKommando : ICommandWithIdentity<string>
+    {
+        public SkapaInkassoÄrendeKommando(
+            UnikIdentifierare identifierare,
+            UnikIdentifierare klientReferens,
+            UnikIdentifierare[] gäldenärsReferenser,
+            Faktura[] fakturor)
+        {
+            Identifierare = identifierare;
+            KlientReferens = klientReferens;
+            GäldenärsReferenser = gäldenärsReferenser;
+            Fakturor = fakturor;
 
-		public UnikIdentifierare Identifierare { get; }
-		public UnikIdentifierare KlientReferens { get; }
-		public UnikIdentifierare[] GäldenärsReferenser { get; }
-		public Faktura[] Fakturor { get; }
-	}
+            Rsn = identifierare;
+            AuthenticationToken = identifierare;
+            Frameworks = Array.Empty<string>();
+            OriginatingFramework = "";
+        }
+
+        public UnikIdentifierare Identifierare { get; }
+        public UnikIdentifierare KlientReferens { get; }
+        public UnikIdentifierare[] GäldenärsReferenser { get; }
+        public Faktura[] Fakturor { get; }
+
+        public Guid Id { get; set; }
+        public int ExpectedVersion { get; set; }
+        public string AuthenticationToken { get; set; }
+        public Guid CorrelationId { get; set; }
+        public string OriginatingFramework { get; set; }
+        public IEnumerable<string> Frameworks { get; set; }
+        public Guid Rsn { get; set; }
+    }
 }

@@ -7,3 +7,6 @@
 [submodule "submodules/CQRSlite"]
 	path = submodules/CQRSlite
 	url = https://github.com/gautema/CQRSlite.git
+[submodule "submodules/CQRS"]
+	path = submodules/CQRS
+	url = https://github.com/Chinchilla-Software-Com/CQRS.git

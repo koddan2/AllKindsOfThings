@@ -28,5 +28,10 @@ namespace N3.CqrsEs.Händelser
         public UnikIdentifierare[] GäldenärsReferenser { get; }
         public Faktura[] Fakturor { get; }
         public long ÄrendeNummer { get; }
+
+        public string AuthenticationToken { get; set; } = "";
+        public Guid CorrelationId { get; set; } = Guid.Empty;
+        public string OriginatingFramework { get; set; } = "";
+        public IEnumerable<string> Frameworks { get; set; } = Array.Empty<string>();
     }
 }

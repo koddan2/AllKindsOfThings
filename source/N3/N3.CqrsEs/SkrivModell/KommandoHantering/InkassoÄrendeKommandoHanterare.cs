@@ -1,21 +1,22 @@
-﻿using CQRSlite.Commands;
-using CQRSlite.Domain;
-using CQRSlite.Events;
+﻿using Cqrs.Commands;
+using Cqrs.Domain;
+using Cqrs.Events;
+using Cqrs.Messages;
 using N3.CqrsEs.SkrivModell.Domän;
 using N3.CqrsEs.SkrivModell.Kommando;
 
 namespace N3.CqrsEs.SkrivModell.Hantering
 {
-    public class InkassoÄrendeKommandoHanterare : ICommandHandler<SkapaInkassoÄrendeKommando>
+    public class InkassoÄrendeKommandoHanterare : ICommandHandler<string, SkapaInkassoÄrendeKommando>
     {
-        private readonly ISession _session;
+        private readonly IUnitOfWork<string> _session;
         private readonly IÄrendeNummerUträknare _ärendeNummerUträknare;
-        private readonly IEventStore _eventStore;
+        private readonly IEventStore<string> _eventStore;
 
         public InkassoÄrendeKommandoHanterare(
-            IInkassoÄrendeSession session,
+            IUnitOfWork<string> session,
             IÄrendeNummerUträknare ärendeNummerUträknare,
-            IEventStore eventStore)
+            IEventStore<string> eventStore)
         {
             _session = session;
             _ärendeNummerUträknare = ärendeNummerUträknare;
@@ -38,7 +39,7 @@ namespace N3.CqrsEs.SkrivModell.Hantering
             ////    // OK
             ////}
 
-            var events = await _eventStore.Get(message.Identifierare, -1);
+            var events =  _eventStore.Get(message.Identifierare);
             if (events.Any())
             {
                 throw new AggregatExisterarRedanException("Kan inte skapa ett ärende med en unik identifierare som redan finns.") { Id = message.Identifierare };
@@ -52,21 +53,13 @@ namespace N3.CqrsEs.SkrivModell.Hantering
                 fakturor: message.Fakturor,
                 ärendeNummer: ärendeNr);
 
-            await _session.Add(ärende);
-            await _session.Commit();
+            _session.Add(ärende);
+            _session.Commit();
         }
-    }
 
-    [Serializable]
-    public class AggregatExisterarRedanException : Exception
-    {
-        public AggregatExisterarRedanException() { }
-        public AggregatExisterarRedanException(string message) : base(message) { }
-        public AggregatExisterarRedanException(string message, Exception inner) : base(message, inner) { }
-        protected AggregatExisterarRedanException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
-
-        public Guid Id { get; init; }
+        void IMessageHandler<SkapaInkassoÄrendeKommando>.Handle(SkapaInkassoÄrendeKommando message)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,8 +1,8 @@
-﻿using CQRSlite.Domain;
+﻿using Cqrs.Domain;
 
 namespace N3.CqrsEs.SkrivModell
 {
-    public interface IInkassoÄrendeSession : ISession
+    public interface IInkassoÄrendeSession : IUnitOfWork<string>
     {
 
     }

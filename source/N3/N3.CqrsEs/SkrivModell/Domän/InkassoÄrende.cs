@@ -1,10 +1,10 @@
-﻿using CQRSlite.Domain;
+﻿using Cqrs.Domain;
 using N3.CqrsEs.Händelser;
 using N3.Modell;
 
 namespace N3.CqrsEs.SkrivModell.Domän
 {
-    public sealed class InkassoÄrende : AggregateRoot
+    public sealed class InkassoÄrende : AggregateRoot<string>
     {
         private InkassoÄrende() { }
 

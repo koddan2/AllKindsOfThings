@@ -1,5 +1,4 @@
-﻿using CQRSlite.Events;
-using N3.CqrsEs.Händelser;
+﻿using N3.CqrsEs.Händelser;
 using N3.CqrsEs.LäsModell.Infrastruktur;
 
 namespace N3.CqrsEs.LäsModell.HändelseHantering
