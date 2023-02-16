@@ -1,8 +1,8 @@
 ﻿using CQRSlite.Commands;
 using CQRSlite.Domain;
+using CQRSlite.Events;
 using N3.CqrsEs.SkrivModell.Domän;
 using N3.CqrsEs.SkrivModell.Kommando;
-using N3.Modell;
 
 namespace N3.CqrsEs.SkrivModell.Hantering
 {
@@ -10,27 +10,38 @@ namespace N3.CqrsEs.SkrivModell.Hantering
     {
         private readonly ISession _session;
         private readonly IÄrendeNummerUträknare _ärendeNummerUträknare;
+        private readonly IEventStore _eventStore;
 
-        public InkassoÄrendeKommandoHanterare(IInkassoÄrendeSession session, IÄrendeNummerUträknare ärendeNummerUträknare)
+        public InkassoÄrendeKommandoHanterare(
+            IInkassoÄrendeSession session,
+            IÄrendeNummerUträknare ärendeNummerUträknare,
+            IEventStore eventStore)
         {
             _session = session;
             _ärendeNummerUträknare = ärendeNummerUträknare;
+            _eventStore = eventStore;
         }
 
         public async Task Handle(SkapaInkassoÄrendeKommando message)
         {
-            try
+            ////try
+            ////{
+            ////    var existerar = await _session.Get<InkassoÄrende?>(message.Identifierare);
+            ////    if (existerar is not null)
+            ////    {
+            ////        // ...
+            ////        throw new AggregatExisterarRedanException("Kan inte skapa ett ärende med en unik identifierare som redan finns.") { Id = message.Identifierare };
+            ////    }
+            ////}
+            ////catch (Exception)
+            ////{
+            ////    // OK
+            ////}
+
+            var events = await _eventStore.Get(message.Identifierare, -1);
+            if (events.Any())
             {
-                var existerar = await _session.Get<InkassoÄrende?>(message.Identifierare);
-                if (existerar is not null)
-                {
-                    // ...
-                    throw new AggregatExisterarRedanException("Kan inte skapa ett ärende med en unik identifierare som redan finns.") { Id = message.Identifierare };
-                }
-            }
-            catch (Exception)
-            {
-                // OK
+                throw new AggregatExisterarRedanException("Kan inte skapa ett ärende med en unik identifierare som redan finns.") { Id = message.Identifierare };
             }
 
             var ärendeNr = await _ärendeNummerUträknare.TaFramNästaLedigaÄrendeNummer();

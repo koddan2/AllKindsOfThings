@@ -19,17 +19,25 @@ namespace N3.CqrsEs.Test
             return host
                .ConfigureServices((ctx, services) =>
                {
-                   var router = new Router();
                    _ = services
-                       .AddSingleton<Router>(router)
-                       .AddSingleton<ICommandSender>(_ => router)
-                       .AddSingleton<IEventPublisher>(_ => router)
-                       .AddSingleton<IHandlerRegistrar>(_ => router)
-                       .AddSingleton<IQueryProcessor>(_ => router)
+                       .AddScoped<Router>(provider =>
+                       {
+                           var router = new Router();
+
+                           var registrar = new TestRouteRegistrar(provider);
+                           registrar.RegisterInAssemblyOf(
+                               router,
+                               types);
+                           return router;
+                       })
+                       .AddScoped<ICommandSender>(provider => provider.GetRequiredService<Router>())
+                       .AddScoped<IEventPublisher>(provider => provider.GetRequiredService<Router>())
+                       .AddScoped<IHandlerRegistrar>(provider => provider.GetRequiredService<Router>())
+                       .AddScoped<IQueryProcessor>(provider => provider.GetRequiredService<Router>())
                        .AddScoped<ISession, Session>()
 
-                       .AddSingleton<IEventStore, InMemoryEventStore>()
-                       .AddScoped<IRepository>(y => new Repository(y.GetRequiredService<IEventStore>()))
+                       .AddScoped<IEventStore, InMemoryEventStore>()
+                       .AddScoped<IRepository>(provider => new Repository(provider.GetRequiredService<IEventStore>()))
                        ;
 
                    foreach (var type in types)

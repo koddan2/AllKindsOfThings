@@ -9,7 +9,7 @@ namespace N3.CqrsEs.Test
     {
         public static IServiceProvider Register(this IServiceProvider serviceProvider, params Type[] types)
         {
-            var registrar = new RouteRegistrar(serviceProvider);
+            var registrar = new TestRouteRegistrar(serviceProvider);
             foreach (var type in types)
             {
                 registrar.RegisterInAssemblyOf(type);

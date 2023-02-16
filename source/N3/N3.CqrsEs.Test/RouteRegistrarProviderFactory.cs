@@ -11,12 +11,15 @@ namespace N3.CqrsEs.Test
 
         public IServiceProvider CreateServiceProvider(IServiceCollection containerBuilder)
         {
-            var result = containerBuilder.BuildServiceProvider()
+            var result = containerBuilder.BuildServiceProvider(validateScopes: true)
+                ;
+
+            return result.CreateAsyncScope().ServiceProvider
                 .Register(
                     typeof(TestAssemblyMarker),
-                    typeof(CqrsEsAssemblyMarker));
-
-            return result;
+                    typeof(CqrsEsAssemblyMarker))
+                ;
+            ////return result;
         }
     }
 }

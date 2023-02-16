@@ -13,7 +13,8 @@ namespace N3.CqrsEs.Test.TestTjänster
 
     internal class TestVyLagring :
         ICancellableQueryHandler<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>,
-        IVyLagring, IÄrendeNummerUträknare
+        IVyLagring,
+        IÄrendeNummerUträknare
     {
         private readonly TestVyLagringDatabas _databas;
 

@@ -1,4 +1,5 @@
 using CQRSlite.Commands;
+using CQRSlite.Domain.Exception;
 using CQRSlite.Queries;
 using CQRSlite.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +15,7 @@ using N3.Modell;
 namespace N3.CqrsEs.Test
 {
     public sealed class TestAssemblyMarker { }
-    public class Tests
+    public class ÄrendeAggregatsTester
     {
         private IHost _host;
         private IServiceScope _scope;
@@ -23,7 +24,6 @@ namespace N3.CqrsEs.Test
         public void Setup()
         {
             _host = new HostBuilder()
-               .UseServiceProviderFactory(new RouteRegistrarProviderFactory())
                .RegisterCqrsServices(
                     typeof(TestAssemblyMarker),
                     typeof(CqrsEsAssemblyMarker))
@@ -31,7 +31,7 @@ namespace N3.CqrsEs.Test
                {
                    _ = services
                        .AddScoped<IInkassoÄrendeSession, TestInkassoÄrendeSession>()
-                       .AddScoped(_ => new TestVyLagringDatabas())
+                       .AddScoped<TestVyLagringDatabas>()
                        .AddScoped<IVyLagring, TestVyLagring>()
                        .AddScoped<IÄrendeNummerUträknare, TestVyLagring>()
                        ;
@@ -42,7 +42,14 @@ namespace N3.CqrsEs.Test
         }
 
         [Test]
-        public async Task SkapaÄrende1()
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(7)]
+        public async Task SkapaÄrende1(int _)
         {
             var kommandoSkickare = _scope.Plocka<ICommandSender>();
             var frågeHanterare = _scope.Plocka<IQueryProcessor>();
@@ -67,7 +74,7 @@ namespace N3.CqrsEs.Test
                 Guid.NewGuid(),
                 Guid.NewGuid(),
                 new[] { (UnikIdentifierare)Guid.NewGuid() },
-                new[] {faktura} );
+                new[] { faktura });
             await kommandoSkickare.Send(kommando);
 
             var ärende = await frågeHanterare.Query(new HämtaSpecifiktInkassoÄrende(kommando.Identifierare));
@@ -77,7 +84,7 @@ namespace N3.CqrsEs.Test
         }
 
         [Test]
-        public async Task Test2()
+        public async Task SkapaÄrendeDubblettHindras1()
         {
             var kommandoSkickare = _scope.Plocka<ICommandSender>();
             var frågeHanterare = _scope.Plocka<IQueryProcessor>();
@@ -88,9 +95,41 @@ namespace N3.CqrsEs.Test
                 Array.Empty<UnikIdentifierare>(),
                 Array.Empty<Faktura>());
             await kommandoSkickare.Send(kommando);
+            var ex = Assert.ThrowsAsync<AggregatExisterarRedanException>(async () =>
+            {
+                await kommandoSkickare.Send(kommando);
+            });
 
-            var ärende = frågeHanterare.Query(new HämtaSpecifiktInkassoÄrende(kommando.Identifierare));
-            Assert.That(ärende, Is.Not.Null);
+            Assert.That((UnikIdentifierare)ex.Id, Is.EqualTo(kommando.Identifierare));
+        }
+
+        [Test]
+        public async Task SkapaÄrendeFlera1()
+        {
+            var kommandoSkickare = _scope.Plocka<ICommandSender>();
+            var frågeHanterare = _scope.Plocka<IQueryProcessor>();
+
+            var räknare = 0;
+            foreach (var item in Enumerable.Range(1, 10))
+            {
+                var kommando = new SkapaInkassoÄrendeKommando(
+                    Guid.NewGuid(),
+                    Guid.NewGuid(),
+                    Array.Empty<UnikIdentifierare>(),
+                    Array.Empty<Faktura>());
+                await kommandoSkickare.Send(kommando);
+                räknare++;
+                var ex = Assert.ThrowsAsync<AggregatExisterarRedanException>(async () =>
+                {
+                    await kommandoSkickare.Send(kommando);
+                });
+
+                Assert.That((UnikIdentifierare)ex.Id, Is.EqualTo(kommando.Identifierare));
+                var ärende = await frågeHanterare.Query(new HämtaSpecifiktInkassoÄrende(kommando.Identifierare));
+            }
+
+            var db = _scope.ServiceProvider.GetRequiredService<TestVyLagringDatabas>();
+            Assert.That(db.Ärenden, Has.Count.EqualTo(räknare));
         }
     }
 }

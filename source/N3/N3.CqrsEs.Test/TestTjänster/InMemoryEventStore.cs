@@ -16,12 +16,17 @@ namespace N3.CqrsEs.Test.TestTjänster
         {
             foreach (var @event in events)
             {
-                var found = _inMemoryDb.TryGetValue(@event.Id, out var list);
-                if (!found || list is null)
+                List<IEvent> list;
+                if (_inMemoryDb.ContainsKey(@event.Id))
+                {
+                    list = _inMemoryDb[@event.Id];
+                }
+                else
                 {
                     list = new List<IEvent>();
-                    _inMemoryDb.Add(@event.Id, list);
+                    _inMemoryDb[@event.Id] = list;
                 }
+
                 list.Add(@event);
                 await _publisher.Publish(@event, cancellationToken);
             }
@@ -30,10 +35,12 @@ namespace N3.CqrsEs.Test.TestTjänster
         public async Task<IEnumerable<IEvent>> Get(Guid aggregateId, int fromVersion, CancellationToken cancellationToken = default)
         {
             await ValueTask.CompletedTask;
-            var found = _inMemoryDb.TryGetValue(aggregateId, out var events);
-            return found && events is not null
-                ? events.Where(x => x.Version > fromVersion)
-                : Array.Empty<IEvent>();
+            if (_inMemoryDb.TryGetValue(aggregateId, out List<IEvent>? value))
+            {
+                return value.Where(item => item.Version > fromVersion);
+            }
+
+            return Enumerable.Empty<IEvent>();
         }
     }
 }
