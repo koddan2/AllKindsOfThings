@@ -5,11 +5,11 @@ using N3.CqrsEs.LäsModell.Infrastruktur;
 
 namespace N3.CqrsEs.LäsModell.HändelseHantering
 {
-    public class InkassoÄrendeDetaljVy
+    public class InkassoÄrendeLäsDatabasKontext
     {
         private readonly IVyLagring _vyLagring;
 
-        public InkassoÄrendeDetaljVy(IVyLagring vyLagring)
+        public InkassoÄrendeLäsDatabasKontext(IVyLagring vyLagring)
         {
             _vyLagring = vyLagring;
         }

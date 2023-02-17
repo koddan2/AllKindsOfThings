@@ -7,7 +7,11 @@ using N3.CqrsEs.SkrivModell.Kommando;
 
 namespace N3.CqrsEs.SkrivModell.Hantering
 {
-    public class InkassoÄrendeKommandoHanterare : ICommandHandler<string, SkapaInkassoÄrendeKommando>
+    public interface IInkassoÄrendeKommandoHanterare : ICommandHandler<string, SkapaInkassoÄrendeKommando>
+    {
+
+    }
+    public class InkassoÄrendeKommandoHanterare : IInkassoÄrendeKommandoHanterare
     {
         private readonly IUnitOfWork<string> _session;
         private readonly IÄrendeNummerUträknare _ärendeNummerUträknare;

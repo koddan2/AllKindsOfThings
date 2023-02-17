@@ -9,9 +9,39 @@ using N3.CqrsEs.SkrivModell.Hantering;
 using N3.CqrsEs.SkrivModell.Kommando;
 using N3.CqrsEs.Test.TestTjänster;
 using N3.Modell;
+using System.Runtime.CompilerServices;
+using N3.CqrsEs.LäsModell.DataÖverföring;
+using Cqrs.Domain;
+using Cqrs.Domain.Factories;
+using Cqrs.Configuration;
+using Chinchilla.Logging;
+using Cqrs.Events;
+using Chinchilla.StateManagement;
+using Chinchilla.StateManagement.Threaded;
+using Chinchilla.Logging.Configuration;
 
 namespace N3.CqrsEs.Test
 {
+    public class TestDependencyResolver : DependencyResolver
+    {
+        private readonly IServiceProvider _provider;
+
+        public TestDependencyResolver(IServiceProvider provider)
+        {
+            _provider = provider;
+        }
+
+        public override T Resolve<T>()
+        {
+            return _provider.GetRequiredService<T>();
+        }
+
+        public override object Resolve(Type type)
+        {
+            return _provider.GetRequiredService(type);
+        }
+    }
+    [TestFixture]
     public class ÄrendeAggregatsTester
     {
         private IHost _host;
@@ -24,18 +54,34 @@ namespace N3.CqrsEs.Test
                .ConfigureServices((ctx, services) =>
                {
                    _ = services
+
+                       .AddScoped<ILogger, ConsoleLogger>()
+                       .AddScoped<ILoggerSettings>((_)=>new LoggerSettings())
+                       .AddScoped<ICorrelationIdHelper, CorrelationIdHelper>()
+                       .AddScoped<IContextItemCollectionFactory, ContextItemCollectionFactory>()
+                       .AddScoped<IConfigurationManager, ConfigurationManager>()
+
+                       .AddScoped<IDependencyResolver, TestDependencyResolver>()
+                       .AddScoped<IAggregateFactory, AggregateFactory>()
+                       .AddScoped<IAggregateRepository<string>, AggregateRepository<string>>()
+                       .AddScoped<IUnitOfWork<string>, UnitOfWork<string>>()
+
+                       .AddScoped<IEventStore<string>, InMemoryEventStore>()
+                       .AddScoped<IEventPublisher<string>, InMemoryEventStore>()
+
+
                        .AddScoped<TestVyLagringDatabas>()
+
                        .AddScoped<IVyLagring, TestVyLagring>()
                        .AddScoped<IÄrendeNummerUträknare, TestVyLagring>()
+
+                       .AddScoped<IFrågeHanterare<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>, TestFrågeHanterare>()
+                       .AddScoped<IInkassoÄrendeKommandoHanterare, InkassoÄrendeKommandoHanterare>()
                        ;
                })
                .Build();
 
             _scope = _host.Services.CreateAsyncScope();
-        }
-        void UnhandledException(Exception exception)
-        {
-            _ = exception.Demystify();
         }
 
         [Test]
@@ -48,8 +94,8 @@ namespace N3.CqrsEs.Test
         [TestCase(7)]
         public async Task SkapaÄrende1(int _)
         {
-            var kommandoSkickare = _scope.Plocka<ICommandPublisher<string>>();
-            var frågeHanterare = _scope.Plocka<IQueryProcessor>();
+            var kommandoSkickare = _scope.Plocka<IInkassoÄrendeKommandoHanterare>();
+            var frågeHanterare = _scope.Plocka<IFrågeHanterare<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>>();
 
             var faktura = new Faktura(
                 FakturaNummer: "4155",
@@ -72,7 +118,7 @@ namespace N3.CqrsEs.Test
                 Guid.NewGuid(),
                 new[] { (UnikIdentifierare)Guid.NewGuid() },
                 new[] { faktura });
-            kommandoSkickare.Publish(kommando);
+            kommandoSkickare.Handle(kommando);
 
             var ärende = await frågeHanterare.Hantera(new HämtaSpecifiktInkassoÄrende(kommando.Identifierare));
             Assert.That(ärende, Is.Not.Null);
