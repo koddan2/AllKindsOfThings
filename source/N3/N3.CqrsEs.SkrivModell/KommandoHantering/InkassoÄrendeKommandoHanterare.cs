@@ -1,30 +1,21 @@
-﻿using Cqrs.Commands;
-using Cqrs.Domain;
-using Cqrs.Events;
-using Cqrs.Messages;
+﻿using N3.CqrsEs.Ramverk;
 using N3.CqrsEs.SkrivModell.Domän;
 using N3.CqrsEs.SkrivModell.Kommando;
 
-namespace N3.CqrsEs.SkrivModell.Hantering
+namespace N3.CqrsEs.SkrivModell.KommandoHantering
 {
-    public interface IInkassoÄrendeKommandoHanterare : ICommandHandler<string, SkapaInkassoÄrendeKommando>
+    public class InkassoÄrendeKommandoHanterare : IKommandoHanterare<SkapaInkassoÄrendeKommando>
     {
-
-    }
-    public class InkassoÄrendeKommandoHanterare : IInkassoÄrendeKommandoHanterare
-    {
-        private readonly IUnitOfWork<string> _session;
         private readonly IÄrendeNummerUträknare _ärendeNummerUträknare;
-        private readonly IEventStore<string> _eventStore;
+        private readonly IHändelseKassa _händelseKassa;
 
         public InkassoÄrendeKommandoHanterare(
-            IUnitOfWork<string> session,
-            IÄrendeNummerUträknare ärendeNummerUträknare,
-            IEventStore<string> eventStore)
+            IHändelseKassa händelseKassa,
+            IÄrendeNummerUträknare ärendeNummerUträknare
+            )
         {
-            _session = session;
             _ärendeNummerUträknare = ärendeNummerUträknare;
-            _eventStore = eventStore;
+            _händelseKassa = händelseKassa;
         }
 
         public async Task Handle(SkapaInkassoÄrendeKommando message)
@@ -43,25 +34,26 @@ namespace N3.CqrsEs.SkrivModell.Hantering
             ////    // OK
             ////}
 
-            var events =  _eventStore.Get(message.Identifierare);
+            var events = _händelseKassa.Hämta(message.Identifierare);
             if (events.Any())
             {
                 throw new AggregatExisterarRedanException("Kan inte skapa ett ärende med en unik identifierare som redan finns.") { Id = message.Identifierare };
             }
 
             var ärendeNr = await _ärendeNummerUträknare.TaFramNästaLedigaÄrendeNummer();
-            var ärende = new InkassoÄrende(
-                message.Identifierare,
+            var ärende = new InkassoÄrende(message.Identifierare);
+            await ärende.SkapaÄrende(
+                _händelseKassa,
                 message.KlientReferens,
                 gäldenärsReferenser: message.GäldenärsReferenser,
                 fakturor: message.Fakturor,
                 ärendeNummer: ärendeNr);
 
-            _session.Add(ärende);
-            _session.Commit();
+            ////_session.Add(ärende);
+            ////_session.Commit();
         }
 
-        void IMessageHandler<SkapaInkassoÄrendeKommando>.Handle(SkapaInkassoÄrendeKommando message)
+        public Task Hantera(SkapaInkassoÄrendeKommando kommando)
         {
             throw new NotImplementedException();
         }

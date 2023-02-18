@@ -1,9 +1,9 @@
-﻿using Cqrs.Commands;
+﻿using N3.CqrsEs.Ramverk;
 using N3.Modell;
 
 namespace N3.CqrsEs.SkrivModell.Kommando
 {
-    public class SkapaInkassoÄrendeKommando : ICommandWithIdentity<string>
+    public class SkapaInkassoÄrendeKommando : IKommando
     {
         public SkapaInkassoÄrendeKommando(
             UnikIdentifierare identifierare,

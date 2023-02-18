@@ -1,4 +1,4 @@
-﻿using N3.CqrsEs.Händelser;
+﻿using N3.CqrsEs.Gemensam.Händelser;
 using N3.CqrsEs.LäsModell.DataÖverföring;
 using N3.CqrsEs.LäsModell.Frågor;
 using N3.CqrsEs.LäsModell.Infrastruktur;

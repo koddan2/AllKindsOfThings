@@ -18,6 +18,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\N3.Modell\N3.Modell.csproj" />
+	  <ProjectReference Include="..\N3\N3.csproj" />
 	</ItemGroup>
 
 </Project>

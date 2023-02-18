@@ -1,7 +1,7 @@
 ﻿using N3.CqrsEs.LäsModell.DataÖverföring;
 using N3.CqrsEs.LäsModell.Frågor;
 using N3.CqrsEs.LäsModell.Infrastruktur;
-using N3.CqrsEs.SkrivModell.Hantering;
+using N3.CqrsEs.SkrivModell.KommandoHantering;
 
 namespace N3.CqrsEs.Test.TestTjänster
 {

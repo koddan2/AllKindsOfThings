@@ -9,7 +9,6 @@
 	<ItemGroup>
 		<PackageReference Include="Base62-Net" Version="1.2.157201" />
 		<PackageReference Include="SmartAnalyzers.CSharpExtensions.Annotations" Version="4.2.8" />
-        <PackageReference Include="Cqrs" Version="4.4.1.24" />
     </ItemGroup>
 
 	<ItemGroup>

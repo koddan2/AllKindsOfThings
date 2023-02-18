@@ -1,4 +1,4 @@
-﻿namespace N3.Modell
+﻿namespace N3
 {
 	/// <summary>
 	/// Ett globalt unikt värde, bestående av alfanumeriska tecken

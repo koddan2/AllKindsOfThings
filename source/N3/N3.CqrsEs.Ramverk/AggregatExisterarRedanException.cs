@@ -1,4 +1,4 @@
-﻿namespace N3.CqrsEs.SkrivModell.Hantering
+﻿namespace N3.CqrsEs.Ramverk
 {
     [Serializable]
     public class AggregatExisterarRedanException : Exception

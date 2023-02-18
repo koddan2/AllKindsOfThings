@@ -1,8 +1,9 @@
-﻿using N3.Modell;
+﻿using N3.CqrsEs.Ramverk;
+using N3.Modell;
 
-namespace N3.CqrsEs.Händelser
+namespace N3.CqrsEs.Gemensam.Händelser
 {
-    public sealed class InkassoÄrendeSkapades : IInkassoHändelse
+    public sealed class InkassoÄrendeSkapades : IHändelse
     {
         public InkassoÄrendeSkapades(
             UnikIdentifierare identifierare,
@@ -18,20 +19,19 @@ namespace N3.CqrsEs.Händelser
             ÄrendeNummer = ärendeNummer;
         }
 
+        public UnikIdentifierare KorrelationsIdentifierare { get; init; }
+        public IEnumerable<string>? Kedja { get; set; }
+
         public string AggregatNamn => "InkassoÄrende";
 
-        public Guid Id { get; set; }
-        public int Version { get; set; }
-        public DateTimeOffset TimeStamp { get; set; }
+        public UnikIdentifierare Id { get; }
+        public int Version { get; }
+        public DateTimeOffset TimeStamp { get; }
 
         public UnikIdentifierare KlientReferens { get; }
         public UnikIdentifierare[] GäldenärsReferenser { get; }
         public Faktura[] Fakturor { get; }
         public long ÄrendeNummer { get; }
 
-        public string AuthenticationToken { get; set; } = "";
-        public Guid CorrelationId { get; set; } = Guid.Empty;
-        public string OriginatingFramework { get; set; } = "";
-        public IEnumerable<string> Frameworks { get; set; } = Array.Empty<string>();
     }
 }
