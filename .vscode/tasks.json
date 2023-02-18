@@ -36,6 +36,16 @@
                 "${workspaceFolder}/Submodules/Invoke-Build/ib/ib.csproj"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "source/dataz/tsconfig.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ],
+            "group": "build",
+            "label": "tsc: watch - source/dataz/tsconfig.json"
         }
     ]
 }
