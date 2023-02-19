@@ -29,19 +29,19 @@
   var require_vnode = __commonJS({
     "node_modules/mithril/render/vnode.js"(exports, module) {
       "use strict";
-      function Vnode2(tag, key, attrs, children, text, dom) {
+      function Vnode(tag, key, attrs, children, text, dom) {
         return { tag, key, attrs, children, text, dom, domSize: void 0, state: void 0, events: void 0, instance: void 0 };
       }
-      Vnode2.normalize = function(node) {
+      Vnode.normalize = function(node) {
         if (Array.isArray(node))
-          return Vnode2("[", void 0, void 0, Vnode2.normalizeChildren(node), void 0, void 0);
+          return Vnode("[", void 0, void 0, Vnode.normalizeChildren(node), void 0, void 0);
         if (node == null || typeof node === "boolean")
           return null;
         if (typeof node === "object")
           return node;
-        return Vnode2("#", void 0, void 0, String(node), void 0, void 0);
+        return Vnode("#", void 0, void 0, String(node), void 0, void 0);
       };
-      Vnode2.normalizeChildren = function(input) {
+      Vnode.normalizeChildren = function(input) {
         var children = [];
         if (input.length) {
           var isKeyed = input[0] != null && input[0].key != null;
@@ -53,12 +53,12 @@
             }
           }
           for (var i = 0; i < input.length; i++) {
-            children[i] = Vnode2.normalize(input[i]);
+            children[i] = Vnode.normalize(input[i]);
           }
         }
         return children;
       };
-      module.exports = Vnode2;
+      module.exports = Vnode;
     }
   });
 
@@ -66,7 +66,7 @@
   var require_hyperscriptVnode = __commonJS({
     "node_modules/mithril/render/hyperscriptVnode.js"(exports, module) {
       "use strict";
-      var Vnode2 = require_vnode();
+      var Vnode = require_vnode();
       module.exports = function() {
         var attrs = arguments[this], start = this + 1, children;
         if (attrs == null) {
@@ -84,7 +84,7 @@
           while (start < arguments.length)
             children.push(arguments[start++]);
         }
-        return Vnode2("", attrs.key, attrs, children);
+        return Vnode("", attrs.key, attrs, children);
       };
     }
   });
@@ -101,7 +101,7 @@
   var require_hyperscript = __commonJS({
     "node_modules/mithril/render/hyperscript.js"(exports, module) {
       "use strict";
-      var Vnode2 = require_vnode();
+      var Vnode = require_vnode();
       var hyperscriptVnode = require_hyperscriptVnode();
       var hasOwn = require_hasOwn();
       var selectorParser = /(?:(^|#|\.)([^#\.\[\]]+))|(\[(.+?)(?:\s*=\s*("|'|)((?:\\["'\]]|.)*?)\5)?\])/g;
@@ -173,7 +173,7 @@
         }
         var vnode = hyperscriptVnode.apply(1, arguments);
         if (typeof selector === "string") {
-          vnode.children = Vnode2.normalizeChildren(vnode.children);
+          vnode.children = Vnode.normalizeChildren(vnode.children);
           if (selector !== "[")
             return execSelector(selectorCache[selector] || compileSelector(selector), vnode);
         }
@@ -188,11 +188,11 @@
   var require_trust = __commonJS({
     "node_modules/mithril/render/trust.js"(exports, module) {
       "use strict";
-      var Vnode2 = require_vnode();
+      var Vnode = require_vnode();
       module.exports = function(html) {
         if (html == null)
           html = "";
-        return Vnode2("<", void 0, void 0, html, void 0, void 0);
+        return Vnode("<", void 0, void 0, html, void 0, void 0);
       };
     }
   });
@@ -201,12 +201,12 @@
   var require_fragment = __commonJS({
     "node_modules/mithril/render/fragment.js"(exports, module) {
       "use strict";
-      var Vnode2 = require_vnode();
+      var Vnode = require_vnode();
       var hyperscriptVnode = require_hyperscriptVnode();
       module.exports = function() {
         var vnode = hyperscriptVnode.apply(0, arguments);
         vnode.tag = "[";
-        vnode.children = Vnode2.normalizeChildren(vnode.children);
+        vnode.children = Vnode.normalizeChildren(vnode.children);
         return vnode;
       };
     }
@@ -394,7 +394,7 @@
   var require_render = __commonJS({
     "node_modules/mithril/render/render.js"(exports, module) {
       "use strict";
-      var Vnode2 = require_vnode();
+      var Vnode = require_vnode();
       module.exports = function($window) {
         var $doc = $window && $window.document;
         var currentRedraw;
@@ -528,7 +528,7 @@
           initLifecycle(vnode.state, vnode, hooks);
           if (vnode.attrs != null)
             initLifecycle(vnode.attrs, vnode, hooks);
-          vnode.instance = Vnode2.normalize(callHook.call(vnode.state.view, vnode));
+          vnode.instance = Vnode.normalize(callHook.call(vnode.state.view, vnode));
           if (vnode.instance === vnode)
             throw Error("A view cannot return the vnode it received as argument");
           sentinel.$$reentrantLock$$ = null;
@@ -775,7 +775,7 @@
           }
         }
         function updateComponent(parent, old, vnode, hooks, nextSibling, ns) {
-          vnode.instance = Vnode2.normalize(callHook.call(vnode.state.view, vnode));
+          vnode.instance = Vnode.normalize(callHook.call(vnode.state.view, vnode));
           if (vnode.instance === vnode)
             throw Error("A view cannot return the vnode it received as argument");
           updateLifecycle(vnode.state, vnode, hooks);
@@ -1243,7 +1243,7 @@
           try {
             if (dom.vnodes == null)
               dom.textContent = "";
-            vnodes = Vnode2.normalizeChildren(Array.isArray(vnodes) ? vnodes : [vnodes]);
+            vnodes = Vnode.normalizeChildren(Array.isArray(vnodes) ? vnodes : [vnodes]);
             updateNodes(dom, dom.vnodes, vnodes, hooks, null, namespace === "http://www.w3.org/1999/xhtml" ? void 0 : namespace);
             dom.vnodes = vnodes;
             if (active != null && activeElement() !== active && typeof active.focus === "function")
@@ -1271,7 +1271,7 @@
   var require_mount_redraw = __commonJS({
     "node_modules/mithril/api/mount-redraw.js"(exports, module) {
       "use strict";
-      var Vnode2 = require_vnode();
+      var Vnode = require_vnode();
       module.exports = function(render, schedule, console2) {
         var subscriptions = [];
         var pending = false;
@@ -1279,7 +1279,7 @@
         function sync() {
           for (offset = 0; offset < subscriptions.length; offset += 2) {
             try {
-              render(subscriptions[offset], Vnode2(subscriptions[offset + 1]), redraw);
+              render(subscriptions[offset], Vnode(subscriptions[offset + 1]), redraw);
             } catch (e) {
               console2.error(e);
             }
@@ -1309,7 +1309,7 @@
           }
           if (component != null) {
             subscriptions.push(root, component);
-            render(root, Vnode2(component), redraw);
+            render(root, Vnode(component), redraw);
           }
         }
         return { mount, redraw };
@@ -1777,7 +1777,7 @@
   var require_router = __commonJS({
     "node_modules/mithril/api/router.js"(exports, module) {
       "use strict";
-      var Vnode2 = require_vnode();
+      var Vnode = require_vnode();
       var m3 = require_hyperscript();
       var Promise2 = require_promise();
       var buildPathname = require_build2();
@@ -1813,7 +1813,7 @@
           view: function() {
             if (!state || sentinel === currentResolver)
               return;
-            var vnode = [Vnode2(component, attrs.key, attrs)];
+            var vnode = [Vnode(component, attrs.key, attrs)];
             if (currentResolver)
               vnode = currentResolver.render(vnode[0]);
             return vnode;
@@ -2034,18 +2034,25 @@
   // main.ts
   var import_mithril2 = __toESM(require_mithril());
 
-  // tablify.component.ts
+  // m.ts
   var import_mithril = __toESM(require_mithril());
+  var m_default = import_mithril.default;
+
+  // tablify.component.ts
   function TablifyComponent(initialVnode) {
     const state = initState(initialVnode.attrs);
     return {
       view(vnode) {
         state.referenceLoopCheck = /* @__PURE__ */ new WeakMap();
-        return (0, import_mithril.default)("div", [
-          tablifyControlsElement(state),
-          renderUnknown(state, state.data, ["$"]),
-          state.debug ? renderUnknown(state, state, ["_$"]) : []
-        ]);
+        return m_default(
+          "div",
+          { class: state.configuration.cssClassNamespace || "tablify" },
+          [
+            tablifyControlsElement(state),
+            renderUnknown(state, state.data, ["$"]),
+            state.debug ? renderUnknown(state, state, ["_$"]) : []
+          ]
+        );
       }
     };
   }
@@ -2062,34 +2069,34 @@
   function renderUnknown(state, data, path) {
     if (typeof data === "object") {
       if (data === null) {
-        return (0, import_mithril.default)("pre", { class: "keyword" }, "null");
+        return m_default("pre", { class: "keyword" }, "null");
       } else if (data instanceof Date) {
-        return (0, import_mithril.default)("span", data.toLocaleString());
+        return m_default("span", data.toLocaleString());
       } else if (data instanceof WeakMap) {
-        return (0, import_mithril.default)("code", `WeakMap()`);
+        return m_default("code", `WeakMap()`);
       } else if (data instanceof Map) {
-        return (0, import_mithril.default)("code", `Map()`);
+        return m_default("code", `Map()`);
       } else if (Array.isArray(data)) {
         return renderArray(state, data, path, false);
       } else {
         return renderArray(state, data, path, true);
       }
     } else if (typeof data === "bigint") {
-      return (0, import_mithril.default)("span", data.toString());
+      return m_default("span", data.toString());
     } else if (typeof data === "number") {
-      return (0, import_mithril.default)("span", data.toString());
+      return m_default("span", data.toString());
     } else if (typeof data === "boolean") {
-      return (0, import_mithril.default)("span", data.toString());
+      return m_default("span", data.toString());
     } else if (typeof data === "string") {
-      return (0, import_mithril.default)("span", data.toString());
+      return m_default("span", data.toString());
     } else if (typeof data === "symbol") {
-      return (0, import_mithril.default)("span", data.toString());
+      return m_default("span", data.toString());
     } else if (typeof data === "function") {
-      return (0, import_mithril.default)("pre", data.toString());
+      return m_default("pre", data.toString());
     } else if (typeof data === "undefined") {
-      return (0, import_mithril.default)("pre", { class: "keyword" }, "undefined");
+      return m_default("pre", { class: "keyword" }, "undefined");
     } else {
-      return (0, import_mithril.default)("span", "[UNKNOWN]");
+      return m_default("span", "[UNKNOWN]");
     }
   }
   function renderArray(state, data, path, isAssoc) {
@@ -2098,9 +2105,9 @@
     const allProps = [...keys, ...symbols];
     if (allProps.length < 1) {
       if (isAssoc) {
-        return (0, import_mithril.default)("span", "{}");
+        return m_default("span", "{}");
       } else {
-        return (0, import_mithril.default)("span", "[]");
+        return m_default("span", "[]");
       }
     }
     allProps.sort((a, b) => Number(a.toString() > b.toString()));
@@ -2113,18 +2120,19 @@
       if (isComplex) {
         if (state.referenceLoopCheck.has(item)) {
           const conflictingPath = state.referenceLoopCheck.get(item);
+          const strConflictingPath = stringifyPath(conflictingPath || []);
           children.push(
-            (0, import_mithril.default)("tr", { key: domKey }, [
-              (0, import_mithril.default)("td", k.toString()),
-              (0, import_mithril.default)("td", [
-                (0, import_mithril.default)("span", "\u{1F4A2}"),
-                (0, import_mithril.default)(
+            m_default("tr", { key: domKey }, [
+              m_default("td", k.toString()),
+              m_default("td", [
+                m_default("span", "\u{1F4A2}"),
+                m_default(
                   "pre",
                   { style: "display:inline-block;" },
-                  (0, import_mithril.default)(
+                  m_default(
                     "a",
-                    { href: "#" + conflictingPath },
-                    `@${stringifyPath(conflictingPath || [])}`
+                    { href: "#" + strConflictingPath },
+                    `@${strConflictingPath}`
                   )
                 )
               ])
@@ -2145,45 +2153,45 @@
       }
       const hide = state.pathState[stringifyPath(propPath)]?.hide || false;
       children.push(
-        (0, import_mithril.default)("tr", { key: domKey }, [
-          (0, import_mithril.default)("td", { id: stringifyPath(propPath) }, [
-            (0, import_mithril.default)("span", { title: stringifyPath(propPath) }, k.toString()),
-            !state.configuration.showPaths ? (0, import_mithril.default)("span") : (0, import_mithril.default)(
-              "pre",
-              stringifyPath(propPath)
-            ),
-            !isComplex ? [] : (0, import_mithril.default)(
-              "button",
-              {
-                type: "button",
-                onclick: () => {
-                  const index = stringifyPath(propPath);
-                  const v = state.pathState[index];
-                  if (!v) {
-                    state.pathState[index] = { hide: true };
-                  } else {
-                    v.hide = !v.hide;
-                    if (!v.hide && propPath.length > state.configuration.maxLevel)
-                      state.configuration.maxLevel = propPath.length;
-                  }
-                }
-              },
-              "toggle"
-            )
+        m_default("tr", { key: domKey }, [
+          m_default("td", { id: stringifyPath(propPath) }, [
+            m_default("span", { title: stringifyPath(propPath) }, k.toString()),
+            !isComplex ? m_default("span") : toggleButtonElement(state, propPath),
+            !state.configuration.showPaths ? m_default("span") : m_default("pre", stringifyPath(propPath))
           ]),
-          (0, import_mithril.default)(
+          m_default(
             "td",
-            hide ? (0, import_mithril.default)("span", [
+            hide ? m_default("span", [
               "\u2026",
-              !isComplex ? (0, import_mithril.default)("span") : (0, import_mithril.default)("span", `${Object.keys(item).length} items`)
+              !isComplex ? m_default("span") : m_default("span", `${Object.keys(item).length} items`)
             ]) : renderUnknown(state, item, propPath)
           )
         ])
       );
     }
-    const thead = (0, import_mithril.default)("thead", [(0, import_mithril.default)("tr", [(0, import_mithril.default)("th", "Property"), (0, import_mithril.default)("th", "Value")])]);
-    const table = (0, import_mithril.default)("table", [thead, (0, import_mithril.default)("tbody", children)]);
+    const thead = m_default("thead", [m_default("tr", [m_default("th", "Property"), m_default("th", "Value")])]);
+    const table = m_default("table", [thead, m_default("tbody", children)]);
     return table;
+  }
+  function toggleButtonElement(state, path) {
+    return m_default(
+      "button",
+      {
+        type: "button",
+        onclick: () => {
+          const index = stringifyPath(path);
+          const v = state.pathState[index];
+          if (!v) {
+            state.pathState[index] = { hide: true };
+          } else {
+            v.hide = !v.hide;
+            if (!v.hide && path.length > state.configuration.maxLevel)
+              state.configuration.maxLevel = path.length;
+          }
+        }
+      },
+      "toggle"
+    );
   }
   function stringifyPath(path) {
     const re = /^[A-Za-z\$_][A-Za-z0-9\$_]*$/;
@@ -2205,9 +2213,9 @@
     return result;
   }
   function tablifyControlsElement(state) {
-    return (0, import_mithril.default)("div", [
-      (0, import_mithril.default)("label", { for: id(state, "max-level-manipulator") }, "Max level:"),
-      (0, import_mithril.default)("input", {
+    return m_default("div", [
+      m_default("label", { for: id(state, "max-level-manipulator") }, "Max level:"),
+      m_default("input", {
         id: id(state, "max-level-manipulator"),
         type: "number",
         step: 1,
@@ -2217,7 +2225,7 @@
           state.configuration.maxLevel = parseInt(el.value);
         }
       }),
-      (0, import_mithril.default)(
+      m_default(
         "button",
         {
           type: "button",
@@ -2233,8 +2241,8 @@
         },
         "Expand all once"
       ),
-      (0, import_mithril.default)("label", { for: id(state, "show-paths-toggle") }, "Show paths"),
-      (0, import_mithril.default)("input", {
+      m_default("label", { for: id(state, "show-paths-toggle") }, "Show paths"),
+      m_default("input", {
         type: "checkbox",
         id: id(state, "show-paths-toggle"),
         checked: state.configuration.showPaths || false,

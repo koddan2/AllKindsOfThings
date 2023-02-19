@@ -1,38 +1,38 @@
-th {
+.tablify th {
   font-size: 0.7rem;
   opacity: 0.5;
   text-align: left;
 }
 
-.metadata {
+.tablify .metadata {
   display: none;
   opacity: 0.4;
   font-size: 0.8rem;
 }
 
-.number {
+.tablify .number {
   font-family: monospace;
   color: rgb(144, 111, 111);
 }
 
-table {
+.tablify table {
   border-collapse: collapse;
 }
-table td,
-table th {
+.tablify table td,
+.tablify table th {
   border: 1px solid silver;
 }
-table tr:first-child th {
+.tablify table tr:first-child th {
   border-top: 0;
 }
-table tr:last-child td {
+.tablify table tr:last-child td {
   border-bottom: 0;
 }
-table tr td:first-child,
-table tr th:first-child {
+.tablify table tr td:first-child,
+.tablify table tr th:first-child {
   border-left: 0;
 }
-table tr td:last-child,
-table tr th:last-child {
+.tablify table tr td:last-child,
+.tablify table tr th:last-child {
   border-right: 0;
 }

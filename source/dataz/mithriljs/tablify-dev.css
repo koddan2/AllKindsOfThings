@@ -6,18 +6,18 @@ body {
   margin: 0;
   padding: 0;
 }
-pre {
+.tablify pre {
   margin: 0;
   font-size: 0.7rem;
   opacity: 0.8;
 }
-table {
+.tablify table {
   width: 100%;
 }
-tr:hover {
+.tablify tr:hover {
   background-color: rgba(8, 128, 64, 0.1);
 }
-button {
+.tablify button {
   border: none;
   background: transparent;
   color: darkgoldenrod;

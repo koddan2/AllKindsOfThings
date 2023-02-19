@@ -1,4 +1,5 @@
-import m, { Component, Vnode } from "mithril";
+import m from './m'
+import { Component, Vnode } from "mithril";
 
 interface TransformState {
   path: PropertyKey[];
@@ -19,6 +20,7 @@ export interface Configuration {
   maxLevel: number;
   transforms: Transforms;
   showPaths?: boolean;
+  cssClassNamespace?: string;
 }
 
 export interface Attrs {
@@ -48,11 +50,15 @@ export function TablifyComponent(
   return {
     view(vnode: Vnode<Attrs>) {
       state.referenceLoopCheck = new WeakMap<object, PropertyKey[]>();
-      return m("div", [
-        tablifyControlsElement(state),
-        renderUnknown(state, state.data, ["$"]),
-        state.debug ? renderUnknown(state, state, ["_$"]) : [],
-      ]);
+      return m(
+        "div",
+        { class: state.configuration.cssClassNamespace || "tablify" },
+        [
+          tablifyControlsElement(state),
+          renderUnknown(state, state.data, ["$"]),
+          state.debug ? renderUnknown(state, state, ["_$"]) : [],
+        ]
+      );
     },
   };
 }
@@ -134,6 +140,7 @@ function renderArray(
     if (isComplex) {
       if (state.referenceLoopCheck.has(item)) {
         const conflictingPath = state.referenceLoopCheck.get(item);
+        const strConflictingPath = stringifyPath(conflictingPath || []);
         children.push(
           m("tr", { key: domKey }, [
             m("td", k.toString()),
@@ -144,8 +151,8 @@ function renderArray(
                 { style: "display:inline-block;" },
                 m(
                   "a",
-                  { href: "#" + conflictingPath },
-                  `@${stringifyPath(conflictingPath || [])}`
+                  { href: "#" + strConflictingPath },
+                  `@${strConflictingPath}`
                 )
               ),
             ]),
@@ -170,35 +177,10 @@ function renderArray(
       m("tr", { key: domKey }, [
         m("td", { id: stringifyPath(propPath) }, [
           m("span", { title: stringifyPath(propPath) }, k.toString()),
+          !isComplex ? m("span") : toggleButtonElement(state, propPath),
           !state.configuration.showPaths
             ? m("span")
-            : m(
-                "pre",
-                stringifyPath(propPath)
-              ),
-          !isComplex
-            ? []
-            : m(
-                "button",
-                {
-                  type: "button",
-                  onclick: () => {
-                    const index = stringifyPath(propPath);
-                    const v = state.pathState[index];
-                    if (!v) {
-                      state.pathState[index] = { hide: true };
-                    } else {
-                      v.hide = !v.hide;
-                      if (
-                        !v.hide &&
-                        propPath.length > state.configuration.maxLevel
-                      )
-                        state.configuration.maxLevel = propPath.length;
-                    }
-                  },
-                },
-                "toggle"
-              ),
+            : m("pre", stringifyPath(propPath)),
         ]),
         m(
           "td",
@@ -218,6 +200,27 @@ function renderArray(
   const thead = m("thead", [m("tr", [m("th", "Property"), m("th", "Value")])]);
   const table = m("table", [thead, m("tbody", children)]);
   return table;
+}
+
+function toggleButtonElement(state: State, path: PropertyKey[]) {
+  return m(
+    "button",
+    {
+      type: "button",
+      onclick: () => {
+        const index = stringifyPath(path);
+        const v = state.pathState[index];
+        if (!v) {
+          state.pathState[index] = { hide: true };
+        } else {
+          v.hide = !v.hide;
+          if (!v.hide && path.length > state.configuration.maxLevel)
+            state.configuration.maxLevel = path.length;
+        }
+      },
+    },
+    "toggle"
+  );
 }
 
 function stringifyPath(path: PropertyKey[]): string {
