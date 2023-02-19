@@ -1,26 +1,57 @@
-import m from './m'
+import m from "./m";
 import { Component, Vnode } from "mithril";
 
 interface TransformState {
   path: PropertyKey[];
 }
+type Transform<T> = (state: TransformState, value: T) => m.Children;
 interface Transforms {
-  boolean?(state: TransformState, value: boolean): m.Children;
-  number?(state: TransformState, value: number): m.Children;
-  bigint?(state: TransformState, value: bigint): m.Children;
-  string?(state: TransformState, value: string): m.Children;
-  date?(state: TransformState, value: Date): m.Children;
-  symbol?(state: TransformState, value: Symbol): m.Children;
-  null?(state: TransformState, value: null): m.Children;
-  function?(state: TransformState, value: Function): m.Children;
-  rest?(state: TransformState, value: unknown): m.Children;
+  undefined?: Transform<undefined>;
+  null?: Transform<null>;
+  boolean?: Transform<boolean>;
+  number?: Transform<number>;
+  bigint?: Transform<bigint>;
+  string?: Transform<string>;
+  date?: Transform<Date>;
+  symbol?: Transform<Symbol>;
+  function?: Transform<Function>;
+  rest?: Transform<unknown>;
 }
-const defaultTransforms: Transforms = {};
+const defaultTransforms: Transforms = {
+  undefined(state, value) {
+    return m("pre", { class: "keyword undefined" }, "undefined");
+  },
+  null(state, value) {
+    return m("pre", { class: "keyword null" }, "null");
+  },
+  boolean(state, value) {
+    return m("pre", { class: "keyword boolean" }, String(value));
+  },
+  number(state, value) {
+    return m("pre", { class: "value number" }, String(value));
+  },
+  bigint(state, value) {
+    return m("pre", { class: "value bigint" }, String(value));
+  },
+  string(state, value) {
+    return m("span", { class: "value string" }, JSON.stringify(value));
+  },
+  date(state, value) {
+    return m("span", { class: "value date" }, `${String(value)}`);
+  },
+  symbol(state, value) {
+    return m("span", { class: "value symbol" }, `${String(value)}`);
+  },
+  function(state, value) {
+    return m("pre", { class: "value reference function" }, String(value));
+  },
+};
 export interface Configuration {
   maxLevel: number;
   transforms: Transforms;
   showPaths?: boolean;
   cssClassNamespace?: string;
+  hideControls?: boolean;
 }
 
 export interface Attrs {
@@ -54,7 +85,9 @@ export function TablifyComponent(
         "div",
         { class: state.configuration.cssClassNamespace || "tablify" },
         [
-          tablifyControlsElement(state),
+          !state.configuration.hideControls
+            ? tablifyControlsElement(state)
+            : m("span"),
           renderUnknown(state, state.data, ["$"]),
           state.debug ? renderUnknown(state, state, ["_$"]) : [],
         ]
@@ -74,6 +107,25 @@ function initState(attrs: Attrs): State {
   };
 }
 
+function transform<T>(
+  state: State,
+  data: T,
+  path: PropertyKey[],
+  customTransform?: Transform<T>,
+  defaultTransform?: Transform<T>
+): m.Children {
+  const tstate: TransformState = {
+    path,
+  };
+  if (customTransform) {
+    return customTransform(tstate, data);
+  } else if (defaultTransform) {
+    return defaultTransform(tstate, data);
+  } else {
+    return m("span", String(data));
+  }
+}
+
 function renderUnknown(
   state: State,
   data: unknown,
@@ -81,9 +133,21 @@ function renderUnknown(
 ): m.Children {
   if (typeof data === "object") {
     if (data === null) {
-      return m("pre", { class: "keyword" }, "null");
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.null,
+        defaultTransforms.null
+      );
     } else if (data instanceof Date) {
-      return m("span", data.toLocaleString());
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.date,
+        defaultTransforms.date
+      );
     } else if (data instanceof WeakMap) {
       return m("code", `WeakMap()`);
     } else if (data instanceof Map) {
@@ -94,22 +158,64 @@ function renderUnknown(
       // Object probably?
       return renderArray(state, data, path, true);
     }
-  } else if (typeof data === "bigint") {
-    return m("span", (data as bigint).toString());
-  } else if (typeof data === "number") {
-    return m("span", (data as number).toString());
-  } else if (typeof data === "boolean") {
-    return m("span", (data as boolean).toString());
-  } else if (typeof data === "string") {
-    return m("span", (data as string).toString());
-  } else if (typeof data === "symbol") {
-    return m("span", (data as Symbol).toString());
-  } else if (typeof data === "function") {
-    return m("pre", (data as Function).toString());
   } else if (typeof data === "undefined") {
-    return m("pre", { class: "keyword" }, "undefined");
+    return transform(
+      state,
+      data,
+      path,
+      state.configuration.transforms.undefined,
+      defaultTransforms.undefined
+    );
+  } else if (typeof data === "bigint") {
+    return transform(
+      state,
+      data,
+      path,
+      state.configuration.transforms.bigint,
+      defaultTransforms.bigint
+    );
+  } else if (typeof data === "number") {
+    return transform(
+      state,
+      data,
+      path,
+      state.configuration.transforms.number,
+      defaultTransforms.number
+    );
+  } else if (typeof data === "boolean") {
+    return transform(
+      state,
+      data,
+      path,
+      state.configuration.transforms.boolean,
+      defaultTransforms.boolean
+    );
+  } else if (typeof data === "string") {
+    return transform(
+      state,
+      data,
+      path,
+      state.configuration.transforms.string,
+      defaultTransforms.string
+    );
+  } else if (typeof data === "symbol") {
+    return transform(
+      state,
+      data,
+      path,
+      state.configuration.transforms.symbol,
+      defaultTransforms.symbol
+    );
+  } else if (typeof data === "function") {
+    return transform(
+      state,
+      data,
+      path,
+      state.configuration.transforms.function,
+      defaultTransforms.function
+    );
   } else {
-    return m("span", "[UNKNOWN]");
+    return m("span", { class: "error" }, "[UNKNOWN]");
   }
 }
 
@@ -124,9 +230,9 @@ function renderArray(
   const allProps = [...keys, ...symbols];
   if (allProps.length < 1) {
     if (isAssoc) {
-      return m("span", "{}");
+      return m("pre", { class: "empty" }, "{}");
     } else {
-      return m("span", "[]");
+      return m("pre", { class: "empty" }, "[]");
     }
   }
   allProps.sort((a, b) => Number(a.toString() > b.toString()));
@@ -145,13 +251,12 @@ function renderArray(
           m("tr", { key: domKey }, [
             m("td", k.toString()),
             m("td", [
-              m("span", "💢"),
               m(
                 "pre",
                 { style: "display:inline-block;" },
                 m(
                   "a",
-                  { href: "#" + strConflictingPath },
+                  { href: "#" + strConflictingPath, class: 'reference-loop' },
                   `@${strConflictingPath}`
                 )
               ),
@@ -203,23 +308,25 @@ function renderArray(
 }
 
 function toggleButtonElement(state: State, path: PropertyKey[]) {
+  const index = stringifyPath(path);
+  const pathState = state.pathState[index];
+
   return m(
     "button",
     {
+      title: pathState?.hide ? "Expand" : "Collapse",
       type: "button",
       onclick: () => {
-        const index = stringifyPath(path);
-        const v = state.pathState[index];
-        if (!v) {
+        if (!pathState) {
           state.pathState[index] = { hide: true };
         } else {
-          v.hide = !v.hide;
-          if (!v.hide && path.length > state.configuration.maxLevel)
+          pathState.hide = !pathState.hide;
+          if (!pathState.hide && path.length > state.configuration.maxLevel)
             state.configuration.maxLevel = path.length;
         }
       },
     },
-    "toggle"
+    pathState?.hide ? "⇲" : "⇱"
   );
 }
 
@@ -263,13 +370,7 @@ function tablifyControlsElement(state: State): m.Children {
       {
         type: "button",
         onclick() {
-          let newMaxLevel = 1;
-          for (let k of Object.keys(state.pathState)) {
-            state.pathState[k].hide = false;
-            const t = k.split(/[\.\[]/g);
-            newMaxLevel = Math.max(newMaxLevel, t.length);
-          }
-          state.configuration.maxLevel = newMaxLevel;
+          expandAllOnce(state);
         },
       },
       "Expand all once"
@@ -289,4 +390,14 @@ function tablifyControlsElement(state: State): m.Children {
 
 function id(state: State, v: string): string {
   return `${v}-${state.nonce}`;
+}
+
+function expandAllOnce(state: State) {
+  let newMaxLevel = 1;
+  for (let k of Object.keys(state.pathState)) {
+    state.pathState[k].hide = false;
+    const t = k.split(/[\.\[]/g);
+    newMaxLevel = Math.max(newMaxLevel, t.length);
+  }
+  state.configuration.maxLevel = newMaxLevel;
 }

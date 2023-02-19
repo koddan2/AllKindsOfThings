@@ -1,3 +1,6 @@
+.tablify .reference-loop {
+  color: red;
+}
 .tablify th {
   font-size: 0.7rem;
   opacity: 0.5;
@@ -9,10 +12,17 @@
   opacity: 0.4;
   font-size: 0.8rem;
 }
-
+.tablify .keyword {
+  font-family: monospace;
+}
+.tablify .bigint,
 .tablify .number {
   font-family: monospace;
-  color: rgb(144, 111, 111);
+  color: purple;
+  font-size: 1rem;;
+}
+.tablify .string {
+  color: goldenrod;
 }
 
 .tablify table {

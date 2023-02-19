@@ -2039,6 +2039,35 @@
   var m_default = import_mithril.default;
 
   // tablify.component.ts
+  var defaultTransforms = {
+    undefined(state, value) {
+      return m_default("pre", { class: "keyword undefined" }, "undefined");
+    },
+    null(state, value) {
+      return m_default("pre", { class: "keyword null" }, "null");
+    },
+    boolean(state, value) {
+      return m_default("pre", { class: "keyword boolean" }, String(value));
+    },
+    number(state, value) {
+      return m_default("pre", { class: "value number" }, String(value));
+    },
+    bigint(state, value) {
+      return m_default("pre", { class: "value bigint" }, String(value));
+    },
+    string(state, value) {
+      return m_default("span", { class: "value string" }, JSON.stringify(value));
+    },
+    date(state, value) {
+      return m_default("span", { class: "value date" }, `${String(value)}`);
+    },
+    symbol(state, value) {
+      return m_default("span", { class: "value symbol" }, `${String(value)}`);
+    },
+    function(state, value) {
+      return m_default("pre", { class: "value reference function" }, String(value));
+    }
+  };
   function TablifyComponent(initialVnode) {
     const state = initState(initialVnode.attrs);
     return {
@@ -2048,7 +2077,7 @@
           "div",
           { class: state.configuration.cssClassNamespace || "tablify" },
           [
-            tablifyControlsElement(state),
+            !state.configuration.hideControls ? tablifyControlsElement(state) : m_default("span"),
             renderUnknown(state, state.data, ["$"]),
             state.debug ? renderUnknown(state, state, ["_$"]) : []
           ]
@@ -2066,12 +2095,36 @@
       debug: true
     };
   }
+  function transform(state, data, path, customTransform, defaultTransform) {
+    const tstate = {
+      path
+    };
+    if (customTransform) {
+      return customTransform(tstate, data);
+    } else if (defaultTransform) {
+      return defaultTransform(tstate, data);
+    } else {
+      return m_default("span", String(data));
+    }
+  }
   function renderUnknown(state, data, path) {
     if (typeof data === "object") {
       if (data === null) {
-        return m_default("pre", { class: "keyword" }, "null");
+        return transform(
+          state,
+          data,
+          path,
+          state.configuration.transforms.null,
+          defaultTransforms.null
+        );
       } else if (data instanceof Date) {
-        return m_default("span", data.toLocaleString());
+        return transform(
+          state,
+          data,
+          path,
+          state.configuration.transforms.date,
+          defaultTransforms.date
+        );
       } else if (data instanceof WeakMap) {
         return m_default("code", `WeakMap()`);
       } else if (data instanceof Map) {
@@ -2081,22 +2134,64 @@
       } else {
         return renderArray(state, data, path, true);
       }
-    } else if (typeof data === "bigint") {
-      return m_default("span", data.toString());
-    } else if (typeof data === "number") {
-      return m_default("span", data.toString());
-    } else if (typeof data === "boolean") {
-      return m_default("span", data.toString());
-    } else if (typeof data === "string") {
-      return m_default("span", data.toString());
-    } else if (typeof data === "symbol") {
-      return m_default("span", data.toString());
-    } else if (typeof data === "function") {
-      return m_default("pre", data.toString());
     } else if (typeof data === "undefined") {
-      return m_default("pre", { class: "keyword" }, "undefined");
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.undefined,
+        defaultTransforms.undefined
+      );
+    } else if (typeof data === "bigint") {
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.bigint,
+        defaultTransforms.bigint
+      );
+    } else if (typeof data === "number") {
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.number,
+        defaultTransforms.number
+      );
+    } else if (typeof data === "boolean") {
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.boolean,
+        defaultTransforms.boolean
+      );
+    } else if (typeof data === "string") {
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.string,
+        defaultTransforms.string
+      );
+    } else if (typeof data === "symbol") {
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.symbol,
+        defaultTransforms.symbol
+      );
+    } else if (typeof data === "function") {
+      return transform(
+        state,
+        data,
+        path,
+        state.configuration.transforms.function,
+        defaultTransforms.function
+      );
     } else {
-      return m_default("span", "[UNKNOWN]");
+      return m_default("span", { class: "error" }, "[UNKNOWN]");
     }
   }
   function renderArray(state, data, path, isAssoc) {
@@ -2105,9 +2200,9 @@
     const allProps = [...keys, ...symbols];
     if (allProps.length < 1) {
       if (isAssoc) {
-        return m_default("span", "{}");
+        return m_default("pre", { class: "empty" }, "{}");
       } else {
-        return m_default("span", "[]");
+        return m_default("pre", { class: "empty" }, "[]");
       }
     }
     allProps.sort((a, b) => Number(a.toString() > b.toString()));
@@ -2125,13 +2220,12 @@
             m_default("tr", { key: domKey }, [
               m_default("td", k.toString()),
               m_default("td", [
-                m_default("span", "\u{1F4A2}"),
                 m_default(
                   "pre",
                   { style: "display:inline-block;" },
                   m_default(
                     "a",
-                    { href: "#" + strConflictingPath },
+                    { href: "#" + strConflictingPath, class: "reference-loop" },
                     `@${strConflictingPath}`
                   )
                 )
@@ -2174,23 +2268,24 @@
     return table;
   }
   function toggleButtonElement(state, path) {
+    const index = stringifyPath(path);
+    const pathState = state.pathState[index];
     return m_default(
       "button",
       {
+        title: pathState?.hide ? "Expand" : "Collapse",
         type: "button",
         onclick: () => {
-          const index = stringifyPath(path);
-          const v = state.pathState[index];
-          if (!v) {
+          if (!pathState) {
             state.pathState[index] = { hide: true };
           } else {
-            v.hide = !v.hide;
-            if (!v.hide && path.length > state.configuration.maxLevel)
+            pathState.hide = !pathState.hide;
+            if (!pathState.hide && path.length > state.configuration.maxLevel)
               state.configuration.maxLevel = path.length;
           }
         }
       },
-      "toggle"
+      pathState?.hide ? "\u21F2" : "\u21F1"
     );
   }
   function stringifyPath(path) {
@@ -2230,13 +2325,7 @@
         {
           type: "button",
           onclick() {
-            let newMaxLevel = 1;
-            for (let k of Object.keys(state.pathState)) {
-              state.pathState[k].hide = false;
-              const t = k.split(/[\.\[]/g);
-              newMaxLevel = Math.max(newMaxLevel, t.length);
-            }
-            state.configuration.maxLevel = newMaxLevel;
+            expandAllOnce(state);
           }
         },
         "Expand all once"
@@ -2255,6 +2344,15 @@
   }
   function id(state, v) {
     return `${v}-${state.nonce}`;
+  }
+  function expandAllOnce(state) {
+    let newMaxLevel = 1;
+    for (let k of Object.keys(state.pathState)) {
+      state.pathState[k].hide = false;
+      const t = k.split(/[\.\[]/g);
+      newMaxLevel = Math.max(newMaxLevel, t.length);
+    }
+    state.configuration.maxLevel = newMaxLevel;
   }
 
   // ../example-data.ts
@@ -2494,10 +2592,14 @@
       view() {
         const configuration = {
           maxLevel: 2,
-          transforms: {},
-          showPaths: true
+          transforms: {}
+          // showPaths: false,
+          // hideControls: true,
         };
-        const data = getAllData({ test: TablifyComponent });
+        const data = getAllData({
+          test: TablifyComponent,
+          anotherTest: `"there are" double quotes ""in here""`
+        });
         const attrs = {
           configuration,
           data

@@ -14,9 +14,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const configuration: Configuration = {
         maxLevel: 2,
         transforms: {},
-        showPaths: true,
+        // showPaths: false,
+        // hideControls: true,
       };
-      const data = getAllData({ test: TablifyComponent });
+      const data = getAllData({
+        test: TablifyComponent,
+        anotherTest: `"there are" double quotes ""in here""`,
+      });
       const attrs: Attrs = {
         configuration,
         data,
