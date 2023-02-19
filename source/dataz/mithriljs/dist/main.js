@@ -2042,7 +2042,7 @@
       view(vnode) {
         state.referenceLoopCheck = /* @__PURE__ */ new WeakMap();
         return (0, import_mithril.default)("div", [
-          maxLevelManipulator(state),
+          tablifyControlsElement(state),
           renderUnknown(state, state.data, ["$"]),
           state.debug ? renderUnknown(state, state, ["_$"]) : []
         ]);
@@ -2202,7 +2202,7 @@
     }
     return result;
   }
-  function maxLevelManipulator(state) {
+  function tablifyControlsElement(state) {
     return (0, import_mithril.default)("div", [
       (0, import_mithril.default)("label", { for: id(state, "max-level-manipulator") }, "Max level:"),
       (0, import_mithril.default)("input", {
@@ -2238,9 +2238,11 @@
   }
 
   // ../example-data.ts
-  function getAllData() {
+  function getAllData(thing) {
     return {
       data0: {
+        thing,
+        aDate: /* @__PURE__ */ new Date(),
         bignum: 123409324093249n,
         getAllData,
         func1() {
@@ -2470,10 +2472,10 @@
   document.addEventListener("DOMContentLoaded", () => {
     import_mithril2.default.mount(document.body, {
       view() {
-        const data = getAllData();
         const configuration = {
-          maxLevel: 1
+          maxLevel: 2
         };
+        const data = getAllData({ test: TablifyComponent });
         const attrs = {
           configuration,
           data

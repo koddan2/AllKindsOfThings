@@ -11,10 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
       //   array: [1,2,3,new Date()],
       //   location: window.location,
       // };
-      const data = getAllData();
       const configuration: Configuration = {
-        maxLevel: 1,
+        maxLevel: 2,
       };
+      const data = getAllData({test: TablifyComponent});
       const attrs: Attrs = {
         configuration,
         data,

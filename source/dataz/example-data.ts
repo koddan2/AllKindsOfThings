@@ -1,8 +1,10 @@
 
 
-export function getAllData() {
+export function getAllData(thing: unknown) {
   return {
     data0: {
+      thing,
+      aDate: new Date(),
       bignum: 123409324093249n,
       getAllData,
       func1() {

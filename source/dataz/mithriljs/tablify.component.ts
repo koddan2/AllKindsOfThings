@@ -32,7 +32,7 @@ export function TablifyComponent(
     view(vnode: Vnode<Attrs>) {
       state.referenceLoopCheck = new WeakMap<object, PropertyKey[]>();
       return m("div", [
-        maxLevelManipulator(state),
+        tablifyControlsElement(state),
         renderUnknown(state, state.data, ["$"]),
         state.debug ? renderUnknown(state, state, ["_$"]) : [],
       ]);
@@ -221,7 +221,7 @@ function stringifyPath(path: PropertyKey[]): string {
   return result;
 }
 
-function maxLevelManipulator(state: State): m.Children {
+function tablifyControlsElement(state: State): m.Children {
   return m("div", [
     m("label", { for: id(state, "max-level-manipulator") }, "Max level:"),
     m("input", {
