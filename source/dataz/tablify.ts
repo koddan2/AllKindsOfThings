@@ -1,15 +1,24 @@
 interface Transforms {
-  boolean?(context: Context, element: HTMLElement, value: boolean);
-  number?(context: Context, element: HTMLElement, value: number);
-  bigint?(context: Context, element: HTMLElement, value: bigint);
-  string?(context: Context, element: HTMLElement, value: string);
-  date?(context: Context, element: HTMLElement, value: Date);
-  symbol?(context: Context, element: HTMLElement, value: Symbol);
-  null?(context: Context, element: HTMLElement, value: null);
+  boolean?(context: Context, element: HTMLElement, value: boolean): void;
+  number?(context: Context, element: HTMLElement, value: number): void;
+  bigint?(context: Context, element: HTMLElement, value: bigint): void;
+  string?(context: Context, element: HTMLElement, value: string): void;
+  date?(context: Context, element: HTMLElement, value: Date): void;
+  symbol?(context: Context, element: HTMLElement, value: Symbol): void;
+  null?(context: Context, element: HTMLElement, value: null): void;
 }
 export interface TablifyConfiguration {
+  /**
+   * Configure which starting level to show. 0 means to show all. 1 means show only first level, etc.
+   */
   level?: number;
+  /**
+   * Supply custom transforms for specific types of values by defining functions here.
+   */
   transforms?: Transforms;
+  /**
+   * Supply custom mapping of values here.
+   */
   strings: {
     tablify?: Record<string, string>;
     properties?: Record<string, string>;
@@ -69,18 +78,14 @@ function maybeTransform<T>(
   }
 }
 
-function renderThing(
-  ctx: Context,
-  element: HTMLElement,
-  data: unknown,
-): void {
+function renderThing(ctx: Context, element: HTMLElement, data: unknown): void {
   if (typeof data === "object") {
     if (data === null) {
       maybeTransform(ctx, element, data, "null", "keyword");
-    } else if (Array.isArray(data)) {
-      renderArray(ctx, element, data);
     } else if (data instanceof Date) {
       ctx.ele("span", element, ctx.getClass("date"), data.toString());
+    } else if (Array.isArray(data)) {
+      renderArray(ctx, element, data);
     } else {
       if (ctx.referenceLoopCheck.has(data)) {
         ctx.ele("span", element, "reference-loop", "💥");
@@ -102,7 +107,9 @@ function renderThing(
   } else if (data === void 0) {
     renderKeyword(ctx, element, ctx.getClass("keyword"), "undefined");
   } else {
-    ctx.errors.push(new Error(`Cannot render a ${typeof data}`));
+    ctx.errors.push(
+      new Error(`Falling back to default rendering of a ${typeof data}`)
+    );
     const fallback = data?.toString();
     renderKeyword(ctx, element, ctx.getClass("unknown"), fallback);
   }
@@ -121,7 +128,7 @@ function renderKeyword(
 function renderArray(
   ctx: Context,
   element: HTMLElement,
-  data: unknown[],
+  data: unknown[]
 ): void {
   if (data.length < 1) {
     renderKeyword(ctx, element, null, "[]");
@@ -141,6 +148,11 @@ function renderAssoc(
   data: object,
   headingNames?: [string, string]
 ): void {
+  const top = ctx.top;
+  if (top) {
+    ctx.path.push("$");
+  }
+  ctx.top = false;
   const keys = Object.keys(data);
   const symbols = Object.getOwnPropertySymbols(data);
   if (keys.length < 1 && symbols.length < 1) {
@@ -155,21 +167,22 @@ function renderAssoc(
   table.className = ctx.getClass();
   const thead = ctx.ele("thead", table);
   const theadtr = ctx.ele("tr", thead);
-  ctx.ele("th", theadtr, null, ctx.str(headingNames[0]));
+  const propTh = ctx.ele("th", theadtr, null, ctx.str(headingNames[0]));
+  const propThContent = ` ${stringifyPath(ctx.path)}`;
+  const pre = ctx.ele("pre", propTh, null, propThContent);
+  pre.style.display = "inline-block";
   ctx.ele("th", theadtr, null, ctx.str(headingNames[1]));
 
   const tbody = ctx.ele("tbody", table);
 
   for (let k of [...keys, ...symbols]) {
+    ctx.path.push(k);
     const tr = ctx.ele("tr", tbody);
 
-    let propTd;
-    if (headingNames[0] == "Index") {
-      // ugly check to see if keys are numbers
-      propTd = ctx.ele("td", tr, ctx.getClass("number"), k.toString());
-    } else {
-      propTd = ctx.ele("td", tr, null, ctx.strProp(k.toString()));
-    }
+    const isArray = headingNames[0] == "Index";
+    const propCls = isArray ? ctx.getClass("number") : null;
+    const propContent = isArray ? k.toString() : ctx.strProp(k.toString());
+    const propTd = ctx.ele("td", tr, propCls, propContent);
 
     propTd.addEventListener(
       "click",
@@ -192,19 +205,36 @@ function renderAssoc(
     renderThing(ctx, valueContent, data[k]);
     const valuePlaceholder = ctx.ele("div", valueCell, null, "…");
 
-    if (ctx.level <= (ctx.configuration.level || 999)) {
-      valuePlaceholder.style.display = "none";
+    const isComplex = data[k] != null && typeof data[k] === "object";
+    const maxLevel = ctx.configuration.level || 999;
+    if (isComplex) {
+      if (ctx.path.length <= maxLevel) {
+        valuePlaceholder.style.display = "none";
+      } else {
+        valueContent.style.display = "none";
+      }
     } else {
-      valueContent.style.display = "none";
+      valuePlaceholder.style.display = "none";
     }
+    ctx.path.pop();
   }
+}
+
+function stringifyPath(path: (string | Symbol)[]): string {
+  const builder: string[] = [];
+  for (let i = 0; i < path.length; i++) {
+    const element = path[i];
+    builder.push(element.toString());
+  }
+  return builder.join(".");
 }
 
 interface Context {
   referenceLoopCheck: WeakMap<object, boolean>;
   doc: Document;
   configuration: TablifyConfiguration;
-  level: number;
+  top: boolean;
+  path: (string | Symbol)[];
   getClass(name?: string): string;
   ele(
     name: string,
@@ -226,7 +256,8 @@ function makeContext(
     referenceLoopCheck: new WeakMap<object, boolean>(),
     doc,
     configuration,
-    level: -1,
+    top: true,
+    path: [],
     getClass(name?: string): string {
       if (name) {
         return `${name} level-${this.level}`;

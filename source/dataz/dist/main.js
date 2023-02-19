@@ -41,10 +41,10 @@
     if (typeof data === "object") {
       if (data === null) {
         maybeTransform(ctx, element, data, "null", "keyword");
-      } else if (Array.isArray(data)) {
-        renderArray(ctx, element, data);
       } else if (data instanceof Date) {
         ctx.ele("span", element, ctx.getClass("date"), data.toString());
+      } else if (Array.isArray(data)) {
+        renderArray(ctx, element, data);
       } else {
         if (ctx.referenceLoopCheck.has(data)) {
           ctx.ele("span", element, "reference-loop", "\u{1F4A5}");
@@ -66,7 +66,7 @@
     } else if (data === void 0) {
       renderKeyword(ctx, element, ctx.getClass("keyword"), "undefined");
     } else {
-      ctx.errors.push(new Error(`Cannot render a ${typeof data}`));
+      ctx.errors.push(new Error(`Falling back to default rendering of a ${typeof data}`));
       const fallback = data?.toString();
       renderKeyword(ctx, element, ctx.getClass("unknown"), fallback);
     }
@@ -88,6 +88,11 @@
     renderAssoc(ctx, element, assocData, ["Index", "Value"]);
   }
   function renderAssoc(ctx, element, data, headingNames) {
+    const top = ctx.top;
+    if (top) {
+      ctx.path.push("$");
+    }
+    ctx.top = false;
     const keys = Object.keys(data);
     const symbols = Object.getOwnPropertySymbols(data);
     if (keys.length < 1 && symbols.length < 1) {
@@ -101,17 +106,19 @@
     table.className = ctx.getClass();
     const thead = ctx.ele("thead", table);
     const theadtr = ctx.ele("tr", thead);
-    ctx.ele("th", theadtr, null, ctx.str(headingNames[0]));
+    const propTh = ctx.ele("th", theadtr, null, ctx.str(headingNames[0]));
+    const propThContent = ` ${stringifyPath(ctx.path)}`;
+    const pre = ctx.ele("pre", propTh, null, propThContent);
+    pre.style.display = "inline-block";
     ctx.ele("th", theadtr, null, ctx.str(headingNames[1]));
     const tbody = ctx.ele("tbody", table);
     for (let k of [...keys, ...symbols]) {
+      ctx.path.push(k);
       const tr = ctx.ele("tr", tbody);
-      let propTd;
-      if (headingNames[0] == "Index") {
-        propTd = ctx.ele("td", tr, ctx.getClass("number"), k.toString());
-      } else {
-        propTd = ctx.ele("td", tr, null, ctx.strProp(k.toString()));
-      }
+      const isArray = headingNames[0] == "Index";
+      const propCls = isArray ? ctx.getClass("number") : null;
+      const propContent = isArray ? k.toString() : ctx.strProp(k.toString());
+      const propTd = ctx.ele("td", tr, propCls, propContent);
       propTd.addEventListener(
         "click",
         () => {
@@ -131,19 +138,35 @@
       const valueContent = ctx.ele("div", valueCell);
       renderThing(ctx, valueContent, data[k]);
       const valuePlaceholder = ctx.ele("div", valueCell, null, "\u2026");
-      if (ctx.level <= (ctx.configuration.level || 999)) {
-        valuePlaceholder.style.display = "none";
+      const isComplex = data[k] != null && typeof data[k] === "object";
+      const maxLevel = ctx.configuration.level || 999;
+      if (isComplex) {
+        if (ctx.path.length <= maxLevel) {
+          valuePlaceholder.style.display = "none";
+        } else {
+          valueContent.style.display = "none";
+        }
       } else {
-        valueContent.style.display = "none";
+        valuePlaceholder.style.display = "none";
       }
+      ctx.path.pop();
     }
+  }
+  function stringifyPath(path) {
+    const builder = [];
+    for (let i = 0; i < path.length; i++) {
+      const element = path[i];
+      builder.push(element.toString());
+    }
+    return builder.join(".");
   }
   function makeContext(doc, configuration) {
     return {
       referenceLoopCheck: /* @__PURE__ */ new WeakMap(),
       doc,
       configuration,
-      level: -1,
+      top: true,
+      path: [],
       getClass(name) {
         if (name) {
           return `${name} level-${this.level}`;
@@ -186,7 +209,7 @@
     const mountPoint = document.getElementById("root");
     if (mountPoint)
       tablify(mountPoint, getAllData(), {
-        level: 1,
+        level: 2,
         transforms: {
           boolean(ctx, element, value) {
             const el = ctx.ele("input", element);
