@@ -66,7 +66,9 @@
     } else if (data === void 0) {
       renderKeyword(ctx, element, ctx.getClass("keyword"), "undefined");
     } else {
-      ctx.errors.push(new Error(`Falling back to default rendering of a ${typeof data}`));
+      ctx.errors.push(
+        new Error(`Falling back to default rendering of a ${typeof data}`)
+      );
       const fallback = data?.toString();
       renderKeyword(ctx, element, ctx.getClass("unknown"), fallback);
     }
