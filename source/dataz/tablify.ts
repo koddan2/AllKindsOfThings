@@ -1,4 +1,8 @@
+interface Transforms {
+  boolean(value: boolean): string;
+}
 export interface TablifyConfiguration {
+  transforms: Transforms;
   strings: {
     tablify?: Record<string, string>;
     properties?: Record<string, string>;
@@ -31,15 +35,22 @@ function cleanElement(element: HTMLElement) {
   }
 }
 
+function maybeTransform(ctx: Context, t: keyof Transforms, value: unknown) {
+  if (ctx.configuration.transforms[t]) {
+    return ctx.configuration.transforms[t].call(null, value);
+  }
+  return value.toString();
+}
+
 function renderThing(ctx: Context, element: HTMLElement, data: unknown): void {
   ctx.level++;
   if (typeof data === "object") {
     if (data === null) {
-      ctx.ele("span", element, ctx.getClass("keyword"), "null");
+      renderKeyword(ctx, element, ctx.getClass("keyword"), "null");
     } else if (Array.isArray(data)) {
       renderArray(ctx, element, data);
     } else if (data instanceof Date) {
-      ctx.ele("span", element, ctx.getClass(), data.toString());
+      ctx.ele("span", element, ctx.getClass("date"), data.toString());
     } else {
       if (ctx.referenceLoopCheck.has(data)) {
         ctx.ele("span", element, "reference-loop", "💥");
@@ -49,23 +60,37 @@ function renderThing(ctx: Context, element: HTMLElement, data: unknown): void {
       }
     }
   } else if (typeof data === "bigint") {
-    ctx.ele("span", element, ctx.getClass(), data.toString());
+    ctx.ele("span", element, ctx.getClass("number"), data.toString());
   } else if (typeof data === "number") {
-    ctx.ele("span", element, ctx.getClass(), data.toString());
+    ctx.ele("span", element, ctx.getClass("number"), data.toString());
   } else if (typeof data === "boolean") {
-    ctx.ele("span", element, ctx.getClass(), data.toString());
+    ctx.ele(
+      "span",
+      element,
+      ctx.getClass("keyword boolean"),
+      maybeTransform(ctx, "boolean", data)
+    );
   } else if (typeof data === "string") {
-    ctx.ele("span", element, ctx.getClass(), data);
+    ctx.ele("span", element, ctx.getClass("string"), data);
   } else if (typeof data === "symbol") {
-    ctx.ele("span", element, ctx.getClass(), data.toString());
+    ctx.ele("span", element, ctx.getClass("symbol"), data.toString());
   } else if (data === void 0) {
-    ctx.ele("span", element, ctx.getClass("keyword"), "undefined");
+    renderKeyword(ctx, element, ctx.getClass("keyword"), "undefined");
   } else {
     ctx.errors.push(new Error(`Cannot render a ${typeof data}`));
-    const containingEl = ctx.ele("code", element, ctx.getClass());
     const fallback = data?.toString();
-    ctx.ele("pre", containingEl, null, fallback);
+    renderKeyword(ctx, element, ctx.getClass("unknown"), fallback);
   }
+}
+
+function renderKeyword(
+  ctx: Context,
+  element: HTMLElement,
+  cls?: string,
+  contents?: string
+) {
+  const containingEl = ctx.ele("code", element, cls);
+  ctx.ele("pre", containingEl, null, contents);
 }
 
 function renderArray(
@@ -74,8 +99,7 @@ function renderArray(
   data: unknown[]
 ): void {
   if (data.length < 1) {
-    const containingEl = ctx.ele("code", element, null);
-    ctx.ele("pre", containingEl, null, "[]");
+    renderKeyword(ctx, element, null, "[]");
     return;
   }
   const assocData: Record<string, unknown> = {};
@@ -93,9 +117,9 @@ function renderAssoc(
   headingNames?: [string, string]
 ): void {
   const keys = Object.keys(data);
-  if (keys.length < 1) {
-    const containingEl = ctx.ele("code", element, null);
-    ctx.ele("pre", containingEl, null, "{}");
+  const symbols = Object.getOwnPropertySymbols(data);
+  if (keys.length < 1 && symbols.length < 1) {
+    renderKeyword(ctx, element, null, "{}");
     return;
   }
 
@@ -116,6 +140,12 @@ function renderAssoc(
     ctx.ele("td", tr, null, ctx.strProp(k));
     const valueCell = ctx.ele("td", tr);
     renderThing(ctx, valueCell, data[k]);
+  }
+  for (let sym of symbols) {
+    const tr = ctx.ele("tr", tbody);
+    ctx.ele("td", tr, null, ctx.strProp(sym.toString()));
+    const valueCell = ctx.ele("td", tr);
+    renderThing(ctx, valueCell, data[sym]);
   }
 }
 

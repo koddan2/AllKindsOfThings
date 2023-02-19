@@ -16,15 +16,21 @@
       element.removeChild(child);
     }
   }
+  function maybeTransform(ctx, t, value) {
+    if (ctx.configuration.transforms[t]) {
+      return ctx.configuration.transforms[t].call(null, value);
+    }
+    return value.toString();
+  }
   function renderThing(ctx, element, data) {
     ctx.level++;
     if (typeof data === "object") {
       if (data === null) {
-        ctx.ele("span", element, ctx.getClass("keyword"), "null");
+        renderKeyword(ctx, element, ctx.getClass("keyword"), "null");
       } else if (Array.isArray(data)) {
         renderArray(ctx, element, data);
       } else if (data instanceof Date) {
-        ctx.ele("span", element, ctx.getClass(), data.toString());
+        ctx.ele("span", element, ctx.getClass("date"), data.toString());
       } else {
         if (ctx.referenceLoopCheck.has(data)) {
           ctx.ele("span", element, "reference-loop", "\u{1F4A5}");
@@ -34,28 +40,35 @@
         }
       }
     } else if (typeof data === "bigint") {
-      ctx.ele("span", element, ctx.getClass(), data.toString());
+      ctx.ele("span", element, ctx.getClass("number"), data.toString());
     } else if (typeof data === "number") {
-      ctx.ele("span", element, ctx.getClass(), data.toString());
+      ctx.ele("span", element, ctx.getClass("number"), data.toString());
     } else if (typeof data === "boolean") {
-      ctx.ele("span", element, ctx.getClass(), data.toString());
+      ctx.ele(
+        "span",
+        element,
+        ctx.getClass("keyword boolean"),
+        maybeTransform(ctx, "boolean", data)
+      );
     } else if (typeof data === "string") {
-      ctx.ele("span", element, ctx.getClass(), data);
+      ctx.ele("span", element, ctx.getClass("string"), data);
     } else if (typeof data === "symbol") {
-      ctx.ele("span", element, ctx.getClass(), data.toString());
+      ctx.ele("span", element, ctx.getClass("symbol"), data.toString());
     } else if (data === void 0) {
-      ctx.ele("span", element, ctx.getClass("keyword"), "undefined");
+      renderKeyword(ctx, element, ctx.getClass("keyword"), "undefined");
     } else {
       ctx.errors.push(new Error(`Cannot render a ${typeof data}`));
-      const containingEl = ctx.ele("code", element, ctx.getClass());
       const fallback = data?.toString();
-      ctx.ele("pre", containingEl, null, fallback);
+      renderKeyword(ctx, element, ctx.getClass("unknown"), fallback);
     }
+  }
+  function renderKeyword(ctx, element, cls, contents) {
+    const containingEl = ctx.ele("code", element, cls);
+    ctx.ele("pre", containingEl, null, contents);
   }
   function renderArray(ctx, element, data) {
     if (data.length < 1) {
-      const containingEl = ctx.ele("code", element, null);
-      ctx.ele("pre", containingEl, null, "[]");
+      renderKeyword(ctx, element, null, "[]");
       return;
     }
     const assocData = {};
@@ -67,9 +80,9 @@
   }
   function renderAssoc(ctx, element, data, headingNames) {
     const keys = Object.keys(data);
-    if (keys.length < 1) {
-      const containingEl = ctx.ele("code", element, null);
-      ctx.ele("pre", containingEl, null, "{}");
+    const symbols = Object.getOwnPropertySymbols(data);
+    if (keys.length < 1 && symbols.length < 1) {
+      renderKeyword(ctx, element, null, "{}");
       return;
     }
     if (headingNames == null) {
@@ -87,6 +100,12 @@
       ctx.ele("td", tr, null, ctx.strProp(k));
       const valueCell = ctx.ele("td", tr);
       renderThing(ctx, valueCell, data[k]);
+    }
+    for (let sym of symbols) {
+      const tr = ctx.ele("tr", tbody);
+      ctx.ele("td", tr, null, ctx.strProp(sym.toString()));
+      const valueCell = ctx.ele("td", tr);
+      renderThing(ctx, valueCell, data[sym]);
     }
   }
   function makeContext(doc, configuration) {
@@ -133,32 +152,43 @@
   }
 
   // main.ts
-  document.addEventListener("DOMContentLoaded", () => {
-    tablify(
-      document.getElementById("root"),
-      {
-        data0: {
-          func1() {
-            return 1;
-          },
-          func2: () => 1,
-          emptyArray: []
-        },
-        data1: getData1(),
-        data2: getData2(),
-        data3: getData3(),
-        window
+  document.addEventListener("DOMContentLoaded", function init() {
+    tablify(document.getElementById("root"), getAllData(), {
+      transforms: {
+        boolean(v) {
+          return v ? "Yes" : "No";
+        }
       },
-      {
-        strings: {
-          properties: {
-            id: "Identity",
-            url: "Address"
-          }
+      strings: {
+        properties: {
+          id: "Identity",
+          url: "Address"
         }
       }
-    );
+    });
   });
+  function getAllData() {
+    return {
+      data0: {
+        getAllData,
+        func1() {
+          return 1;
+        },
+        func2: () => 1,
+        func3: function() {
+          const u = 65535 + 1;
+          return u / 23;
+        },
+        emptyArray: [],
+        [Symbol("TestSymbol")]: Symbol("TestSymbol"),
+        TestSymbol: Symbol("TestSymbol")
+      },
+      data1: getData1(),
+      data2: getData2(),
+      data3: getData3(),
+      window
+    };
+  }
   function getData1() {
     return {
       clients: [

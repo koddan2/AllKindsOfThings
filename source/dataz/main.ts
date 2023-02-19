@@ -1,32 +1,44 @@
 import { tablify } from "./tablify";
 
-document.addEventListener("DOMContentLoaded", () => {
-  tablify(
-    document.getElementById("root"),
-    {
-      data0: {
-        func1() {
-          return 1;
-        },
-        func2: () => 1,
-        emptyArray: [],
-      },
-      data1: getData1(),
-      data2: getData2(),
-      data3: getData3(),
-
-      window,
+document.addEventListener("DOMContentLoaded", function init() {
+  tablify(document.getElementById("root"), getAllData(), {
+    transforms: {
+      boolean(v) {
+        return v ? "Yes":"No"
+      }
     },
-    {
-      strings: {
-        properties: {
-          id: "Identity",
-          url: "Address",
-        },
+    strings: {
+      properties: {
+        id: "Identity",
+        url: "Address",
       },
-    }
-  );
+    },
+  });
 });
+
+function getAllData() {
+  return {
+    data0: {
+      getAllData,
+      func1() {
+        return 1;
+      },
+      func2: () => 1,
+      func3: function () {
+        const u = 0xffff + 1;
+        return u / 23;
+      },
+      emptyArray: [],
+      [Symbol("TestSymbol")]: Symbol("TestSymbol"),
+      TestSymbol: Symbol("TestSymbol"),
+    },
+    data1: getData1(),
+    data2: getData2(),
+    data3: getData3(),
+
+    window,
+  };
+}
 
 function getData1() {
   return {
