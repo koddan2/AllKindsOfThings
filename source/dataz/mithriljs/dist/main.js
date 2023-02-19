@@ -2136,18 +2136,20 @@
         }
       }
       if (propPath.length > state.configuration.maxLevel && isComplex) {
-        state.pathState[stringifyPath(propPath)] = {
-          hide: true
-        };
+        const strPropPath = stringifyPath(propPath);
+        if (strPropPath.indexOf("_$.pathState") !== 0) {
+          state.pathState[strPropPath] = {
+            hide: true
+          };
+        }
       }
       const hide = state.pathState[stringifyPath(propPath)]?.hide || false;
       children.push(
         (0, import_mithril.default)("tr", { key: domKey }, [
           (0, import_mithril.default)("td", { id: stringifyPath(propPath) }, [
-            (0, import_mithril.default)("span", k.toString()),
-            (0, import_mithril.default)(
+            (0, import_mithril.default)("span", { title: stringifyPath(propPath) }, k.toString()),
+            !state.configuration.showPaths ? (0, import_mithril.default)("span") : (0, import_mithril.default)(
               "pre",
-              { style: "display:inline-block;margin-left:5px;" },
               stringifyPath(propPath)
             ),
             !isComplex ? [] : (0, import_mithril.default)(
@@ -2230,7 +2232,17 @@
           }
         },
         "Expand all once"
-      )
+      ),
+      (0, import_mithril.default)("label", { for: id(state, "show-paths-toggle") }, "Show paths"),
+      (0, import_mithril.default)("input", {
+        type: "checkbox",
+        id: id(state, "show-paths-toggle"),
+        checked: state.configuration.showPaths || false,
+        onchange(event) {
+          const el = event.target;
+          state.configuration.showPaths = el.checked;
+        }
+      })
     ]);
   }
   function id(state, v) {
@@ -2473,7 +2485,9 @@
     import_mithril2.default.mount(document.body, {
       view() {
         const configuration = {
-          maxLevel: 2
+          maxLevel: 2,
+          transforms: {},
+          showPaths: true
         };
         const data = getAllData({ test: TablifyComponent });
         const attrs = {

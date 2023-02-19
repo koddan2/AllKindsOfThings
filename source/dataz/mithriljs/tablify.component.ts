@@ -18,6 +18,7 @@ const defaultTransforms: Transforms = {};
 export interface Configuration {
   maxLevel: number;
   transforms: Transforms;
+  showPaths?: boolean;
 }
 
 export interface Attrs {
@@ -156,21 +157,25 @@ function renderArray(
       }
     }
     if (propPath.length > state.configuration.maxLevel && isComplex) {
-      state.pathState[stringifyPath(propPath)] = {
-        hide: true,
-      };
+      const strPropPath = stringifyPath(propPath);
+      if (strPropPath.indexOf("_$.pathState") !== 0) {
+        state.pathState[strPropPath] = {
+          hide: true,
+        };
+      }
     }
 
     const hide = state.pathState[stringifyPath(propPath)]?.hide || false;
     children.push(
       m("tr", { key: domKey }, [
         m("td", { id: stringifyPath(propPath) }, [
-          m("span", k.toString()),
-          m(
-            "pre",
-            { style: "display:inline-block;margin-left:5px;" },
-            stringifyPath(propPath)
-          ),
+          m("span", { title: stringifyPath(propPath) }, k.toString()),
+          !state.configuration.showPaths
+            ? m("span")
+            : m(
+                "pre",
+                stringifyPath(propPath)
+              ),
           !isComplex
             ? []
             : m(
@@ -266,6 +271,16 @@ function tablifyControlsElement(state: State): m.Children {
       },
       "Expand all once"
     ),
+    m("label", { for: id(state, "show-paths-toggle") }, "Show paths"),
+    m("input", {
+      type: "checkbox",
+      id: id(state, "show-paths-toggle"),
+      checked: state.configuration.showPaths || false,
+      onchange(event) {
+        const el = <HTMLInputElement>event.target;
+        state.configuration.showPaths = el.checked;
+      },
+    }),
   ]);
 }
 

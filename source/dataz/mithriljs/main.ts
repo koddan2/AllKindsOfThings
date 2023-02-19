@@ -13,8 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // };
       const configuration: Configuration = {
         maxLevel: 2,
+        transforms: {},
+        showPaths: true,
       };
-      const data = getAllData({test: TablifyComponent});
+      const data = getAllData({ test: TablifyComponent });
       const attrs: Attrs = {
         configuration,
         data,
