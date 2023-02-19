@@ -1,8 +1,14 @@
 interface Transforms {
-  boolean(value: boolean): string;
+  boolean?(context: Context, element: HTMLElement, value: boolean);
+  number?(context: Context, element: HTMLElement, value: number);
+  bigint?(context: Context, element: HTMLElement, value: bigint);
+  string?(context: Context, element: HTMLElement, value: string);
+  date?(context: Context, element: HTMLElement, value: Date);
+  symbol?(context: Context, element: HTMLElement, value: Symbol);
+  null?(context: Context, element: HTMLElement, value: null);
 }
 export interface TablifyConfiguration {
-  transforms: Transforms;
+  transforms?: Transforms;
   strings: {
     tablify?: Record<string, string>;
     properties?: Record<string, string>;
@@ -23,7 +29,12 @@ export function tablify(
 ): void {
   cleanElement(element);
 
-  const context: Context = makeContext(element.ownerDocument, configuration);
+  const context: Context = makeContext(
+    element.ownerDocument,
+    configuration || {
+      strings: {},
+    }
+  );
 
   renderThing(context, element, data);
 }
@@ -35,18 +46,33 @@ function cleanElement(element: HTMLElement) {
   }
 }
 
-function maybeTransform(ctx: Context, t: keyof Transforms, value: unknown) {
-  if (ctx.configuration.transforms[t]) {
-    return ctx.configuration.transforms[t].call(null, value);
+function maybeTransform<T>(
+  ctx: Context,
+  element: HTMLElement,
+  value: T,
+  t: keyof Transforms,
+  defaultClass?: string
+) {
+  if (ctx.configuration.transforms && ctx.configuration.transforms[t]) {
+    const f = ctx.configuration.transforms[t];
+    if (f) f(ctx, element, value as never);
+  } else if (t === "null") {
+    renderKeyword(ctx, element, ctx.getClass("keyword"), "null");
+  } else {
+    ctx.ele(
+      "span",
+      element,
+      ctx.getClass(defaultClass),
+      ((value as any) || "undefined").toString()
+    );
   }
-  return value.toString();
 }
 
 function renderThing(ctx: Context, element: HTMLElement, data: unknown): void {
   ctx.level++;
   if (typeof data === "object") {
     if (data === null) {
-      renderKeyword(ctx, element, ctx.getClass("keyword"), "null");
+      maybeTransform(ctx, element, data, "null", "keyword");
     } else if (Array.isArray(data)) {
       renderArray(ctx, element, data);
     } else if (data instanceof Date) {
@@ -60,20 +86,15 @@ function renderThing(ctx: Context, element: HTMLElement, data: unknown): void {
       }
     }
   } else if (typeof data === "bigint") {
-    ctx.ele("span", element, ctx.getClass("number"), data.toString());
+    maybeTransform(ctx, element, data, "bigint", "number");
   } else if (typeof data === "number") {
-    ctx.ele("span", element, ctx.getClass("number"), data.toString());
+    maybeTransform(ctx, element, data, "number", "number");
   } else if (typeof data === "boolean") {
-    ctx.ele(
-      "span",
-      element,
-      ctx.getClass("keyword boolean"),
-      maybeTransform(ctx, "boolean", data)
-    );
+    maybeTransform(ctx, element, data, "boolean");
   } else if (typeof data === "string") {
-    ctx.ele("span", element, ctx.getClass("string"), data);
+    maybeTransform(ctx, element, data, "string");
   } else if (typeof data === "symbol") {
-    ctx.ele("span", element, ctx.getClass("symbol"), data.toString());
+    maybeTransform(ctx, element, data, "symbol", "symbol");
   } else if (data === void 0) {
     renderKeyword(ctx, element, ctx.getClass("keyword"), "undefined");
   } else {
@@ -86,7 +107,7 @@ function renderThing(ctx: Context, element: HTMLElement, data: unknown): void {
 function renderKeyword(
   ctx: Context,
   element: HTMLElement,
-  cls?: string,
+  cls?: string | null,
   contents?: string
 ) {
   const containingEl = ctx.ele("code", element, cls);
@@ -135,18 +156,45 @@ function renderAssoc(
 
   const tbody = ctx.ele("tbody", table);
 
-  for (let k of keys) {
+  for (let k of [...keys, ...symbols]) {
     const tr = ctx.ele("tr", tbody);
-    ctx.ele("td", tr, null, ctx.strProp(k));
+
+    let propTd;
+    if (headingNames[0] == "Index") {
+      // ugly check to see if keys are numbers
+      propTd = ctx.ele("td", tr, ctx.getClass("number"), k.toString());
+    } else {
+      propTd = ctx.ele("td", tr, null, ctx.strProp(k.toString()));
+    }
+
+    propTd.addEventListener(
+      "click",
+      () => {
+        if (valuePlaceholder.style.display === "none") {
+          valuePlaceholder.style.display = "";
+          valueContent.style.display = "none";
+        } else {
+          valuePlaceholder.style.display = "none";
+          valueContent.style.display = "";
+        }
+      },
+      {
+        passive: true,
+      }
+    );
+
     const valueCell = ctx.ele("td", tr);
-    renderThing(ctx, valueCell, data[k]);
+    const valueContent = ctx.ele("div", valueCell);
+    renderThing(ctx, valueContent, data[k]);
+    const valuePlaceholder = ctx.ele("div", valueCell, null, "…");
+    valuePlaceholder.style.display = "none";
   }
-  for (let sym of symbols) {
-    const tr = ctx.ele("tr", tbody);
-    ctx.ele("td", tr, null, ctx.strProp(sym.toString()));
-    const valueCell = ctx.ele("td", tr);
-    renderThing(ctx, valueCell, data[sym]);
-  }
+  // for (let sym of symbols) {
+  //   const tr = ctx.ele("tr", tbody);
+  //   ctx.ele("td", tr, null, ctx.strProp(sym.toString()));
+  //   const valueCell = ctx.ele("td", tr);
+  //   renderThing(ctx, valueCell, data[sym]);
+  // }
 }
 
 interface Context {
@@ -158,7 +206,7 @@ interface Context {
   ele(
     name: string,
     parent?: HTMLElement,
-    cls?: string,
+    cls?: string | null,
     text?: string
   ): HTMLElement;
   str(key: string, category?: string);

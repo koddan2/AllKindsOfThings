@@ -7,7 +7,12 @@
   };
   function tablify(element, data, configuration) {
     cleanElement(element);
-    const context = makeContext(element.ownerDocument, configuration);
+    const context = makeContext(
+      element.ownerDocument,
+      configuration || {
+        strings: {}
+      }
+    );
     renderThing(context, element, data);
   }
   function cleanElement(element) {
@@ -16,17 +21,27 @@
       element.removeChild(child);
     }
   }
-  function maybeTransform(ctx, t, value) {
-    if (ctx.configuration.transforms[t]) {
-      return ctx.configuration.transforms[t].call(null, value);
+  function maybeTransform(ctx, element, value, t, defaultClass) {
+    if (ctx.configuration.transforms && ctx.configuration.transforms[t]) {
+      const f = ctx.configuration.transforms[t];
+      if (f)
+        f(ctx, element, value);
+    } else if (t === "null") {
+      renderKeyword(ctx, element, ctx.getClass("keyword"), "null");
+    } else {
+      ctx.ele(
+        "span",
+        element,
+        ctx.getClass(defaultClass),
+        (value || "undefined").toString()
+      );
     }
-    return value.toString();
   }
   function renderThing(ctx, element, data) {
     ctx.level++;
     if (typeof data === "object") {
       if (data === null) {
-        renderKeyword(ctx, element, ctx.getClass("keyword"), "null");
+        maybeTransform(ctx, element, data, "null", "keyword");
       } else if (Array.isArray(data)) {
         renderArray(ctx, element, data);
       } else if (data instanceof Date) {
@@ -40,20 +55,15 @@
         }
       }
     } else if (typeof data === "bigint") {
-      ctx.ele("span", element, ctx.getClass("number"), data.toString());
+      maybeTransform(ctx, element, data, "bigint", "number");
     } else if (typeof data === "number") {
-      ctx.ele("span", element, ctx.getClass("number"), data.toString());
+      maybeTransform(ctx, element, data, "number", "number");
     } else if (typeof data === "boolean") {
-      ctx.ele(
-        "span",
-        element,
-        ctx.getClass("keyword boolean"),
-        maybeTransform(ctx, "boolean", data)
-      );
+      maybeTransform(ctx, element, data, "boolean");
     } else if (typeof data === "string") {
-      ctx.ele("span", element, ctx.getClass("string"), data);
+      maybeTransform(ctx, element, data, "string");
     } else if (typeof data === "symbol") {
-      ctx.ele("span", element, ctx.getClass("symbol"), data.toString());
+      maybeTransform(ctx, element, data, "symbol", "symbol");
     } else if (data === void 0) {
       renderKeyword(ctx, element, ctx.getClass("keyword"), "undefined");
     } else {
@@ -95,17 +105,34 @@
     ctx.ele("th", theadtr, null, ctx.str(headingNames[0]));
     ctx.ele("th", theadtr, null, ctx.str(headingNames[1]));
     const tbody = ctx.ele("tbody", table);
-    for (let k of keys) {
+    for (let k of [...keys, ...symbols]) {
       const tr = ctx.ele("tr", tbody);
-      ctx.ele("td", tr, null, ctx.strProp(k));
+      let propTd;
+      if (headingNames[0] == "Index") {
+        propTd = ctx.ele("td", tr, ctx.getClass("number"), k.toString());
+      } else {
+        propTd = ctx.ele("td", tr, null, ctx.strProp(k.toString()));
+      }
+      propTd.addEventListener(
+        "click",
+        () => {
+          if (valuePlaceholder.style.display === "none") {
+            valuePlaceholder.style.display = "";
+            valueContent.style.display = "none";
+          } else {
+            valuePlaceholder.style.display = "none";
+            valueContent.style.display = "";
+          }
+        },
+        {
+          passive: true
+        }
+      );
       const valueCell = ctx.ele("td", tr);
-      renderThing(ctx, valueCell, data[k]);
-    }
-    for (let sym of symbols) {
-      const tr = ctx.ele("tr", tbody);
-      ctx.ele("td", tr, null, ctx.strProp(sym.toString()));
-      const valueCell = ctx.ele("td", tr);
-      renderThing(ctx, valueCell, data[sym]);
+      const valueContent = ctx.ele("div", valueCell);
+      renderThing(ctx, valueContent, data[k]);
+      const valuePlaceholder = ctx.ele("div", valueCell, null, "\u2026");
+      valuePlaceholder.style.display = "none";
     }
   }
   function makeContext(doc, configuration) {
@@ -153,23 +180,42 @@
 
   // main.ts
   document.addEventListener("DOMContentLoaded", function init() {
-    tablify(document.getElementById("root"), getAllData(), {
-      transforms: {
-        boolean(v) {
-          return v ? "Yes" : "No";
+    const mountPoint = document.getElementById("root");
+    if (mountPoint)
+      tablify(mountPoint, getAllData(), {
+        transforms: {
+          boolean(ctx, element, value) {
+            const el = ctx.ele("input", element);
+            el.type = "checkbox";
+            el.disabled = true;
+            if (value) {
+              el.checked = true;
+              el.title = "boolean:true";
+            } else {
+              el.title = "boolean:false";
+            }
+          },
+          number(ctx, element, value) {
+            const num = ctx.ele("span", element, "number", value.toString());
+            num.title = `\u27A1
+          Base2:${value.toString(2)}
+          Base8:${value.toString(8)}
+          Base16:${value.toString(16)}
+          Base36:${value.toString(36)}`.replace(/\s+/g, "\n").replace(/:/g, ": 	");
+          }
+        },
+        strings: {
+          properties: {
+            id: "Identity",
+            url: "Address"
+          }
         }
-      },
-      strings: {
-        properties: {
-          id: "Identity",
-          url: "Address"
-        }
-      }
-    });
+      });
   });
   function getAllData() {
     return {
       data0: {
+        bignum: 123409324093249n,
         getAllData,
         func1() {
           return 1;
