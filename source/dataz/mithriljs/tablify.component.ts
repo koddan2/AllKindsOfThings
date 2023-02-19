@@ -1,9 +1,9 @@
 import m, { Component, Vnode } from "mithril";
-// import * as m from "mithril";
 
 export interface Configuration {
   maxLevel: number;
 }
+
 export interface Attrs {
   configuration: Configuration;
   data: unknown;
@@ -11,31 +11,38 @@ export interface Attrs {
 
 type PropertyKey = string | Symbol | number;
 interface PathContext {
-  toggle: boolean;
+  hide: boolean;
 }
+
 interface State {
+  nonce: string;
   configuration: Configuration;
   referenceLoopCheck: WeakMap<object, PropertyKey[]>;
   pathState: Record<string, PathContext>;
   data: unknown;
   debug: boolean;
 }
+
 export function TablifyComponent(
   initialVnode: Vnode<Attrs>
 ): Component<Attrs, State> {
   const state = initState(initialVnode.attrs);
+
   return {
     view(vnode: Vnode<Attrs>) {
       state.referenceLoopCheck = new WeakMap<object, PropertyKey[]>();
       return m("div", [
+        maxLevelManipulator(state),
         renderUnknown(state, state.data, ["$"]),
-        state.debug ? renderUnknown(state, state, ["$"]) : [],
+        state.debug ? renderUnknown(state, state, ["_$"]) : [],
       ]);
     },
   };
 }
+
 function initState(attrs: Attrs): State {
   return {
+    nonce: ((9999 + Math.random() * 99999) | 0).toString(36),
     configuration: attrs.configuration,
     referenceLoopCheck: new WeakMap<object, PropertyKey[]>(),
     pathState: {},
@@ -51,11 +58,13 @@ function renderUnknown(
 ): m.Children {
   if (typeof data === "object") {
     if (data === null) {
-      return m("span", "null");
+      return m("pre", { class: "keyword" }, "null");
     } else if (data instanceof Date) {
       return m("span", data.toLocaleString());
-      // } else if (data instanceof WeakMap) {
-      // } else if (data instanceof Map) {
+    } else if (data instanceof WeakMap) {
+      return m("code", `WeakMap()`);
+    } else if (data instanceof Map) {
+      return m("code", `Map()`);
     } else if (Array.isArray(data)) {
       return renderArray(state, data, path, false);
     } else {
@@ -75,7 +84,7 @@ function renderUnknown(
   } else if (typeof data === "function") {
     return m("pre", (data as Function).toString());
   } else if (typeof data === "undefined") {
-    return m("span", "undefined");
+    return m("pre", { class: "keyword" }, "undefined");
   } else {
     return m("span", "[UNKNOWN]");
   }
@@ -91,7 +100,11 @@ function renderArray(
   const symbols = Object.getOwnPropertySymbols(data);
   const allProps = [...keys, ...symbols];
   if (allProps.length < 1) {
-    return m("span", "{}");
+    if (isAssoc) {
+      return m("span", "{}");
+    } else {
+      return m("span", "[]");
+    }
   }
   allProps.sort((a, b) => Number(a.toString() > b.toString()));
 
@@ -112,7 +125,11 @@ function renderArray(
               m(
                 "pre",
                 { style: "display:inline-block;" },
-                `@${stringifyPath(conflictingPath || [])}`
+                m(
+                  "a",
+                  { href: "#" + conflictingPath },
+                  `@${stringifyPath(conflictingPath || [])}`
+                )
               ),
             ]),
           ])
@@ -122,33 +139,57 @@ function renderArray(
         state.referenceLoopCheck.set(item, propPath);
       }
     }
+    if (propPath.length > state.configuration.maxLevel && isComplex) {
+      state.pathState[stringifyPath(propPath)] = {
+        hide: true,
+      };
+    }
+
+    const hide = state.pathState[stringifyPath(propPath)]?.hide || false;
     children.push(
       m("tr", { key: domKey }, [
-        m("td", [
+        m("td", { id: stringifyPath(propPath) }, [
           m("span", k.toString()),
           m(
             "pre",
             { style: "display:inline-block;margin-left:5px;" },
             stringifyPath(propPath)
           ),
-          m(
-            "button",
-            {
-              type: "button",
-              onclick: () => {
-                const index = stringifyPath(propPath);
-                const v = state.pathState[index];
-                if (!v) {
-                  state.pathState[index] = { toggle: true };
-                } else {
-                  v.toggle = !v.toggle;
-                }
-              },
-            },
-            "toggle"
-          ),
+          !isComplex
+            ? []
+            : m(
+                "button",
+                {
+                  type: "button",
+                  onclick: () => {
+                    const index = stringifyPath(propPath);
+                    const v = state.pathState[index];
+                    if (!v) {
+                      state.pathState[index] = { hide: true };
+                    } else {
+                      v.hide = !v.hide;
+                      if (
+                        !v.hide &&
+                        propPath.length > state.configuration.maxLevel
+                      )
+                        state.configuration.maxLevel = propPath.length;
+                    }
+                  },
+                },
+                "toggle"
+              ),
         ]),
-        m("td", renderUnknown(state, item, propPath)),
+        m(
+          "td",
+          hide
+            ? m("span", [
+                "…",
+                !isComplex
+                  ? m("span")
+                  : m("span", `${Object.keys(item as any).length} items`),
+              ])
+            : renderUnknown(state, item, propPath)
+        ),
       ])
     );
   }
@@ -178,4 +219,40 @@ function stringifyPath(path: PropertyKey[]): string {
   }
 
   return result;
+}
+
+function maxLevelManipulator(state: State): m.Children {
+  return m("div", [
+    m("label", { for: id(state, "max-level-manipulator") }, "Max level:"),
+    m("input", {
+      id: id(state, "max-level-manipulator"),
+      type: "number",
+      step: 1,
+      value: state.configuration.maxLevel,
+      oninput(event: InputEvent) {
+        const el = <HTMLInputElement>event.target;
+        state.configuration.maxLevel = parseInt(el.value);
+      },
+    }),
+    m(
+      "button",
+      {
+        type: "button",
+        onclick() {
+          let newMaxLevel = 1;
+          for (let k of Object.keys(state.pathState)) {
+            state.pathState[k].hide = false;
+            const t = k.split(/[\.\[]/g);
+            newMaxLevel = Math.max(newMaxLevel, t.length);
+          }
+          state.configuration.maxLevel = newMaxLevel;
+        },
+      },
+      "Expand all once"
+    ),
+  ]);
+}
+
+function id(state: State, v: string): string {
+  return `${v}-${state.nonce}`;
 }

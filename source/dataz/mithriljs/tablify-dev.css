@@ -1,7 +1,7 @@
 html,
 body {
-  background: #222;
-  color: #ddd;
+  /* background: #222;
+  color: #ddd; */
   font-family: sans-serif;
   margin: 0;
   padding: 0;
@@ -12,6 +12,12 @@ pre {
 table {
   width: 100%;
 }
-td:hover {
+tr:hover {
   background-color: rgba(8, 128, 64, 0.1);
+}
+button {
+  border: none;
+  background: transparent;
+  color: darkgoldenrod;
+  cursor: pointer;
 }

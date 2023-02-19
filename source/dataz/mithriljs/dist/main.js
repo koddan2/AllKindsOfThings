@@ -2042,14 +2042,16 @@
       view(vnode) {
         state.referenceLoopCheck = /* @__PURE__ */ new WeakMap();
         return (0, import_mithril.default)("div", [
+          maxLevelManipulator(state),
           renderUnknown(state, state.data, ["$"]),
-          state.debug ? renderUnknown(state, state, ["$"]) : []
+          state.debug ? renderUnknown(state, state, ["_$"]) : []
         ]);
       }
     };
   }
   function initState(attrs) {
     return {
+      nonce: (9999 + Math.random() * 99999 | 0).toString(36),
       configuration: attrs.configuration,
       referenceLoopCheck: /* @__PURE__ */ new WeakMap(),
       pathState: {},
@@ -2060,9 +2062,13 @@
   function renderUnknown(state, data, path) {
     if (typeof data === "object") {
       if (data === null) {
-        return (0, import_mithril.default)("span", "null");
+        return (0, import_mithril.default)("pre", { class: "keyword" }, "null");
       } else if (data instanceof Date) {
         return (0, import_mithril.default)("span", data.toLocaleString());
+      } else if (data instanceof WeakMap) {
+        return (0, import_mithril.default)("code", `WeakMap()`);
+      } else if (data instanceof Map) {
+        return (0, import_mithril.default)("code", `Map()`);
       } else if (Array.isArray(data)) {
         return renderArray(state, data, path, false);
       } else {
@@ -2081,7 +2087,7 @@
     } else if (typeof data === "function") {
       return (0, import_mithril.default)("pre", data.toString());
     } else if (typeof data === "undefined") {
-      return (0, import_mithril.default)("span", "undefined");
+      return (0, import_mithril.default)("pre", { class: "keyword" }, "undefined");
     } else {
       return (0, import_mithril.default)("span", "[UNKNOWN]");
     }
@@ -2091,7 +2097,11 @@
     const symbols = Object.getOwnPropertySymbols(data);
     const allProps = [...keys, ...symbols];
     if (allProps.length < 1) {
-      return (0, import_mithril.default)("span", "{}");
+      if (isAssoc) {
+        return (0, import_mithril.default)("span", "{}");
+      } else {
+        return (0, import_mithril.default)("span", "[]");
+      }
     }
     allProps.sort((a, b) => Number(a.toString() > b.toString()));
     const children = [];
@@ -2111,7 +2121,11 @@
                 (0, import_mithril.default)(
                   "pre",
                   { style: "display:inline-block;" },
-                  `@${stringifyPath(conflictingPath || [])}`
+                  (0, import_mithril.default)(
+                    "a",
+                    { href: "#" + conflictingPath },
+                    `@${stringifyPath(conflictingPath || [])}`
+                  )
                 )
               ])
             ])
@@ -2121,16 +2135,22 @@
           state.referenceLoopCheck.set(item, propPath);
         }
       }
+      if (propPath.length > state.configuration.maxLevel && isComplex) {
+        state.pathState[stringifyPath(propPath)] = {
+          hide: true
+        };
+      }
+      const hide = state.pathState[stringifyPath(propPath)]?.hide || false;
       children.push(
         (0, import_mithril.default)("tr", { key: domKey }, [
-          (0, import_mithril.default)("td", [
+          (0, import_mithril.default)("td", { id: stringifyPath(propPath) }, [
             (0, import_mithril.default)("span", k.toString()),
             (0, import_mithril.default)(
               "pre",
               { style: "display:inline-block;margin-left:5px;" },
               stringifyPath(propPath)
             ),
-            (0, import_mithril.default)(
+            !isComplex ? [] : (0, import_mithril.default)(
               "button",
               {
                 type: "button",
@@ -2138,16 +2158,24 @@
                   const index = stringifyPath(propPath);
                   const v = state.pathState[index];
                   if (!v) {
-                    state.pathState[index] = { toggle: true };
+                    state.pathState[index] = { hide: true };
                   } else {
-                    v.toggle = !v.toggle;
+                    v.hide = !v.hide;
+                    if (!v.hide && propPath.length > state.configuration.maxLevel)
+                      state.configuration.maxLevel = propPath.length;
                   }
                 }
               },
               "toggle"
             )
           ]),
-          (0, import_mithril.default)("td", renderUnknown(state, item, propPath))
+          (0, import_mithril.default)(
+            "td",
+            hide ? (0, import_mithril.default)("span", [
+              "\u2026",
+              !isComplex ? (0, import_mithril.default)("span") : (0, import_mithril.default)("span", `${Object.keys(item).length} items`)
+            ]) : renderUnknown(state, item, propPath)
+          )
         ])
       );
     }
@@ -2174,17 +2202,277 @@
     }
     return result;
   }
+  function maxLevelManipulator(state) {
+    return (0, import_mithril.default)("div", [
+      (0, import_mithril.default)("label", { for: id(state, "max-level-manipulator") }, "Max level:"),
+      (0, import_mithril.default)("input", {
+        id: id(state, "max-level-manipulator"),
+        type: "number",
+        step: 1,
+        value: state.configuration.maxLevel,
+        oninput(event) {
+          const el = event.target;
+          state.configuration.maxLevel = parseInt(el.value);
+        }
+      }),
+      (0, import_mithril.default)(
+        "button",
+        {
+          type: "button",
+          onclick() {
+            let newMaxLevel = 1;
+            for (let k of Object.keys(state.pathState)) {
+              state.pathState[k].hide = false;
+              const t = k.split(/[\.\[]/g);
+              newMaxLevel = Math.max(newMaxLevel, t.length);
+            }
+            state.configuration.maxLevel = newMaxLevel;
+          }
+        },
+        "Expand all once"
+      )
+    ]);
+  }
+  function id(state, v) {
+    return `${v}-${state.nonce}`;
+  }
+
+  // ../example-data.ts
+  function getAllData() {
+    return {
+      data0: {
+        bignum: 123409324093249n,
+        getAllData,
+        func1() {
+          return 1;
+        },
+        func2: () => 1,
+        func3: function() {
+          const u = 65535 + 1;
+          return u / 23;
+        },
+        emptyArray: [],
+        [Symbol("TestSymbol")]: Symbol("TestSymbol"),
+        TestSymbol: Symbol("TestSymbol")
+      },
+      data1: getData1(),
+      data2: getData2(),
+      data3: getData3(),
+      window
+    };
+  }
+  function getData1() {
+    return {
+      clients: [
+        {
+          id: "59761c23b30d971669fb42ff",
+          isActive: true,
+          age: 36,
+          name: "Dunlap Hubbard",
+          gender: "male",
+          company: "CEDWARD",
+          email: "dunlaphubbard@cedward.com",
+          phone: "+1 (890) 543-2508",
+          address: "169 Rutledge Street, Konterra, Northern Mariana Islands, 8551"
+        },
+        {
+          id: "59761c233d8d0f92a6b0570d",
+          isActive: true,
+          age: 24,
+          name: "Kirsten Sellers",
+          gender: "female",
+          company: "EMERGENT",
+          email: "kirstensellers@emergent.com",
+          phone: "+1 (831) 564-2190",
+          address: "886 Gallatin Place, Fannett, Arkansas, 4656"
+        },
+        {
+          id: "59761c23fcb6254b1a06dad5",
+          isActive: true,
+          age: 30,
+          name: "Acosta Robbins",
+          gender: "male",
+          company: "ORGANICA",
+          email: "acostarobbins@organica.com",
+          phone: "+1 (882) 441-3367",
+          address: "697 Linden Boulevard, Sattley, Idaho, 1035"
+        }
+      ]
+    };
+  }
+  function getData2() {
+    return {
+      created_at: "Thu Jun 22 21:00:00 +0000 2017",
+      id: 877994604561387500,
+      id_str: "877994604561387520",
+      text: "Creating a Grocery List Manager Using Angular, Part 1: Add &amp; Display Items https://t.co/xFox78juL1 #Angular",
+      truncated: false,
+      entities: {
+        hashtags: [
+          {
+            text: "Angular",
+            indices: [103, 111]
+          }
+        ],
+        symbols: [],
+        user_mentions: [],
+        urls: [
+          {
+            url: "https://t.co/xFox78juL1",
+            expanded_url: "http://buff.ly/2sr60pf",
+            display_url: "buff.ly/2sr60pf",
+            indices: [79, 102]
+          }
+        ]
+      },
+      source: '<a href="http://bufferapp.com" rel="nofollow">Buffer</a>',
+      user: {
+        id: 772682964,
+        id_str: "772682964",
+        name: "SitePoint JavaScript",
+        screen_name: "SitePointJS",
+        location: "Melbourne, Australia",
+        description: "Keep up with JavaScript tutorials, tips, tricks and articles at SitePoint.",
+        url: "http://t.co/cCH13gqeUK",
+        entities: {
+          url: {
+            urls: [
+              {
+                url: "http://t.co/cCH13gqeUK",
+                expanded_url: "https://www.sitepoint.com/javascript",
+                display_url: "sitepoint.com/javascript",
+                indices: [0, 22]
+              }
+            ]
+          },
+          description: {
+            urls: [
+              "https://www.youtube.com/watch?v=rK_YlsEIM_c",
+              "file:///C:/CODE/AllKindsOfThings/source/dataz/index.html"
+            ]
+          }
+        },
+        protected: false,
+        followers_count: 2145,
+        friends_count: 18,
+        listed_count: 328,
+        created_at: "Wed Aug 22 02:06:33 +0000 2012",
+        favourites_count: 57,
+        utc_offset: 43200,
+        time_zone: "Wellington"
+      }
+    };
+  }
+  function getData3() {
+    return {
+      "web-app": {
+        servlet: [
+          {
+            "servlet-name": "cofaxCDS",
+            "servlet-class": "org.cofax.cds.CDSServlet",
+            "init-param": {
+              "configGlossary:installationAt": "Philadelphia, PA",
+              "configGlossary:adminEmail": "ksm@pobox.com",
+              "configGlossary:poweredBy": "Cofax",
+              "configGlossary:poweredByIcon": "/images/cofax.gif",
+              "configGlossary:staticPath": "/content/static",
+              templateProcessorClass: "org.cofax.WysiwygTemplate",
+              templateLoaderClass: "org.cofax.FilesTemplateLoader",
+              templatePath: "templates",
+              templateOverridePath: "",
+              defaultListTemplate: "listTemplate.htm",
+              defaultFileTemplate: "articleTemplate.htm",
+              useJSP: false,
+              jspListTemplate: "listTemplate.jsp",
+              jspFileTemplate: "articleTemplate.jsp",
+              cachePackageTagsTrack: 200,
+              cachePackageTagsStore: 200,
+              cachePackageTagsRefresh: 60,
+              cacheTemplatesTrack: 100,
+              cacheTemplatesStore: 50,
+              cacheTemplatesRefresh: 15,
+              cachePagesTrack: 200,
+              cachePagesStore: 100,
+              cachePagesRefresh: 10,
+              cachePagesDirtyRead: 10,
+              searchEngineListTemplate: "forSearchEnginesList.htm",
+              searchEngineFileTemplate: "forSearchEngines.htm",
+              searchEngineRobotsDb: "WEB-INF/robots.db",
+              useDataStore: true,
+              dataStoreClass: "org.cofax.SqlDataStore",
+              redirectionClass: "org.cofax.SqlRedirection",
+              dataStoreName: "cofax",
+              dataStoreDriver: "com.microsoft.jdbc.sqlserver.SQLServerDriver",
+              dataStoreUrl: "jdbc:microsoft:sqlserver://LOCALHOST:1433;DatabaseName=goon",
+              dataStoreUser: "sa",
+              dataStorePassword: "dataStoreTestQuery",
+              dataStoreTestQuery: "SET NOCOUNT ON;select test='test';",
+              dataStoreLogFile: "/usr/local/tomcat/logs/datastore.log",
+              dataStoreInitConns: 10,
+              dataStoreMaxConns: 100,
+              dataStoreConnUsageLimit: 100,
+              dataStoreLogLevel: "debug",
+              maxUrlLength: 500
+            }
+          },
+          {
+            "servlet-name": "cofaxEmail",
+            "servlet-class": "org.cofax.cds.EmailServlet",
+            "init-param": {
+              mailHost: "mail1",
+              mailHostOverride: "mail2"
+            }
+          },
+          {
+            "servlet-name": "cofaxAdmin",
+            "servlet-class": "org.cofax.cds.AdminServlet"
+          },
+          {
+            "servlet-name": "fileServlet",
+            "servlet-class": "org.cofax.cds.FileServlet"
+          },
+          {
+            "servlet-name": "cofaxTools",
+            "servlet-class": "org.cofax.cms.CofaxToolsServlet",
+            "init-param": {
+              templatePath: "toolstemplates/",
+              log: 1,
+              logLocation: "/usr/local/tomcat/logs/CofaxTools.log",
+              logMaxSize: "",
+              dataLog: 1,
+              dataLogLocation: "/usr/local/tomcat/logs/dataLog.log",
+              dataLogMaxSize: "",
+              removePageCache: "/content/admin/remove?cache=pages&id=",
+              removeTemplateCache: "/content/admin/remove?cache=templates&id=",
+              fileTransferFolder: "/usr/local/tomcat/webapps/content/fileTransferFolder",
+              lookInContext: 1,
+              adminGroupID: 4,
+              betaServer: true
+            }
+          }
+        ],
+        "servlet-mapping": {
+          cofaxCDS: "/",
+          cofaxEmail: "/cofaxutil/aemail/*",
+          cofaxAdmin: "/admin/*",
+          fileServlet: "/static/*",
+          cofaxTools: "/tools/*"
+        },
+        taglib: {
+          "taglib-uri": "cofax.tld",
+          "taglib-location": "/WEB-INF/tlds/cofax.tld"
+        }
+      }
+    };
+  }
 
   // main.ts
   document.addEventListener("DOMContentLoaded", () => {
     import_mithril2.default.mount(document.body, {
       view() {
-        const data = {
-          array: [1, 2, 3, /* @__PURE__ */ new Date()],
-          location: window.location
-        };
+        const data = getAllData();
         const configuration = {
-          maxLevel: 2
+          maxLevel: 1
         };
         const attrs = {
           configuration,
