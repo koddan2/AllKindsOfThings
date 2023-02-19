@@ -1,0 +1,17 @@
+html,
+body {
+  background: #222;
+  color: #ddd;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+pre {
+  margin: 0;
+}
+table {
+  width: 100%;
+}
+td:hover {
+  background-color: rgba(8, 128, 64, 0.1);
+}

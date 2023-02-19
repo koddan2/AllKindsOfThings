@@ -168,7 +168,7 @@ function renderAssoc(
   const thead = ctx.ele("thead", table);
   const theadtr = ctx.ele("tr", thead);
   const propTh = ctx.ele("th", theadtr, null, ctx.str(headingNames[0]));
-  const propThContent = ` ${stringifyPath(ctx.path)}`;
+  const propThContent = `:${stringifyPath(ctx.path)}`;
   const pre = ctx.ele("pre", propTh, null, propThContent);
   pre.style.display = "inline-block";
   ctx.ele("th", theadtr, null, ctx.str(headingNames[1]));
@@ -183,29 +183,32 @@ function renderAssoc(
     const propCls = isArray ? ctx.getClass("number") : null;
     const propContent = isArray ? k.toString() : ctx.strProp(k.toString());
     const propTd = ctx.ele("td", tr, propCls, propContent);
+    const isComplex = data[k] != null && typeof data[k] === "object";
+    if (isComplex) {
+      propTd.style.cursor = "pointer";
 
-    propTd.addEventListener(
-      "click",
-      () => {
-        if (valuePlaceholder.style.display === "none") {
-          valuePlaceholder.style.display = "";
-          valueContent.style.display = "none";
-        } else {
-          valuePlaceholder.style.display = "none";
-          valueContent.style.display = "";
+      propTd.addEventListener(
+        "click",
+        () => {
+          if (valuePlaceholder.style.display === "none") {
+            valuePlaceholder.style.display = "";
+            valueContent.style.display = "none";
+          } else {
+            valuePlaceholder.style.display = "none";
+            valueContent.style.display = "";
+          }
+        },
+        {
+          passive: true,
         }
-      },
-      {
-        passive: true,
-      }
-    );
+      );
+    }
 
     const valueCell = ctx.ele("td", tr);
     const valueContent = ctx.ele("div", valueCell);
     renderThing(ctx, valueContent, data[k]);
     const valuePlaceholder = ctx.ele("div", valueCell, null, "…");
 
-    const isComplex = data[k] != null && typeof data[k] === "object";
     const maxLevel = ctx.configuration.level || 999;
     if (isComplex) {
       if (ctx.path.length <= maxLevel) {
