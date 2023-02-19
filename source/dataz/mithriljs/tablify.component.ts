@@ -1,7 +1,23 @@
 import m, { Component, Vnode } from "mithril";
 
+interface TransformState {
+  path: PropertyKey[];
+}
+interface Transforms {
+  boolean?(state: TransformState, value: boolean): m.Children;
+  number?(state: TransformState, value: number): m.Children;
+  bigint?(state: TransformState, value: bigint): m.Children;
+  string?(state: TransformState, value: string): m.Children;
+  date?(state: TransformState, value: Date): m.Children;
+  symbol?(state: TransformState, value: Symbol): m.Children;
+  null?(state: TransformState, value: null): m.Children;
+  function?(state: TransformState, value: Function): m.Children;
+  rest?(state: TransformState, value: unknown): m.Children;
+}
+const defaultTransforms: Transforms = {};
 export interface Configuration {
   maxLevel: number;
+  transforms: Transforms;
 }
 
 export interface Attrs {

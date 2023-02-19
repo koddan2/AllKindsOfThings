@@ -4,7 +4,7 @@ import { tablify } from "./tablify";
 document.addEventListener("DOMContentLoaded", function init() {
   const mountPoint = document.getElementById("root");
   if (mountPoint)
-    tablify(mountPoint, getAllData(), {
+    tablify(mountPoint, getAllData({}), {
       level: 2,
       transforms: {
         boolean(ctx, element, value) {
