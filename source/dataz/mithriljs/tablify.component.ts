@@ -15,7 +15,6 @@ interface PathContext {
 }
 interface State {
   configuration: Configuration;
-  path: PropertyKey[];
   referenceLoopCheck: WeakMap<object, PropertyKey[]>;
   pathState: Record<string, PathContext>;
   data: unknown;
@@ -29,8 +28,8 @@ export function TablifyComponent(
     view(vnode: Vnode<Attrs>) {
       state.referenceLoopCheck = new WeakMap<object, PropertyKey[]>();
       return m("div", [
-        renderUnknown(state, state.data, true),
-        state.debug ? renderUnknown(state, state, true) : [],
+        renderUnknown(state, state.data, ["$"]),
+        state.debug ? renderUnknown(state, state, ["$"]) : [],
       ]);
     },
   };
@@ -38,7 +37,6 @@ export function TablifyComponent(
 function initState(attrs: Attrs): State {
   return {
     configuration: attrs.configuration,
-    path: [],
     referenceLoopCheck: new WeakMap<object, PropertyKey[]>(),
     pathState: {},
     data: attrs.data,
@@ -49,22 +47,20 @@ function initState(attrs: Attrs): State {
 function renderUnknown(
   state: State,
   data: unknown,
-  isTopLevel: boolean
+  path: PropertyKey[]
 ): m.Children {
-  if (isTopLevel && state.path.length === 0) {
-    state.path.push("$"); // root signifier
-  }
-
   if (typeof data === "object") {
     if (data === null) {
       return m("span", "null");
     } else if (data instanceof Date) {
       return m("span", data.toLocaleString());
+      // } else if (data instanceof WeakMap) {
+      // } else if (data instanceof Map) {
     } else if (Array.isArray(data)) {
-      return m("span", "[]");
+      return renderArray(state, data, path, false);
     } else {
       // Object probably?
-      return renderAssociativeArray(state, data);
+      return renderArray(state, data, path, true);
     }
   } else if (typeof data === "bigint") {
     return m("span", (data as bigint).toString());
@@ -85,7 +81,12 @@ function renderUnknown(
   }
 }
 
-function renderAssociativeArray(state: State, data: object): m.Children {
+function renderArray(
+  state: State,
+  data: object,
+  path: PropertyKey[],
+  isAssoc: boolean
+): m.Children {
   const keys = Object.keys(data);
   const symbols = Object.getOwnPropertySymbols(data);
   const allProps = [...keys, ...symbols];
@@ -96,8 +97,8 @@ function renderAssociativeArray(state: State, data: object): m.Children {
 
   const children: m.Children[] = [];
   for (let k of allProps) {
-    state.path.push(k);
-    const domKey = stringifyPath(state.path);
+    const propPath = [...path, k];
+    const domKey = stringifyPath(propPath);
     const item: unknown = data[k];
     const isComplex = typeof item === "object" && item != null;
     if (isComplex) {
@@ -116,10 +117,9 @@ function renderAssociativeArray(state: State, data: object): m.Children {
             ]),
           ])
         );
-        state.path.pop();
         continue;
       } else if (item != null) {
-        state.referenceLoopCheck.set(item, state.path);
+        state.referenceLoopCheck.set(item, propPath);
       }
     }
     children.push(
@@ -129,14 +129,14 @@ function renderAssociativeArray(state: State, data: object): m.Children {
           m(
             "pre",
             { style: "display:inline-block;margin-left:5px;" },
-            stringifyPath(state.path)
+            stringifyPath(propPath)
           ),
           m(
             "button",
             {
               type: "button",
               onclick: () => {
-                const index = stringifyPath(state.path);
+                const index = stringifyPath(propPath);
                 const v = state.pathState[index];
                 if (!v) {
                   state.pathState[index] = { toggle: true };
@@ -148,10 +148,9 @@ function renderAssociativeArray(state: State, data: object): m.Children {
             "toggle"
           ),
         ]),
-        m("td", renderUnknown(state, item, false)),
+        m("td", renderUnknown(state, item, propPath)),
       ])
     );
-    state.path.pop();
   }
 
   const thead = m("thead", [m("tr", [m("th", "Property"), m("th", "Value")])]);
@@ -160,5 +159,23 @@ function renderAssociativeArray(state: State, data: object): m.Children {
 }
 
 function stringifyPath(path: PropertyKey[]): string {
-  return path.map((x) => x.toString()).join(".");
+  // return path.map((x) => x.toString()).join(".");
+  const re = /^[A-Za-z\$_][A-Za-z0-9\$_]*$/;
+  let result = "";
+  for (let i = 0; i < path.length; i++) {
+    const element = path[i];
+    if (typeof element === "string") {
+      if (re.test(element)) {
+        result += `${i === 0 ? "" : "."}${element}`;
+      } else {
+        result += `[${element}]`;
+      }
+    } else if (typeof element === "symbol") {
+      result += `[${element.toString()}]`;
+    } else if (typeof element === "number") {
+      result += `[${element.toString()}]`;
+    }
+  }
+
+  return result;
 }

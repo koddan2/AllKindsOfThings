@@ -2042,8 +2042,8 @@
       view(vnode) {
         state.referenceLoopCheck = /* @__PURE__ */ new WeakMap();
         return (0, import_mithril.default)("div", [
-          renderUnknown(state, state.data, true),
-          state.debug ? renderUnknown(state, state, true) : []
+          renderUnknown(state, state.data, ["$"]),
+          state.debug ? renderUnknown(state, state, ["$"]) : []
         ]);
       }
     };
@@ -2051,26 +2051,22 @@
   function initState(attrs) {
     return {
       configuration: attrs.configuration,
-      path: [],
       referenceLoopCheck: /* @__PURE__ */ new WeakMap(),
       pathState: {},
       data: attrs.data,
       debug: true
     };
   }
-  function renderUnknown(state, data, isTopLevel) {
-    if (isTopLevel && state.path.length === 0) {
-      state.path.push("$");
-    }
+  function renderUnknown(state, data, path) {
     if (typeof data === "object") {
       if (data === null) {
         return (0, import_mithril.default)("span", "null");
       } else if (data instanceof Date) {
         return (0, import_mithril.default)("span", data.toLocaleString());
       } else if (Array.isArray(data)) {
-        return (0, import_mithril.default)("span", "[]");
+        return renderArray(state, data, path, false);
       } else {
-        return renderAssociativeArray(state, data);
+        return renderArray(state, data, path, true);
       }
     } else if (typeof data === "bigint") {
       return (0, import_mithril.default)("span", data.toString());
@@ -2090,7 +2086,7 @@
       return (0, import_mithril.default)("span", "[UNKNOWN]");
     }
   }
-  function renderAssociativeArray(state, data) {
+  function renderArray(state, data, path, isAssoc) {
     const keys = Object.keys(data);
     const symbols = Object.getOwnPropertySymbols(data);
     const allProps = [...keys, ...symbols];
@@ -2100,8 +2096,8 @@
     allProps.sort((a, b) => Number(a.toString() > b.toString()));
     const children = [];
     for (let k of allProps) {
-      state.path.push(k);
-      const domKey = stringifyPath(state.path);
+      const propPath = [...path, k];
+      const domKey = stringifyPath(propPath);
       const item = data[k];
       const isComplex = typeof item === "object" && item != null;
       if (isComplex) {
@@ -2120,10 +2116,9 @@
               ])
             ])
           );
-          state.path.pop();
           continue;
         } else if (item != null) {
-          state.referenceLoopCheck.set(item, state.path);
+          state.referenceLoopCheck.set(item, propPath);
         }
       }
       children.push(
@@ -2133,14 +2128,14 @@
             (0, import_mithril.default)(
               "pre",
               { style: "display:inline-block;margin-left:5px;" },
-              stringifyPath(state.path)
+              stringifyPath(propPath)
             ),
             (0, import_mithril.default)(
               "button",
               {
                 type: "button",
                 onclick: () => {
-                  const index = stringifyPath(state.path);
+                  const index = stringifyPath(propPath);
                   const v = state.pathState[index];
                   if (!v) {
                     state.pathState[index] = { toggle: true };
@@ -2152,24 +2147,42 @@
               "toggle"
             )
           ]),
-          (0, import_mithril.default)("td", renderUnknown(state, item, false))
+          (0, import_mithril.default)("td", renderUnknown(state, item, propPath))
         ])
       );
-      state.path.pop();
     }
     const thead = (0, import_mithril.default)("thead", [(0, import_mithril.default)("tr", [(0, import_mithril.default)("th", "Property"), (0, import_mithril.default)("th", "Value")])]);
     const table = (0, import_mithril.default)("table", [thead, (0, import_mithril.default)("tbody", children)]);
     return table;
   }
   function stringifyPath(path) {
-    return path.map((x) => x.toString()).join(".");
+    const re = /^[A-Za-z\$_][A-Za-z0-9\$_]*$/;
+    let result = "";
+    for (let i = 0; i < path.length; i++) {
+      const element = path[i];
+      if (typeof element === "string") {
+        if (re.test(element)) {
+          result += `${i === 0 ? "" : "."}${element}`;
+        } else {
+          result += `[${element}]`;
+        }
+      } else if (typeof element === "symbol") {
+        result += `[${element.toString()}]`;
+      } else if (typeof element === "number") {
+        result += `[${element.toString()}]`;
+      }
+    }
+    return result;
   }
 
   // main.ts
   document.addEventListener("DOMContentLoaded", () => {
     import_mithril2.default.mount(document.body, {
       view() {
-        const data = window.location;
+        const data = {
+          array: [1, 2, 3, /* @__PURE__ */ new Date()],
+          location: window.location
+        };
         const configuration = {
           maxLevel: 2
         };

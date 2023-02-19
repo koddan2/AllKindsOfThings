@@ -5,7 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
   m.mount(document.body, {
     view() {
       // const data = window;
-      const data = window.location;
+      const data = {
+        array: [1,2,3,new Date()],
+        location: window.location,
+      };
       const configuration: Configuration = {
         maxLevel: 2,
       };
