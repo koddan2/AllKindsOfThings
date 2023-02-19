@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function init() {
   const mountPoint = document.getElementById("root");
   if (mountPoint)
     tablify(mountPoint, getAllData(), {
+      level: 1,
       transforms: {
         boolean(ctx, element, value) {
           const el = ctx.ele("input", element) as HTMLInputElement;

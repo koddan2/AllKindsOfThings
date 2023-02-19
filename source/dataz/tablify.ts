@@ -8,6 +8,7 @@ interface Transforms {
   null?(context: Context, element: HTMLElement, value: null);
 }
 export interface TablifyConfiguration {
+  level?: number;
   transforms?: Transforms;
   strings: {
     tablify?: Record<string, string>;
@@ -68,8 +69,11 @@ function maybeTransform<T>(
   }
 }
 
-function renderThing(ctx: Context, element: HTMLElement, data: unknown): void {
-  ctx.level++;
+function renderThing(
+  ctx: Context,
+  element: HTMLElement,
+  data: unknown,
+): void {
   if (typeof data === "object") {
     if (data === null) {
       maybeTransform(ctx, element, data, "null", "keyword");
@@ -117,7 +121,7 @@ function renderKeyword(
 function renderArray(
   ctx: Context,
   element: HTMLElement,
-  data: unknown[]
+  data: unknown[],
 ): void {
   if (data.length < 1) {
     renderKeyword(ctx, element, null, "[]");
@@ -187,14 +191,13 @@ function renderAssoc(
     const valueContent = ctx.ele("div", valueCell);
     renderThing(ctx, valueContent, data[k]);
     const valuePlaceholder = ctx.ele("div", valueCell, null, "…");
-    valuePlaceholder.style.display = "none";
+
+    if (ctx.level <= (ctx.configuration.level || 999)) {
+      valuePlaceholder.style.display = "none";
+    } else {
+      valueContent.style.display = "none";
+    }
   }
-  // for (let sym of symbols) {
-  //   const tr = ctx.ele("tr", tbody);
-  //   ctx.ele("td", tr, null, ctx.strProp(sym.toString()));
-  //   const valueCell = ctx.ele("td", tr);
-  //   renderThing(ctx, valueCell, data[sym]);
-  // }
 }
 
 interface Context {

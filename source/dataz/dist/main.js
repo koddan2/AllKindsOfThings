@@ -38,7 +38,6 @@
     }
   }
   function renderThing(ctx, element, data) {
-    ctx.level++;
     if (typeof data === "object") {
       if (data === null) {
         maybeTransform(ctx, element, data, "null", "keyword");
@@ -132,7 +131,11 @@
       const valueContent = ctx.ele("div", valueCell);
       renderThing(ctx, valueContent, data[k]);
       const valuePlaceholder = ctx.ele("div", valueCell, null, "\u2026");
-      valuePlaceholder.style.display = "none";
+      if (ctx.level <= (ctx.configuration.level || 999)) {
+        valuePlaceholder.style.display = "none";
+      } else {
+        valueContent.style.display = "none";
+      }
     }
   }
   function makeContext(doc, configuration) {
@@ -183,6 +186,7 @@
     const mountPoint = document.getElementById("root");
     if (mountPoint)
       tablify(mountPoint, getAllData(), {
+        level: 1,
         transforms: {
           boolean(ctx, element, value) {
             const el = ctx.ele("input", element);
