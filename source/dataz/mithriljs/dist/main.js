@@ -2249,7 +2249,14 @@
       children.push(
         m_default("tr", { key: domKey }, [
           m_default("td", { id: stringifyPath(propPath) }, [
-            m_default("span", { title: stringifyPath(propPath) }, k.toString()),
+            m_default(
+              "span",
+              {
+                title: stringifyPath(propPath),
+                "data-original-property-name": k.toString()
+              },
+              interpolatePropertyName(state, k.toString())
+            ),
             !isComplex ? m_default("span") : toggleButtonElement(state, propPath),
             !state.configuration.showPaths ? m_default("span") : m_default("pre", stringifyPath(propPath))
           ]),
@@ -2354,12 +2361,18 @@
     }
     state.configuration.maxLevel = newMaxLevel;
   }
+  function interpolatePropertyName(state, propertyName) {
+    const a = state.configuration?.strings?.propertyNames || 0;
+    return a[propertyName] || propertyName;
+  }
 
   // ../example-data.ts
   function getAllData(thing) {
     return {
       data0: {
         thing,
+        "boolean-yes": true,
+        "boolean-no": false,
         aDate: /* @__PURE__ */ new Date(),
         bignum: 123409324093249n,
         getAllData,
@@ -2591,13 +2604,42 @@
     import_mithril2.default.mount(document.body, {
       view() {
         const configuration = {
-          maxLevel: 2,
-          transforms: {}
+          maxLevel: 3,
+          strings: {
+            propertyNames: {
+              data0: "Grundl\xE4ggande data",
+              created_at: "Skapad"
+            }
+          },
+          transforms: {
+            boolean(state, value) {
+              return (0, import_mithril2.default)("input[type=checkbox]", {
+                disabled: true,
+                checked: value
+              });
+            },
+            // number(state, value) {
+            //   const x = n => [value.toString(n), m('sub', n)]
+            //   return m("div", [
+            //     m("div", [value, m('sub', 10)]),
+            //     m("div", x(2)),
+            //     m("div", x(8)),
+            //     m("div", x(16)),
+            //     m("div", x(36)),
+            //   ]);
+            // },
+            string(state, value) {
+              return (0, import_mithril2.default)("pre", value);
+            }
+          }
           // showPaths: false,
           // hideControls: true,
         };
         const data = getAllData({
           test: TablifyComponent,
+          multiline: `TESTING MULTI
+"Here we go!"
+- What the hell?`,
           anotherTest: `"there are" double quotes ""in here""`
         });
         const attrs = {

@@ -4,6 +4,8 @@ export function getAllData(thing: unknown) {
   return {
     data0: {
       thing,
+      'boolean-yes': true,
+      'boolean-no': false,
       aDate: new Date(),
       bignum: 123409324093249n,
       getAllData,
