@@ -46,7 +46,12 @@ const defaultTransforms: Transforms = {
     return m("pre", { class: "value reference function" }, String(value));
   },
 };
+export interface Strings {
+  propertyNames?: Record<string, string>;
+  values?: Record<string, string>;
+}
 export interface Configuration {
+  strings?: Strings;
   maxLevel: number;
   transforms: Transforms;
   showPaths?: boolean;
@@ -256,7 +261,7 @@ function renderArray(
                 { style: "display:inline-block;" },
                 m(
                   "a",
-                  { href: "#" + strConflictingPath, class: 'reference-loop' },
+                  { href: "#" + strConflictingPath, class: "reference-loop" },
                   `@${strConflictingPath}`
                 )
               ),
@@ -281,7 +286,14 @@ function renderArray(
     children.push(
       m("tr", { key: domKey }, [
         m("td", { id: stringifyPath(propPath) }, [
-          m("span", { title: stringifyPath(propPath) }, k.toString()),
+          m(
+            "span",
+            {
+              title: stringifyPath(propPath),
+              "data-original-property-name": k.toString(),
+            },
+            interpolatePropertyName(state, k.toString())
+          ),
           !isComplex ? m("span") : toggleButtonElement(state, propPath),
           !state.configuration.showPaths
             ? m("span")
@@ -400,4 +412,12 @@ function expandAllOnce(state: State) {
     newMaxLevel = Math.max(newMaxLevel, t.length);
   }
   state.configuration.maxLevel = newMaxLevel;
+}
+
+function interpolatePropertyName(
+  state: State,
+  propertyName: string
+): m.Children {
+  const a = state.configuration?.strings?.propertyNames || 0;
+  return a[propertyName] || propertyName;
 }
