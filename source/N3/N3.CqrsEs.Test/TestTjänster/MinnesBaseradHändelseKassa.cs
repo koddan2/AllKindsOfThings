@@ -27,6 +27,7 @@ namespace N3.CqrsEs.Test.TestTjänster
         > InkassoÄrendeFickÄrendeNummerMottagare { get; }
 
         public async Task<IEnumerable<IHändelse>> Hämta<T>(AggregatStrömIdentifierare<T> ström)
+            where T : IAggregatBas
         {
             await ValueTask.CompletedTask;
             var hittad = _inMemoryDb.TryGetValue(ström.Identifierare, out var händelser);
@@ -39,6 +40,7 @@ namespace N3.CqrsEs.Test.TestTjänster
         }
 
         public async Task Registrera<T>(AggregatStrömIdentifierare<T> ström, IHändelse händelse)
+            where T : IAggregatBas
         {
             await ValueTask.CompletedTask;
             var hittad = _inMemoryDb.TryGetValue(ström.Identifierare, out var händelser);

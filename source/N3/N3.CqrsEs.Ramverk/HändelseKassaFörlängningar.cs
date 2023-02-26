@@ -9,6 +9,7 @@
         }
 
         public static string ByggStrömIdentifierare<T>(this AggregatStrömIdentifierare<T> data)
+            where T : IAggregatBas
         {
             return $"{typeof(T).Name}-{data.Identifierare}";
         }

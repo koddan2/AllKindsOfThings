@@ -1,4 +1,5 @@
 ﻿namespace N3.CqrsEs.Ramverk
 {
-    public readonly record struct AggregatStrömIdentifierare<T>(UnikIdentifierare Identifierare);
+    public readonly record struct AggregatStrömIdentifierare<T>(UnikIdentifierare Identifierare)
+        where T : IAggregatBas;
 }
