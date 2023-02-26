@@ -7,6 +7,6 @@
 
     public interface IHändelseKassa : IHändelseRegistrator
     {
-        IEnumerable<IHändelse> Hämta<T>(AggregatStrömIdentifierare<T> ström);
+        Task<IEnumerable<IHändelse>> Hämta<T>(AggregatStrömIdentifierare<T> ström);
     }
 }

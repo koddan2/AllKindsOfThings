@@ -29,6 +29,10 @@ namespace N3.CqrsEs.Façade
                 .AddScoped<
                     IKommandoHanterare<SkapaInkassoÄrendeKommando>,
                     InkassoÄrendeKommandoHanterare
+                >()
+                .AddScoped<
+                    IKommandoHanterare<TilldelaÄrendeNummerTillInkassoÄrendeKommando>,
+                    InkassoÄrendeKommandoHanterare
                 >();
         }
 
@@ -39,6 +43,10 @@ namespace N3.CqrsEs.Façade
         {
             return services
                 .Configure<N3LäsModellKonfiguration>(configuration)
+                .AddScoped<
+                    IHändelseMottagare<InkassoÄrendeBlevTilldelatÄrendeNummer>,
+                    InkassoÄrendeLäsDatabasKontext
+                >()
                 .AddScoped<
                     IHändelseMottagare<InkassoÄrendeSkapades>,
                     InkassoÄrendeLäsDatabasKontext

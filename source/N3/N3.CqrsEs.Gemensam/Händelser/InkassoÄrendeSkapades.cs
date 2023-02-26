@@ -9,15 +9,13 @@ namespace N3.CqrsEs.Gemensam.Händelser
             UnikIdentifierare aggregatIdentifierare,
             UnikIdentifierare klientReferens,
             UnikIdentifierare[] gäldenärsReferenser,
-            Faktura[] fakturor,
-            long ärendeNummer
+            Faktura[] fakturor
         )
         {
             AggregatIdentifierare = aggregatIdentifierare;
             KlientReferens = klientReferens;
             GäldenärsReferenser = gäldenärsReferenser;
             Fakturor = fakturor;
-            ÄrendeNummer = ärendeNummer;
         }
 
         public UnikIdentifierare KorrelationsIdentifierare { get; init; }
@@ -30,6 +28,5 @@ namespace N3.CqrsEs.Gemensam.Händelser
         public UnikIdentifierare KlientReferens { get; }
         public UnikIdentifierare[] GäldenärsReferenser { get; }
         public Faktura[] Fakturor { get; }
-        public long ÄrendeNummer { get; }
     }
 }

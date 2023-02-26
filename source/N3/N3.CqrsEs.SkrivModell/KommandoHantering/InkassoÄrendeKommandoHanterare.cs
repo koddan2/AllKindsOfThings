@@ -4,61 +4,58 @@ using N3.CqrsEs.SkrivModell.Kommando;
 
 namespace N3.CqrsEs.SkrivModell.KommandoHantering
 {
-    public class InkassoÄrendeKommandoHanterare : IKommandoHanterare<SkapaInkassoÄrendeKommando>
+    public class InkassoÄrendeKommandoHanterare
+        : IKommandoHanterare<SkapaInkassoÄrendeKommando>,
+            IKommandoHanterare<TilldelaÄrendeNummerTillInkassoÄrendeKommando>
     {
-        private readonly IÄrendeNummerUträknare _ärendeNummerUträknare;
         private readonly IHändelseKassa _händelseKassa;
 
-        public InkassoÄrendeKommandoHanterare(
-            IHändelseKassa händelseKassa,
-            IÄrendeNummerUträknare ärendeNummerUträknare
-        )
+        public InkassoÄrendeKommandoHanterare(IHändelseKassa händelseKassa)
         {
-            _ärendeNummerUträknare = ärendeNummerUträknare;
             _händelseKassa = händelseKassa;
         }
 
-        public async Task Hantera(SkapaInkassoÄrendeKommando meddelande)
+        public async Task Hantera(SkapaInkassoÄrendeKommando kommando)
         {
-            ////try
-            ////{
-            ////    var existerar = await _session.Get<InkassoÄrende?>(message.Identifierare);
-            ////    if (existerar is not null)
-            ////    {
-            ////        // ...
-            ////        throw new AggregatExisterarRedanException("Kan inte skapa ett ärende med en unik identifierare som redan finns.") { Id = message.Identifierare };
-            ////    }
-            ////}
-            ////catch (Exception)
-            ////{
-            ////    // OK
-            ////}
-
-            var events = _händelseKassa.Hämta(
-                new AggregatStrömIdentifierare<InkassoÄrende>(meddelande.Identifierare)
+            var händelser = await _händelseKassa.Hämta(
+                new AggregatStrömIdentifierare<InkassoÄrende>(kommando.AggregatIdentifierare)
             );
-            if (events.Any())
+            if (händelser.Any())
             {
                 throw new AggregatExisterarRedanException(
                     "Kan inte skapa ett ärende med en unik identifierare som redan finns."
                 )
                 {
-                    Id = meddelande.Identifierare
+                    Aggregat = typeof(InkassoÄrende).Name,
+                    AggregatIdentifierare = kommando.AggregatIdentifierare,
                 };
             }
 
-            var ärendeNr = await _ärendeNummerUträknare.TaFramNästaLedigaÄrendeNummer();
-            var ärende = new InkassoÄrende(meddelande.Identifierare);
+            var ärende = new InkassoÄrende(kommando.AggregatIdentifierare);
             await ärende.SkapaÄrende(
                 _händelseKassa,
-                meddelande.KlientReferens,
-                gäldenärsReferenser: meddelande.GäldenärsReferenser,
-                fakturor: meddelande.Fakturor,
-                ärendeNummer: ärendeNr
+                kommando.KlientReferens,
+                gäldenärsReferenser: kommando.GäldenärsReferenser,
+                fakturor: kommando.Fakturor
             );
+        }
 
-            ////_session.Add(ärende);
-            ////_session.Commit();
+        public async Task Hantera(TilldelaÄrendeNummerTillInkassoÄrendeKommando kommando)
+        {
+            var händelser = await _händelseKassa.Hämta(
+                new AggregatStrömIdentifierare<InkassoÄrende>(kommando.AggregatIdentifierare)
+            );
+            if (!händelser.Any())
+            {
+                throw new AggregatHarInteSkapatsException()
+                {
+                    Aggregat = typeof(InkassoÄrende).Name,
+                    AggregatIdentifierare = kommando.AggregatIdentifierare
+                };
+            }
+            var ärende = new InkassoÄrende(kommando.AggregatIdentifierare);
+            ärende.Ladda(händelser);
+            await ärende.TilldelaÄrendeNummer(_händelseKassa, kommando.ÄrendeNummer);
         }
     }
 }

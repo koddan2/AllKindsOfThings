@@ -80,7 +80,7 @@ namespace N3.CqrsEs.Test
             );
             await kommandoSkickare.Hantera(kommando);
             var fråga = new HämtaSpecifiktInkassoÄrende(
-                kommando.Identifierare,
+                kommando.AggregatIdentifierare,
                 UnikIdentifierare.Skapa()
             );
             var ärende = await frågeHanterare.Hantera(fråga);
@@ -110,14 +110,19 @@ namespace N3.CqrsEs.Test
                 await kommandoSkickare.Hantera(kommando);
             });
 
-            Assert.That(ex.Id, Is.EqualTo(kommando.Identifierare));
+            Assert.That(ex.AggregatIdentifierare, Is.EqualTo(kommando.AggregatIdentifierare));
         }
 
         [Test]
         public async Task SkapaÄrendeFlera1()
         {
             ////await ValueTask.CompletedTask;
-            var kommandoSkickare = _scope.Plocka<IKommandoHanterare<SkapaInkassoÄrendeKommando>>();
+            var kommandoSkickareSkapa = _scope.Plocka<
+                IKommandoHanterare<SkapaInkassoÄrendeKommando>
+            >();
+            var kommandoSkickareTilldelaÄrendeNummer = _scope.Plocka<
+                IKommandoHanterare<TilldelaÄrendeNummerTillInkassoÄrendeKommando>
+            >();
             var frågeHanterare = _scope.Plocka<
                 IFrågeHanterare<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>
             >();
@@ -125,26 +130,29 @@ namespace N3.CqrsEs.Test
             var räknare = 0;
             foreach (var item in Enumerable.Range(1, 10))
             {
-                var kommando = new SkapaInkassoÄrendeKommando(
-                    Guid.NewGuid(),
-                    Guid.NewGuid(),
-                    Array.Empty<UnikIdentifierare>(),
-                    Array.Empty<Faktura>()
-                );
-                await kommandoSkickare.Hantera(kommando);
-                räknare++;
-                var ex = Assert.ThrowsAsync<AggregatExisterarRedanException>(async () =>
+                UnikIdentifierare aggId;
                 {
-                    await kommandoSkickare.Hantera(kommando);
-                });
+                    var kommando = new SkapaInkassoÄrendeKommando(
+                        Guid.NewGuid(),
+                        Guid.NewGuid(),
+                        Array.Empty<UnikIdentifierare>(),
+                        Array.Empty<Faktura>()
+                    );
+                    await kommandoSkickareSkapa.Hantera(kommando);
+                    aggId = kommando.AggregatIdentifierare;
+                }
+                räknare++;
+                {
+                    var kommando = new TilldelaÄrendeNummerTillInkassoÄrendeKommando(
+                        aggId,
+                        räknare
+                    );
+                    await kommandoSkickareTilldelaÄrendeNummer.Hantera(kommando);
+                }
 
-                Assert.That(ex.Id, Is.EqualTo(kommando.Identifierare));
-                var fråga = new HämtaSpecifiktInkassoÄrende(
-                    kommando.Identifierare,
-                    UnikIdentifierare.Skapa()
-                );
+                var fråga = new HämtaSpecifiktInkassoÄrende(aggId, UnikIdentifierare.Skapa());
                 var ärende = await frågeHanterare.Hantera(fråga);
-                //Assert.That(ärende.)
+                Assert.That(ärende.ÄrendeNummer, Is.EqualTo(räknare));
             }
 
             var db = _scope.ServiceProvider.GetRequiredService<TestVyLagringDatabas>();

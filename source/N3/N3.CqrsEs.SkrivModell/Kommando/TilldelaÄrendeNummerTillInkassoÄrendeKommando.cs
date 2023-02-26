@@ -1,23 +1,18 @@
 ﻿using N3.CqrsEs.Ramverk;
-using N3.Modell;
 using SmartAnalyzers.CSharpExtensions.Annotations;
 
 namespace N3.CqrsEs.SkrivModell.Kommando
 {
     [InitRequired]
-    public class SkapaInkassoÄrendeKommando : IKommando
+    public class TilldelaÄrendeNummerTillInkassoÄrendeKommando : IKommando
     {
-        public SkapaInkassoÄrendeKommando(
+        public TilldelaÄrendeNummerTillInkassoÄrendeKommando(
             UnikIdentifierare aggregatIdentifierare,
-            UnikIdentifierare klientReferens,
-            UnikIdentifierare[] gäldenärsReferenser,
-            Faktura[] fakturor
+            int ärendeNummer
         )
         {
             AggregatIdentifierare = aggregatIdentifierare;
-            KlientReferens = klientReferens;
-            GäldenärsReferenser = gäldenärsReferenser;
-            Fakturor = fakturor;
+            ÄrendeNummer = ärendeNummer;
         }
 
         public UnikIdentifierare KorrelationsIdentifierare { get; init; }
@@ -27,8 +22,6 @@ namespace N3.CqrsEs.SkrivModell.Kommando
         public long FörväntadRevision { get; init; }
 
         public UnikIdentifierare AggregatIdentifierare { get; }
-        public UnikIdentifierare KlientReferens { get; }
-        public UnikIdentifierare[] GäldenärsReferenser { get; }
-        public Faktura[] Fakturor { get; }
+        public int ÄrendeNummer { get; }
     }
 }

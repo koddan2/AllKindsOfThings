@@ -31,5 +31,7 @@
             new(Base62.EncodingExtensions.ToBase62(g.ToByteArray()));
 
         public static UnikIdentifierare Skapa() => Guid.NewGuid();
+
+        public readonly static UnikIdentifierare Ingen = Guid.Empty;
     }
 }

@@ -12,7 +12,9 @@ namespace N3.CqrsEs.LäsModell.HändelseHantering
         Task TaEmot(THändelse händelse, CancellationToken cancellationToken = default);
     }
 
-    public class InkassoÄrendeLäsDatabasKontext : IHändelseMottagare<InkassoÄrendeSkapades>
+    public class InkassoÄrendeLäsDatabasKontext
+        : IHändelseMottagare<InkassoÄrendeSkapades>,
+            IHändelseMottagare<InkassoÄrendeBlevTilldelatÄrendeNummer>
     {
         private readonly IVyLagring _vyLagring;
 
@@ -43,6 +45,20 @@ namespace N3.CqrsEs.LäsModell.HändelseHantering
             };
 
             await _vyLagring.LäggTillÄrende(ärende, cancellationToken);
+        }
+
+        public async Task TaEmot(
+            InkassoÄrendeBlevTilldelatÄrendeNummer händelse,
+            CancellationToken cancellationToken = default
+        )
+        {
+            var spec = await _vyLagring.HämtaSpecifiktÄrende(
+                new HämtaSpecifiktInkassoÄrende(
+                    händelse.AggregatIdentifierare,
+                    UnikIdentifierare.Skapa()
+                )
+            );
+            spec.ÄrendeNummer = händelse.ÄrendeNummer;
         }
     }
 }

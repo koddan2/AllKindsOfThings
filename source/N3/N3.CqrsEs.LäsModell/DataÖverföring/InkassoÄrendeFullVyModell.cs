@@ -7,8 +7,10 @@ namespace N3.CqrsEs.LäsModell.DataÖverföring
     public class InkassoÄrendeFullVyModell
     {
         public UnikIdentifierare ÄrendeIdentifierare { get; init; }
-        public UnikIdentifierare KlientReferens { get; init; }
-        public UnikIdentifierare[] GäldenärsReferenser { get; init; }
-        public Faktura[] Fakturor { get; init; }
+        public UnikIdentifierare KlientReferens { get; set; }
+        public UnikIdentifierare[] GäldenärsReferenser { get; set; }
+        public Faktura[] Fakturor { get; set; }
+
+        public int? ÄrendeNummer { get; set; }
     }
 }
