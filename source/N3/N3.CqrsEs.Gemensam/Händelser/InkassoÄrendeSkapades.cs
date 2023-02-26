@@ -3,17 +3,17 @@ using N3.Modell;
 
 namespace N3.CqrsEs.Gemensam.Händelser
 {
-    public sealed class InkassoÄrendeSkapades : IHändelse
+    public sealed class InkassoÄrendeSkapades : IAggregatHändelse
     {
         public InkassoÄrendeSkapades(
-            UnikIdentifierare identifierare,
+            UnikIdentifierare aggregatIdentifierare,
             UnikIdentifierare klientReferens,
             UnikIdentifierare[] gäldenärsReferenser,
             Faktura[] fakturor,
             long ärendeNummer
         )
         {
-            Id = identifierare;
+            AggregatIdentifierare = aggregatIdentifierare;
             KlientReferens = klientReferens;
             GäldenärsReferenser = gäldenärsReferenser;
             Fakturor = fakturor;
@@ -21,13 +21,11 @@ namespace N3.CqrsEs.Gemensam.Händelser
         }
 
         public UnikIdentifierare KorrelationsIdentifierare { get; init; }
-        public IEnumerable<string>? Historia { get; set; }
+        public IEnumerable<string> Historia { get; } = new List<string>();
 
-        public string AggregatNamn => "InkassoÄrende";
-
-        public UnikIdentifierare Id { get; }
-        public int Version { get; }
-        public DateTimeOffset TimeStamp { get; }
+        public UnikIdentifierare AggregatIdentifierare { get; }
+        public long Revision { get; }
+        public DateTimeOffset Tidsstämpel { get; }
 
         public UnikIdentifierare KlientReferens { get; }
         public UnikIdentifierare[] GäldenärsReferenser { get; }

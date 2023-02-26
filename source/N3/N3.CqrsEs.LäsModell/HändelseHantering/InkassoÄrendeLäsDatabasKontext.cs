@@ -39,7 +39,7 @@ namespace N3.CqrsEs.LäsModell.HändelseHantering
                 Fakturor = händelse.Fakturor,
                 GäldenärsReferenser = händelse.GäldenärsReferenser,
                 KlientReferens = händelse.KlientReferens,
-                ÄrendeIdentifierare = händelse.Id,
+                ÄrendeIdentifierare = händelse.AggregatIdentifierare,
             };
 
             await _vyLagring.LäggTillÄrende(ärende, cancellationToken);

@@ -8,6 +8,6 @@ namespace N3.CqrsEs.LäsModell.Frågor
         UnikIdentifierare KorrelationsIdentifierare
     ) : IMeddelande
     {
-        public IEnumerable<string>? Historia { get; set; } = new List<string>();
+        public IEnumerable<string> Historia { get; } = new List<string>();
     }
 }

@@ -110,7 +110,7 @@ namespace N3.CqrsEs.Test
                 await kommandoSkickare.Hantera(kommando);
             });
 
-            Assert.That((UnikIdentifierare)ex.Id, Is.EqualTo(kommando.Identifierare));
+            Assert.That(ex.Id, Is.EqualTo(kommando.Identifierare));
         }
 
         [Test]
@@ -138,12 +138,13 @@ namespace N3.CqrsEs.Test
                     await kommandoSkickare.Hantera(kommando);
                 });
 
-                Assert.That((UnikIdentifierare)ex.Id, Is.EqualTo(kommando.Identifierare));
+                Assert.That(ex.Id, Is.EqualTo(kommando.Identifierare));
                 var fråga = new HämtaSpecifiktInkassoÄrende(
                     kommando.Identifierare,
                     UnikIdentifierare.Skapa()
                 );
                 var ärende = await frågeHanterare.Hantera(fråga);
+                //Assert.That(ärende.)
             }
 
             var db = _scope.ServiceProvider.GetRequiredService<TestVyLagringDatabas>();

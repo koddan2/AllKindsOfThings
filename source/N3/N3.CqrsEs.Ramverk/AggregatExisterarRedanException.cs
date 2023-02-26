@@ -17,6 +17,6 @@
         )
             : base(info, context) { }
 
-        public Guid Id { get; init; }
+        public UnikIdentifierare Id { get; init; }
     }
 }
