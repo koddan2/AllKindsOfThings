@@ -26,7 +26,7 @@ namespace N3.CqrsEs.Façade
         {
             return services
                 .Configure<N3SkrivModellKonfiguration>(configuration)
-                .AddTransient<
+                .AddScoped<
                     IKommandoHanterare<SkapaInkassoÄrendeKommando>,
                     InkassoÄrendeKommandoHanterare
                 >();
@@ -39,7 +39,7 @@ namespace N3.CqrsEs.Façade
         {
             return services
                 .Configure<N3LäsModellKonfiguration>(configuration)
-                .AddTransient<
+                .AddScoped<
                     IHändelseMottagare<InkassoÄrendeSkapades>,
                     InkassoÄrendeLäsDatabasKontext
                 >();

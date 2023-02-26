@@ -22,7 +22,7 @@ namespace N3.CqrsEs.Test.TestTjänster
         public IEnumerable<IHändelse> Hämta<T>(AggregatStrömIdentifierare<T> ström)
         {
             var hittad = _inMemoryDb.TryGetValue(ström.Identifierare, out var händelser);
-            if (hittad)
+            if (hittad && händelser is not null)
             {
                 return händelser;
             }
