@@ -1,7 +1,4 @@
-﻿
-namespace N3.CqrsEs.Ramverk
+﻿namespace N3.CqrsEs.Ramverk
 {
-    public interface IHändelse : IMeddelande
-    {
-    }
+    public interface IHändelse : IMeddelande { }
 }

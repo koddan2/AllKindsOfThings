@@ -1,6 +1,4 @@
 ﻿namespace N3.CqrsEs
 {
-    public sealed class CqrsEsAssemblyMarker
-    {
-    }
+    public sealed class CqrsEsAssemblyMarker { }
 }

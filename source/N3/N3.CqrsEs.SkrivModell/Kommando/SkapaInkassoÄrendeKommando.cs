@@ -9,7 +9,8 @@ namespace N3.CqrsEs.SkrivModell.Kommando
             UnikIdentifierare identifierare,
             UnikIdentifierare klientReferens,
             UnikIdentifierare[] gäldenärsReferenser,
-            Faktura[] fakturor)
+            Faktura[] fakturor
+        )
         {
             Identifierare = identifierare;
             KlientReferens = klientReferens;

@@ -4,7 +4,8 @@ using N3.CqrsEs.LäsModell.Infrastruktur;
 
 namespace N3.CqrsEs.Test.TestTjänster
 {
-    public class TestFrågeHanterare : IFrågeHanterare<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>
+    public class TestFrågeHanterare
+        : IFrågeHanterare<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>
     {
         private readonly IVyLagring _vyLagring;
 
@@ -13,9 +14,12 @@ namespace N3.CqrsEs.Test.TestTjänster
             _vyLagring = vyLagring;
         }
 
-        public async Task<InkassoÄrendeFullVyModell> Hantera(HämtaSpecifiktInkassoÄrende query)
+        public async Task<InkassoÄrendeFullVyModell> Hantera(
+            HämtaSpecifiktInkassoÄrende fråga,
+            CancellationToken cancellationToken
+        )
         {
-            return await _vyLagring.HämtaSpecifiktÄrende(query);
+            return await _vyLagring.HämtaSpecifiktÄrende(fråga, cancellationToken);
         }
     }
 }

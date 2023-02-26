@@ -7,16 +7,14 @@ namespace N3.CqrsEs.Test
     {
         public static IHostBuilder RegisterCqrsServices(this IHostBuilder host, params Type[] types)
         {
-            return host
-               .ConfigureServices((ctx, services) =>
-               {
-                   _ = services
-                       ;
+            return host.ConfigureServices(
+                (ctx, services) =>
+                {
+                    _ = services;
 
-                   foreach (var type in types)
-                   {
-                   }
-               });
+                    foreach (var type in types) { }
+                }
+            );
         }
 
         public static T Plocka<T>(this IServiceScope scope)

@@ -4,6 +4,6 @@
     {
         UnikIdentifierare KorrelationsIdentifierare { get; }
 
-        IEnumerable<string>? Kedja { get; set; }
+        IEnumerable<string>? Historia { get; set; }
     }
 }

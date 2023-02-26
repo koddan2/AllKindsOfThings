@@ -1,8 +1,10 @@
-﻿namespace N3.CqrsEs.LäsModell.Frågor
+﻿using N3.CqrsEs.Ramverk;
+
+namespace N3.CqrsEs.LäsModell.Frågor
 {
-    public interface IFrågeHanterare<TQuery, TResult>
+    public interface IFrågeHanterare<TFråga, TResultat>
+        where TFråga : IMeddelande
     {
-        ////Task<InkassoÄrendeFullVyModell> Hantera(HämtaSpecifiktInkassoÄrende fråga);
-        Task<TResult> Hantera(TQuery query);
+        Task<TResultat> Hantera(TFråga fråga, CancellationToken cancellationToken = default);
     }
 }

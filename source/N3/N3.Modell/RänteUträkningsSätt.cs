@@ -1,7 +1,7 @@
 ﻿namespace N3.Modell
 {
-	public enum RänteUträkningsSätt
-	{
-		DagligUträkningPåÅrsbasis = 1,
-	}
+    public enum RänteUträkningsSätt
+    {
+        DagligUträkningPåÅrsbasis = 1,
+    }
 }

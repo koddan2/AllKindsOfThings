@@ -10,9 +10,7 @@ namespace N3.CqrsEs.Test.TestTjänster
         public readonly Dictionary<string, InkassoÄrendeFullVyModell> Ärenden = new();
     }
 
-    internal class TestVyLagring :
-        IVyLagring,
-        IÄrendeNummerUträknare
+    internal class TestVyLagring : IVyLagring, IÄrendeNummerUträknare
     {
         private readonly TestVyLagringDatabas _databas;
 
@@ -21,22 +19,25 @@ namespace N3.CqrsEs.Test.TestTjänster
             _databas = databas;
         }
 
-        public async Task<InkassoÄrendeFullVyModell> Handle(HämtaSpecifiktInkassoÄrende message, CancellationToken token = default)
-        {
-            await ValueTask.CompletedTask;
-            return _databas.Ärenden[message.ÄrendeIdentifierare];
-        }
-
-        public async Task<InkassoÄrendeFullVyModell> HämtaSpecifiktÄrende(HämtaSpecifiktInkassoÄrende parametrar, CancellationToken token = default)
+        public async Task<InkassoÄrendeFullVyModell> HämtaSpecifiktÄrende(
+            HämtaSpecifiktInkassoÄrende parametrar,
+            CancellationToken token = default
+        )
         {
             await Task.CompletedTask;
             return _databas.Ärenden[parametrar.ÄrendeIdentifierare];
         }
 
-        public async Task LäggTillÄrende(InkassoÄrendeFullVyModell inkassoÄrendeFullVyModell, CancellationToken token = default)
+        public async Task LäggTillÄrende(
+            InkassoÄrendeFullVyModell inkassoÄrendeFullVyModell,
+            CancellationToken token = default
+        )
         {
             await Task.CompletedTask;
-            _databas.Ärenden.Add(inkassoÄrendeFullVyModell.ÄrendeIdentifierare, inkassoÄrendeFullVyModell);
+            _databas.Ärenden.Add(
+                inkassoÄrendeFullVyModell.ÄrendeIdentifierare,
+                inkassoÄrendeFullVyModell
+            );
         }
 
         public async Task<long> TaFramNästaLedigaÄrendeNummer()
@@ -44,6 +45,5 @@ namespace N3.CqrsEs.Test.TestTjänster
             await Task.CompletedTask;
             return _databas.Ärenden.Values.Count + 1;
         }
-
     }
 }

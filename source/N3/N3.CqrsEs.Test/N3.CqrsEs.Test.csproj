@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\N3.CqrsEs.Façade\N3.CqrsEs.Façade.csproj" />
         <ProjectReference Include="..\N3.CqrsEs.Gemensam\N3.CqrsEs.Gemensam.csproj" />
         <ProjectReference Include="..\N3.CqrsEs.LäsModell\N3.CqrsEs.LäsModell.csproj" />
         <ProjectReference Include="..\N3.CqrsEs.Ramverk\N3.CqrsEs.Ramverk.csproj" />

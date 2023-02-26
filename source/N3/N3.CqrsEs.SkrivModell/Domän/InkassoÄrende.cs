@@ -8,8 +8,7 @@ namespace N3.CqrsEs.SkrivModell.Domän
     {
         private InkassoÄrende() { }
 
-        public InkassoÄrende(
-            UnikIdentifierare identifierare)
+        public InkassoÄrende(UnikIdentifierare identifierare)
         {
             Identifierare = identifierare;
         }
@@ -17,14 +16,21 @@ namespace N3.CqrsEs.SkrivModell.Domän
         public UnikIdentifierare Identifierare { get; }
 
         public async Task SkapaÄrende(
-            IHändelseKassa händelseKassa,
+            IHändelseRegistrator händelseRegistrator,
             UnikIdentifierare klientReferens,
             UnikIdentifierare[] gäldenärsReferenser,
             Faktura[] fakturor,
-            long ärendeNummer)
+            long ärendeNummer
+        )
         {
-            var händelse = new InkassoÄrendeSkapades(Identifierare, klientReferens, gäldenärsReferenser, fakturor, ärendeNummer);
-            await händelseKassa.Registrera(this.TillStrömIdentifierare(), händelse);
+            var händelse = new InkassoÄrendeSkapades(
+                Identifierare,
+                klientReferens,
+                gäldenärsReferenser,
+                fakturor,
+                ärendeNummer
+            );
+            await händelseRegistrator.Registrera(this.TillStrömIdentifierare(), händelse);
         }
     }
 }

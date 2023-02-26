@@ -10,7 +10,8 @@ namespace N3.CqrsEs.Gemensam.Händelser
             UnikIdentifierare klientReferens,
             UnikIdentifierare[] gäldenärsReferenser,
             Faktura[] fakturor,
-            long ärendeNummer)
+            long ärendeNummer
+        )
         {
             Id = identifierare;
             KlientReferens = klientReferens;
@@ -20,7 +21,7 @@ namespace N3.CqrsEs.Gemensam.Händelser
         }
 
         public UnikIdentifierare KorrelationsIdentifierare { get; init; }
-        public IEnumerable<string>? Kedja { get; set; }
+        public IEnumerable<string>? Historia { get; set; }
 
         public string AggregatNamn => "InkassoÄrende";
 
@@ -32,6 +33,5 @@ namespace N3.CqrsEs.Gemensam.Händelser
         public UnikIdentifierare[] GäldenärsReferenser { get; }
         public Faktura[] Fakturor { get; }
         public long ÄrendeNummer { get; }
-
     }
 }

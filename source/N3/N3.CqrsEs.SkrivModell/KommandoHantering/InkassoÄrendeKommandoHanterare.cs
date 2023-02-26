@@ -12,13 +12,13 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
         public InkassoÄrendeKommandoHanterare(
             IHändelseKassa händelseKassa,
             IÄrendeNummerUträknare ärendeNummerUträknare
-            )
+        )
         {
             _ärendeNummerUträknare = ärendeNummerUträknare;
             _händelseKassa = händelseKassa;
         }
 
-        public async Task Handle(SkapaInkassoÄrendeKommando message)
+        public async Task Hantera(SkapaInkassoÄrendeKommando meddelande)
         {
             ////try
             ////{
@@ -34,28 +34,31 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
             ////    // OK
             ////}
 
-            var events = _händelseKassa.Hämta(message.Identifierare);
+            var events = _händelseKassa.Hämta(
+                new AggregatStrömIdentifierare<InkassoÄrende>(meddelande.Identifierare)
+            );
             if (events.Any())
             {
-                throw new AggregatExisterarRedanException("Kan inte skapa ett ärende med en unik identifierare som redan finns.") { Id = message.Identifierare };
+                throw new AggregatExisterarRedanException(
+                    "Kan inte skapa ett ärende med en unik identifierare som redan finns."
+                )
+                {
+                    Id = meddelande.Identifierare
+                };
             }
 
             var ärendeNr = await _ärendeNummerUträknare.TaFramNästaLedigaÄrendeNummer();
-            var ärende = new InkassoÄrende(message.Identifierare);
+            var ärende = new InkassoÄrende(meddelande.Identifierare);
             await ärende.SkapaÄrende(
                 _händelseKassa,
-                message.KlientReferens,
-                gäldenärsReferenser: message.GäldenärsReferenser,
-                fakturor: message.Fakturor,
-                ärendeNummer: ärendeNr);
+                meddelande.KlientReferens,
+                gäldenärsReferenser: meddelande.GäldenärsReferenser,
+                fakturor: meddelande.Fakturor,
+                ärendeNummer: ärendeNr
+            );
 
             ////_session.Add(ärende);
             ////_session.Commit();
-        }
-
-        public Task Hantera(SkapaInkassoÄrendeKommando kommando)
-        {
-            throw new NotImplementedException();
         }
     }
 }

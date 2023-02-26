@@ -8,6 +8,7 @@ using N3.Modell;
 using N3.CqrsEs.LäsModell.DataÖverföring;
 using N3.CqrsEs.SkrivModell.KommandoHantering;
 using N3.CqrsEs.Ramverk;
+using N3.CqrsEs.Façade;
 
 namespace N3.CqrsEs.Test
 {
@@ -21,20 +22,27 @@ namespace N3.CqrsEs.Test
         public void Setup()
         {
             _host = new HostBuilder()
-               .ConfigureServices((ctx, services) =>
-               {
-                   _ = services
-
-                       .AddScoped<TestVyLagringDatabas>()
-
-                       .AddScoped<IVyLagring, TestVyLagring>()
-                       .AddScoped<IÄrendeNummerUträknare, TestVyLagring>()
-
-                       .AddScoped<IFrågeHanterare<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>, TestFrågeHanterare>()
-                       .AddScoped<InkassoÄrendeKommandoHanterare>()
-                       ;
-               })
-               .Build();
+                .ConfigureServices(
+                    (ctx, services) =>
+                    {
+                        _ = services
+                            .LäggTillLäsModell(ctx.Configuration)
+                            .LäggTillSkrivModell(ctx.Configuration)
+                            .AddScoped<TestVyLagringDatabas>()
+                            .AddScoped<IVyLagring, TestVyLagring>()
+                            .AddScoped<IÄrendeNummerUträknare, TestVyLagring>()
+                            .AddScoped<IHändelseKassa, MinnesBaseradHändelseKassa>()
+                            .AddScoped<
+                                IFrågeHanterare<
+                                    HämtaSpecifiktInkassoÄrende,
+                                    InkassoÄrendeFullVyModell
+                                >,
+                                TestFrågeHanterare
+                            >()
+                            .AddScoped<InkassoÄrendeKommandoHanterare>();
+                    }
+                )
+                .Build();
 
             _scope = _host.Services.CreateAsyncScope();
         }
@@ -50,7 +58,9 @@ namespace N3.CqrsEs.Test
         public async Task SkapaÄrende1(int _)
         {
             var kommandoSkickare = _scope.Plocka<IKommandoHanterare<SkapaInkassoÄrendeKommando>>();
-            var frågeHanterare = _scope.Plocka<IFrågeHanterare<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>>();
+            var frågeHanterare = _scope.Plocka<
+                IFrågeHanterare<HämtaSpecifiktInkassoÄrende, InkassoÄrendeFullVyModell>
+            >();
 
             var faktura = new Faktura(
                 FakturaNummer: "4155",
@@ -62,20 +72,21 @@ namespace N3.CqrsEs.Test
                 RänteSats: new Procent(8),
                 RänteUträkningsSätt: RänteUträkningsSätt.DagligUträkningPåÅrsbasis,
                 RänteSatsTyp: RänteSatsTyp.ÖverGällandeReferensRänta,
-                Kostnader: new[]
-                {
-                    SkuldElement.PåminnelseKostnad,
-                },
-                RänteStoppsDatum: null);
+                Kostnader: new[] { SkuldElement.PåminnelseKostnad, },
+                RänteStoppsDatum: null
+            );
 
             var kommando = new SkapaInkassoÄrendeKommando(
                 Guid.NewGuid(),
                 Guid.NewGuid(),
                 new[] { (UnikIdentifierare)Guid.NewGuid() },
-                new[] { faktura });
+                new[] { faktura }
+            );
             await kommandoSkickare.Hantera(kommando);
 
-            var ärende = await frågeHanterare.Hantera(new HämtaSpecifiktInkassoÄrende(kommando.Identifierare));
+            var ärende = await frågeHanterare.Hantera(
+                new HämtaSpecifiktInkassoÄrende(kommando.Identifierare, UnikIdentifierare.Skapa())
+            );
             Assert.That(ärende, Is.Not.Null);
             Assert.That(ärende.Fakturor, Has.Length.EqualTo(1));
             Assert.That(ärende.Fakturor[0].FakturaNummer, Is.EqualTo(faktura.FakturaNummer));
