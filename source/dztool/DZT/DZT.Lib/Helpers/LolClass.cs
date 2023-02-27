@@ -12,5 +12,6 @@ internal class LolClass
         var erp = Augment.Ref(new AiLoadoutRoot());
         var dic = erp.AsDictionary();
         dic["Whatever"] = _max;
+        dic["EUID"] = Euid.New();
     }
 }
