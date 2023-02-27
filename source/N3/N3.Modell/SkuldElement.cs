@@ -3,7 +3,8 @@
     public readonly record struct SkuldElement(
         string Namn,
         BeloppsTyp Typ,
-        IPengar? StandardBelopp = null
+        IPengar? StandardBelopp = null,
+        IPengar? KvarvarandeBelopp = null
     )
     {
         public static readonly SkuldElement Kapital = new("Kapital", BeloppsTyp.HuvudsakligSkuld);

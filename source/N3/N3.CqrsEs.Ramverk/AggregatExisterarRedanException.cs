@@ -3,7 +3,6 @@
 namespace N3.CqrsEs.Ramverk
 {
     [Serializable]
-    [InitRequired]
     public class AggregatExisterarRedanException : Exception
     {
         public AggregatExisterarRedanException() { }
@@ -20,12 +19,11 @@ namespace N3.CqrsEs.Ramverk
         )
             : base(info, context) { }
 
-        public string Aggregat { get; init; }
-        public UnikIdentifierare AggregatIdentifierare { get; init; }
+        public string? Aggregat { get; init; }
+        public UnikIdentifierare? AggregatIdentifierare { get; init; }
     }
 
     [Serializable]
-    [InitRequired]
     public class AggregatHarInteSkapatsException : Exception
     {
         public AggregatHarInteSkapatsException() { }
@@ -42,7 +40,7 @@ namespace N3.CqrsEs.Ramverk
         )
             : base(info, context) { }
 
-        public string Aggregat { get; init; }
+        public string? Aggregat { get; init; }
         public UnikIdentifierare? AggregatIdentifierare { get; init; }
     }
 }

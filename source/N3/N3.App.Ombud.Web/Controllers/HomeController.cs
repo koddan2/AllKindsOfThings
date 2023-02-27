@@ -11,6 +11,7 @@ namespace N3.App.Ombud.Web.Controllers
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _logger.LogTrace("Home");
         }
 
         public IActionResult Index()

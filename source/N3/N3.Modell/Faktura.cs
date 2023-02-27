@@ -10,7 +10,7 @@
         Procent RänteSats,
         RänteUträkningsSätt RänteUträkningsSätt,
         RänteSatsTyp RänteSatsTyp,
-        SkuldElement[] Kostnader,
-        DateOnly? RänteStoppsDatum = null
+        DateOnly? RänteStoppsDatum = null,
+        IPengar? KvarvarandePåminnelseKostnad = null
     );
 }

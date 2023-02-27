@@ -67,8 +67,8 @@ namespace N3.CqrsEs.Test
                 RänteSats: new Procent(8),
                 RänteUträkningsSätt: RänteUträkningsSätt.DagligUträkningPåÅrsbasis,
                 RänteSatsTyp: RänteSatsTyp.ÖverGällandeReferensRänta,
-                Kostnader: new[] { SkuldElement.PåminnelseKostnad, },
-                RänteStoppsDatum: null
+                RänteStoppsDatum: null,
+                KvarvarandePåminnelseKostnad: new SvenskaKronor(60)
             );
 
             var kommando = new SkapaInkassoÄrendeKommando(

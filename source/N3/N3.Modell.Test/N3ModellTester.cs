@@ -145,6 +145,19 @@ namespace N3.Modell.Test
             });
         }
 
+        [Test]
+        public void TestaUnikIdentifierare3()
+        {
+            var ingen = "0000000000000000";
+            Assert.Multiple(() =>
+            {
+                Assert.That(UnikIdentifierare.Ingen, Is.EqualTo((UnikIdentifierare)ingen));
+                Assert.That((string)UnikIdentifierare.Ingen, Is.EqualTo(ingen));
+                Assert.That((Guid)UnikIdentifierare.Ingen, Is.EqualTo(Guid.Empty));
+                TestaSerialiseringTurOchRetur(UnikIdentifierare.Ingen);
+            });
+        }
+
         static void TestaSerialiseringTurOchRetur<T>(T ingåendeVärde)
         {
             var json = JsonSerializer.Serialize(ingåendeVärde);

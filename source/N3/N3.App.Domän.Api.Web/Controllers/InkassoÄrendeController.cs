@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using N3.CqrsEs.Ramverk;
+using N3.CqrsEs.SkrivModell.Anhopning;
 using N3.CqrsEs.SkrivModell.Kommando;
+using N3.Modell;
 
 namespace N3.App.Domän.Api.Web.Controllers
 {
@@ -10,28 +12,32 @@ namespace N3.App.Domän.Api.Web.Controllers
     {
         private readonly ILogger<InkassoÄrendeController> _logger;
 
+        public IAktivitetsBuss AktivitetsBuss { get; }
+
         public InkassoÄrendeController(
             ILogger<InkassoÄrendeController> logger,
-            IKommandoHanterare<SkapaInkassoÄrendeKommando> skapaInkassoÄrendeKommandoHanterare
+            IAktivitetsBuss aktivitetsBuss
         )
         {
             _logger = logger;
-            SkapaInkassoÄrendeKommandoHanterare = skapaInkassoÄrendeKommandoHanterare;
+            AktivitetsBuss = aktivitetsBuss;
         }
 
-        public IKommandoHanterare<SkapaInkassoÄrendeKommando> SkapaInkassoÄrendeKommandoHanterare { get; }
+        public record ImporteraInkassoÄrendeModell(
+            UnikIdentifierare AktivitetsIdentifierare,
+            ÄrendeImportModell ÄrendeImportModell
+        ) : IAktivitet;
 
         [HttpPost]
-        [Route("SkapaInassoÄrende")]
-        public async Task<IActionResult> SkapaInassoÄrende(
-            [FromBody] SkapaInkassoÄrendeKommando skapaInkassoÄrendeKommando
+        [Route("SkapaInkassoÄrende")]
+        public async Task<IActionResult> ImporteraInkassoÄrende(
+            [FromBody] ImporteraInkassoÄrendeModell modell
         )
         {
-            using var logScope = _logger.BeginScope(skapaInkassoÄrendeKommando);
-            _logger.LogTrace("Hanterar kommando {kommando}", skapaInkassoÄrendeKommando);
-            await SkapaInkassoÄrendeKommandoHanterare.Hantera(skapaInkassoÄrendeKommando);
-            _logger.LogTrace("Kommando {kommando} hanterat utan fel", skapaInkassoÄrendeKommando);
-            return Ok(new object());
+            using var logScope = _logger.BeginScope(modell.AktivitetsIdentifierare);
+            _logger.LogTrace("Lägger aktivitet för processering på aktivitetsbussen");
+            await AktivitetsBuss.Registrera(modell);
+            return Ok(modell.AktivitetsIdentifierare);
         }
     }
 }

@@ -52,12 +52,11 @@ namespace N3.CqrsEs.LäsModell.HändelseHantering
             CancellationToken cancellationToken = default
         )
         {
-            var spec = await _vyLagring.HämtaSpecifiktÄrende(
-                new HämtaSpecifiktInkassoÄrende(
-                    händelse.AggregatIdentifierare,
-                    UnikIdentifierare.Skapa()
-                )
+            var parametrar = new HämtaSpecifiktInkassoÄrende(
+                händelse.AggregatIdentifierare,
+                UnikIdentifierare.Skapa()
             );
+            var spec = await _vyLagring.HämtaSpecifiktÄrende(parametrar, cancellationToken);
             spec.ÄrendeNummer = händelse.ÄrendeNummer;
         }
     }
