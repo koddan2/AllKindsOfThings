@@ -30,8 +30,8 @@ public class UpdateAiPatrols
             /// lagom
             minimal: 0.001,
             small: 0.02,
-            medium: 0.17,
-            large: 0.25
+            medium: 0.25,
+            large: 0.50
         );
 
     double Chance(CategoryValue category, double modifier = 0d)
