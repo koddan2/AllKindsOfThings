@@ -23,7 +23,11 @@ public class FixSearchForLoot
         _profileDirectoryName = profileDirectoryName;
         var typesXmlRelativePath = Path.Combine("mpmissions", _mpMissionName, "db", "types.xml");
         _typesXmlFilePath = Path.Combine(rootDir, typesXmlRelativePath);
-        _sflJsonRelativePath = Path.Combine(_profileDirectoryName, "SearchForLoot", "SearchForLoot.json");
+        _sflJsonRelativePath = Path.Combine(
+            _profileDirectoryName,
+            "SearchForLoot",
+            "SearchForLoot.json"
+        );
         _sflJsonFilePath = Path.Combine(rootDir, _sflJsonRelativePath);
     }
 
@@ -44,13 +48,7 @@ public class FixSearchForLoot
             { "Medical", new HashSet<string>() },
             { "Military", new HashSet<string>() },
         };
-        var forbiddenSubstrings = new[]
-        {
-            "CHEML",
-            "BEAR",
-            "PEN",
-            "PILEOF",
-        };
+        var forbiddenSubstrings = new[] { "CHEML", "BEAR", "PEN", "PILEOF", };
         foreach (var type in types)
         {
             if (type.Category == "clothes")
@@ -93,9 +91,17 @@ public class FixSearchForLoot
         }
 
         var structureClassNames = DataHelper.GetStructureClassNames();
-        cfg.SFLBuildings.First(b => b.name == "Civilian").buildings = structureClassNames["**Residential**"].Where(x => x != "GardenPlot").ToArray();
-        cfg.SFLBuildings.First(b => b.name == "Industrial").buildings = structureClassNames["**Industrial**"].ToArray();
-        cfg.SFLBuildings.First(b => b.name == "Military").buildings = (structureClassNames["**Specific**"].Concat(structureClassNames["**Military**"])).ToArray();
+        cfg.SFLBuildings.First(b => b.name == "Civilian").buildings = structureClassNames[
+            "**Residential**"
+        ]
+            .Where(x => x != "GardenPlot")
+            .ToArray();
+        cfg.SFLBuildings.First(b => b.name == "Industrial").buildings = structureClassNames[
+            "**Industrial**"
+        ].ToArray();
+        cfg.SFLBuildings.First(b => b.name == "Military").buildings = (
+            structureClassNames["**Specific**"].Concat(structureClassNames["**Military**"])
+        ).ToArray();
 
         var forbiddenClassNamesSubstrings = new[]
         {
@@ -123,9 +129,7 @@ public class FixSearchForLoot
             if (usageDict.TryGetValue(category.name, out var value) && value is not null)
             {
                 var list = value;
-                category.loot = list
-                    .Where(className => !IsForbidden(className))
-                    .ToArray();
+                category.loot = list.Where(className => !IsForbidden(className)).ToArray();
                 category.rarity = 0;
             }
         }
@@ -135,7 +139,9 @@ public class FixSearchForLoot
         cfg.DisableNotifications = 1;
         cfg.XPGain = 10;
 
-        File.WriteAllText(_sflJsonFilePath, JsonSerializer.Serialize(cfg, new JsonSerializerOptions { WriteIndented = true, }));
+        File.WriteAllText(
+            _sflJsonFilePath,
+            JsonSerializer.Serialize(cfg, new JsonSerializerOptions { WriteIndented = true, })
+        );
     }
 }
-

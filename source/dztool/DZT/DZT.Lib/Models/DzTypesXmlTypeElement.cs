@@ -22,7 +22,8 @@ namespace DZT.Lib.Models;
 */
 public record DzTypesXmlTypeElement(XElement Element)
 {
-    public static string XmlTemplate(string name) => $@"
+    public static string XmlTemplate(string name) =>
+        $@"
     <type name=""{name}"">
         <nominal>1</nominal>
         <lifetime>14400</lifetime>
@@ -34,7 +35,9 @@ public record DzTypesXmlTypeElement(XElement Element)
         <flags count_in_map=""1"" count_in_hoarder=""0"" count_in_cargo=""0"" ount_in_player=""0"" crafted=""0"" deloot=""0"" />
     </type>
     ";
+
     public static DzTypesXmlTypeElement FromElement(XElement element) => new(element);
+
     public static IEnumerable<DzTypesXmlTypeElement> FromDocument(XDocument doc)
     {
         var types = doc.Root!.Nodes();
@@ -56,15 +59,15 @@ public record DzTypesXmlTypeElement(XElement Element)
             return _nodes;
         }
     }
+
     private XElement? GetNode(string name, Func<XElement, bool>? pred = null) =>
         pred is null
-        ? Nodes.FirstOrDefault(x => x.Name == name)
-        : Nodes.Where(pred).FirstOrDefault(x => x.Name == name)
-        ;
+            ? Nodes.FirstOrDefault(x => x.Name == name)
+            : Nodes.Where(pred).FirstOrDefault(x => x.Name == name);
 
     private void SetNodeValue(string name, object value)
     {
-        if (GetNode(name) is null) 
+        if (GetNode(name) is null)
         {
             Element.Add(new XElement(name));
             _nodes = null;
@@ -73,7 +76,9 @@ public record DzTypesXmlTypeElement(XElement Element)
         node.SetValue(value);
     }
 
-    public string Name => Element.Attribute("name")?.Value ?? throw new ApplicationException("Invalid <type>: missing attribute(name)");
+    public string Name =>
+        Element.Attribute("name")?.Value
+        ?? throw new ApplicationException("Invalid <type>: missing attribute(name)");
     public string NameUpper => Name.ToUpperInvariant();
     public int Nominal
     {
@@ -112,8 +117,11 @@ public record DzTypesXmlTypeElement(XElement Element)
     }
     public IDictionary<string, string>? Flags
     {
-        get => Nodes.FirstOrDefault(x => x.Name == "flags")?.Attributes()
-            .ToDictionary(x => x.Name.ToString(), x => x.Value);
+        get =>
+            Nodes
+                .FirstOrDefault(x => x.Name == "flags")
+                ?.Attributes()
+                .ToDictionary(x => x.Name.ToString(), x => x.Value);
         set
         {
             Nodes.FirstOrDefault(x => x.Name == "flags")?.Remove();
@@ -146,16 +154,15 @@ public record DzTypesXmlTypeElement(XElement Element)
     }
     public string[] Usages
     {
-        get => Nodes
-            .Where(x => x.Name == "usage")
-            .Select(x => x.Attribute("name")?.Value)
-            .OfType<string>()
-            .ToArray();
-        set
-        {
+        get =>
             Nodes
                 .Where(x => x.Name == "usage")
-                .Remove();
+                .Select(x => x.Attribute("name")?.Value)
+                .OfType<string>()
+                .ToArray();
+        set
+        {
+            Nodes.Where(x => x.Name == "usage").Remove();
             _nodes = null;
             foreach (var usageName in value)
             {
@@ -166,16 +173,15 @@ public record DzTypesXmlTypeElement(XElement Element)
     }
     public string[] Values
     {
-        get => Nodes
-            .Where(x => x.Name == "value")
-            .Select(x => x.Attribute("name")?.Value)
-            .OfType<string>()
-            .ToArray();
-        set
-        {
+        get =>
             Nodes
                 .Where(x => x.Name == "value")
-                .Remove();
+                .Select(x => x.Attribute("name")?.Value)
+                .OfType<string>()
+                .ToArray();
+        set
+        {
+            Nodes.Where(x => x.Name == "value").Remove();
             _nodes = null;
             foreach (var valueName in value)
             {
@@ -187,16 +193,15 @@ public record DzTypesXmlTypeElement(XElement Element)
     }
     public string[] Tags
     {
-        get => Nodes
-            .Where(x => x.Name == "tag")
-            .Select(x => x.Attribute("name")?.Value)
-            .OfType<string>()
-            .ToArray();
-        set
-        {
+        get =>
             Nodes
                 .Where(x => x.Name == "tag")
-                .Remove();
+                .Select(x => x.Attribute("name")?.Value)
+                .OfType<string>()
+                .ToArray();
+        set
+        {
+            Nodes.Where(x => x.Name == "tag").Remove();
             _nodes = null;
             foreach (var tagName in value)
             {

@@ -1,5 +1,5 @@
-
 namespace DZT.Lib.Helpers;
+
 internal class StreamHelper
 {
     public static Stream GenerateStreamFromString(string s)

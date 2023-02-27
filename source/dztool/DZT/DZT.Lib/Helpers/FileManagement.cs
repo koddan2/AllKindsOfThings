@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using System.Security.Cryptography;
 
 namespace DZT.Lib.Helpers;
+
 public static class FileManagement
 {
     private readonly static Random _Rng = new();
@@ -17,14 +18,24 @@ public static class FileManagement
 
     internal static string GetWorkspaceFilePath(string rootDir, string relativePath)
     {
-        var result = Path.Combine(rootDir, GeneralInvariants.ApplicationSubDirectoryName, "workspace", relativePath);
+        var result = Path.Combine(
+            rootDir,
+            GeneralInvariants.ApplicationSubDirectoryName,
+            "workspace",
+            relativePath
+        );
         return result;
     }
 
     public record RestoreFileV2Result(string BackupFilePath, bool FileOperationCommitted);
+
     internal static RestoreFileV2Result TryRestoreFileV2(string rootDir, string relativePath)
     {
-        var backupRootDir = Path.Combine(rootDir, GeneralInvariants.ApplicationSubDirectoryName, _BackupSubDirectoryName);
+        var backupRootDir = Path.Combine(
+            rootDir,
+            GeneralInvariants.ApplicationSubDirectoryName,
+            _BackupSubDirectoryName
+        );
         var pathToBackupFile = Path.Combine(backupRootDir, relativePath);
 
         var destFile = Path.Combine(rootDir, relativePath);
@@ -41,9 +52,14 @@ public static class FileManagement
     }
 
     public record BackupFileV2Result(string BackupFilePath, bool FileOperationCommitted);
+
     public static BackupFileV2Result BackupFileV2(string rootDir, string relativePath)
     {
-        var backupRootDir = Path.Combine(rootDir, GeneralInvariants.ApplicationSubDirectoryName, "BACKUP");
+        var backupRootDir = Path.Combine(
+            rootDir,
+            GeneralInvariants.ApplicationSubDirectoryName,
+            "BACKUP"
+        );
         var pathToBackupFile = Path.Combine(backupRootDir, relativePath);
         var pathToBackupFileDir = Path.GetDirectoryName(pathToBackupFile);
         var srcFile = Path.Combine(rootDir, relativePath);
@@ -88,7 +104,11 @@ public static class FileManagement
         xd.Save(tempfs);
     }
 
-    public static void BackupFile(string path, bool overwrite = false, bool appendRandomString = false)
+    public static void BackupFile(
+        string path,
+        bool overwrite = false,
+        bool appendRandomString = false
+    )
     {
         var dirName = Path.GetDirectoryName(path);
 
@@ -99,24 +119,29 @@ public static class FileManagement
 
         var fileNameNoExt = Path.GetFileNameWithoutExtension(path);
         var extWithPeriod = Path.GetExtension(path);
-        var backupPath = appendRandomString ?
-            Path.Combine(dirName, $"{fileNameNoExt}-BAK{_Rng.Next(1000, 9999)}{extWithPeriod}")
-            :
-            Path.Combine(dirName, $"{fileNameNoExt}-BAK{extWithPeriod}");
+        var backupPath = appendRandomString
+            ? Path.Combine(dirName, $"{fileNameNoExt}-BAK{_Rng.Next(1000, 9999)}{extWithPeriod}")
+            : Path.Combine(dirName, $"{fileNameNoExt}-BAK{extWithPeriod}");
         File.Copy(path, backupPath, overwrite);
     }
 
     private static void BackupBackupFile(string filePath)
     {
-        var dirName = Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException($"Could not get directory name of {filePath}");
+        var dirName =
+            Path.GetDirectoryName(filePath)
+            ?? throw new InvalidOperationException($"Could not get directory name of {filePath}");
         var fileNameNoExt = Path.GetFileNameWithoutExtension(filePath);
         var extension = Path.GetExtension(filePath);
 
-        var backupBackupFile = Path.Combine(dirName, $"{fileNameNoExt}-{DateTimeOffset.Now:yyyyddMM-HHmmss}{extension}");
+        var backupBackupFile = Path.Combine(
+            dirName,
+            $"{fileNameNoExt}-{DateTimeOffset.Now:yyyyddMM-HHmmss}{extension}"
+        );
         File.Copy(filePath, backupBackupFile, true);
     }
 
     public record CompareContentsResult(bool Same, string Hash1, string Hash2);
+
     private static CompareContentsResult CompareContents(string file1, string file2)
     {
         using var fileStream1 = File.OpenRead(file1);

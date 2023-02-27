@@ -4,8 +4,7 @@ public static class EnumerableExtensions
 {
     public static IEnumerable<T> SideEffect<T>(this IEnumerable<T> source, Action<T> sideEffect)
     {
-        foreach (var item in source
-        )
+        foreach (var item in source)
         {
             sideEffect.Invoke(item);
             yield return item;

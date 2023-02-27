@@ -11,11 +11,19 @@ class FixSearchForLootCommand
 
         cmd.Add(optionRootDir);
 
-        Option<string> mpMissionName = new("--mp-mission-name", description: "The name of the MP mission") { IsRequired = true };
+        Option<string> mpMissionName =
+            new("--mp-mission-name", description: "The name of the MP mission")
+            {
+                IsRequired = true
+            };
         mpMissionName.AddAlias("-m");
         cmd.Add(mpMissionName);
 
-        Option<string> profileDirName = new("--profile-directory-name", description: "The name of the $profile directory") { IsRequired = true };
+        Option<string> profileDirName =
+            new("--profile-directory-name", description: "The name of the $profile directory")
+            {
+                IsRequired = true
+            };
         profileDirName.AddAlias("-p");
         cmd.Add(profileDirName);
 
@@ -27,6 +35,7 @@ class FixSearchForLootCommand
             },
             optionRootDir,
             mpMissionName,
-            profileDirName);
+            profileDirName
+        );
     }
 }

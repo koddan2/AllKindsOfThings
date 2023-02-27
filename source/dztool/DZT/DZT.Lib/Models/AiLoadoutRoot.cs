@@ -37,7 +37,8 @@ public class InventoryCargoModel
     public List<Health> Health { get; set; } = new List<Health>();
 
     [JsonPropertyName("InventoryAttachments")]
-    public List<InventoryAttachment> InventoryAttachments { get; set; } = new List<InventoryAttachment>();
+    public List<InventoryAttachment> InventoryAttachments { get; set; } =
+        new List<InventoryAttachment>();
 
     [JsonPropertyName("InventoryCargo")]
     public List<InventoryCargoModel> InventoryCargo { get; set; } = new List<InventoryCargoModel>();
@@ -64,7 +65,8 @@ public class Item
     public List<Health> Health { get; set; } = new List<Health>();
 
     [JsonPropertyName("InventoryAttachments")]
-    public List<InventoryAttachment> InventoryAttachments { get; set; } = new List<InventoryAttachment>();
+    public List<InventoryAttachment> InventoryAttachments { get; set; } =
+        new List<InventoryAttachment>();
 
     [JsonPropertyName("InventoryCargo")]
     public List<InventoryCargoModel> InventoryCargo { get; set; } = new List<InventoryCargoModel>();
@@ -100,7 +102,8 @@ public class AiLoadoutRoot
     public List<Health> Health { get; set; } = new List<Health>();
 
     [JsonPropertyName("InventoryAttachments")]
-    public List<InventoryAttachment> InventoryAttachments { get; set; } = new List<InventoryAttachment>();
+    public List<InventoryAttachment> InventoryAttachments { get; set; } =
+        new List<InventoryAttachment>();
 
     [JsonPropertyName("InventoryCargo")]
     public List<InventoryCargoModel> InventoryCargo { get; set; } = new List<InventoryCargoModel>();

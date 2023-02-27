@@ -1,4 +1,5 @@
 namespace DZT.Lib;
+
 public class CleanUpProfile
 {
     private readonly string _rootDir;
@@ -20,7 +21,11 @@ public class CleanUpProfile
 
     private void CleanUpAllLogs()
     {
-        var allLogFiles = Directory.GetFiles(_profileDirectory, "*.log", SearchOption.AllDirectories);
+        var allLogFiles = Directory.GetFiles(
+            _profileDirectory,
+            "*.log",
+            SearchOption.AllDirectories
+        );
         foreach (var fileName in allLogFiles)
         {
             if (Path.GetExtension(fileName).ToLower() is ".log")

@@ -8,10 +8,10 @@ public static class DayzConstants
         public const string CfgSpawnableTypes = "cfgspawnabletypes.xml";
         public const string CfgEconomyCore = "cfgeconomycore.xml";
     }
+
     public static class SubdirectoryNames
     {
         public const string Db = "db";
         public const string MpMissions = "mpmissions";
     }
 }
-

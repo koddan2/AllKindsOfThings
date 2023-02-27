@@ -13,16 +13,14 @@ internal class Application
         try
         {
             RootCommand rootCommand = new(description: "Operates on DayZ xml files.");
-            Option<string> globalOptionDayZServerRootDir = new(
-                aliases: new[]
+            Option<string> globalOptionDayZServerRootDir =
+                new(
+                    aliases: new[] { "-r", "--dayz-server-root-dir", },
+                    "The root directory of the DayZServer instance"
+                )
                 {
-                    "-r",
-                    "--dayz-server-root-dir",
-                },
-                "The root directory of the DayZServer instance")
-            {
-                IsRequired = true,
-            };
+                    IsRequired = true,
+                };
             rootCommand.Add(globalOptionDayZServerRootDir);
             ManipulateTerritoryCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);
             UpdateAiPatrolsCommand.AddToCommand(rootCommand, globalOptionDayZServerRootDir);

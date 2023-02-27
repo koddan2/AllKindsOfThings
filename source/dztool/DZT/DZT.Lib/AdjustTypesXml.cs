@@ -14,7 +14,12 @@ public class AdjustTypesXml
     private readonly string _rootDir;
     private readonly string _mpMissionName;
 
-    public AdjustTypesXml(ILogger logger, AdjustTypesXmlConfiguration configuration, string rootDir, string mpMissionName)
+    public AdjustTypesXml(
+        ILogger logger,
+        AdjustTypesXmlConfiguration configuration,
+        string rootDir,
+        string mpMissionName
+    )
     {
         _logger = logger;
         _configuration = configuration;
@@ -23,7 +28,9 @@ public class AdjustTypesXml
     }
 
     public string GeneratedTypesXmlFileName { get; set; } = "generated_types.xml";
-    public bool IsGeneratedTypesXmlFile(string filePath) => Path.GetFileName(filePath) == GeneratedTypesXmlFileName;
+
+    public bool IsGeneratedTypesXmlFile(string filePath) =>
+        Path.GetFileName(filePath) == GeneratedTypesXmlFileName;
 
     public void Process()
     {
@@ -55,7 +62,8 @@ public class AdjustTypesXml
 
         XDocument xd = XDocument.Load(inputFilePath);
 
-        var extraFromQuad = new[] {
+        var extraFromQuad = new[]
+        {
             // "tacticalbelt_quad_black",
             // "tacticalbelt_quad_green",
             // "tacticalbelt_quad_tan",
@@ -121,12 +129,14 @@ public class AdjustTypesXml
         xd.Save(fs);
     }
 
-
     private void ProcessInsertionsByConfiguration(XDocument xd, string pathToFile)
     {
         foreach (var rule in _configuration.Rules)
         {
-            if (rule.Action is AdjustTypesXmlConfigurationRuleAction.Insert && IsGeneratedTypesXmlFile(pathToFile))
+            if (
+                rule.Action is AdjustTypesXmlConfigurationRuleAction.Insert
+                && IsGeneratedTypesXmlFile(pathToFile)
+            )
             {
                 foreach (var nameStr in rule.Names)
                 {
@@ -146,12 +156,17 @@ public class AdjustTypesXml
             {
                 continue;
             }
-            else if (/**/rule.Action is AdjustTypesXmlConfigurationRuleAction.Update
-                      || rule.Action is AdjustTypesXmlConfigurationRuleAction.Remove)
+            else if ( /**/
+                rule.Action is AdjustTypesXmlConfigurationRuleAction.Update
+                || rule.Action is AdjustTypesXmlConfigurationRuleAction.Remove
+            )
             {
                 if (rule.Matches(type, pathToFile))
                 {
-                    if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Remove && type.Element.Parent is null)
+                    if (
+                        rule.Action == AdjustTypesXmlConfigurationRuleAction.Remove
+                        && type.Element.Parent is null
+                    )
                     {
                         continue;
                     }
@@ -167,7 +182,10 @@ public class AdjustTypesXml
         var keepLifetime = type.Category == "containers";
         if (!keepLifetime)
         {
-            type.Lifetime = Math.Max((int)TimeSpan.FromMinutes(15).TotalSeconds, (int)type.Lifetime / 10);
+            type.Lifetime = Math.Max(
+                (int)TimeSpan.FromMinutes(15).TotalSeconds,
+                (int)type.Lifetime / 10
+            );
         }
         type.Restock = 0;
     }
@@ -182,6 +200,7 @@ public class AdjustTypesXmlConfigurationRuleFlags
     public string Crafted { get; set; } = "0";
     public string Deloot { get; set; } = "0";
 }
+
 public enum AdjustTypesXmlConfigurationRuleAction
 {
     Remove = 1,
@@ -190,9 +209,11 @@ public enum AdjustTypesXmlConfigurationRuleAction
 
     Update = 3,
 }
+
 public class AdjustTypesXmlConfigurationRule
 {
-    public AdjustTypesXmlConfigurationRuleAction? Action { get; set; } = AdjustTypesXmlConfigurationRuleAction.Update;
+    public AdjustTypesXmlConfigurationRuleAction? Action { get; set; } =
+        AdjustTypesXmlConfigurationRuleAction.Update;
     public uint? Nominal { get; set; }
     public uint? NominalModifyDiv { get; set; }
     public uint? Min { get; set; }
@@ -216,7 +237,6 @@ public class AdjustTypesXmlConfigurationRule
     public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
     public List<string> NotNameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
 
-
     public override string ToString()
     {
         // return $"SW:{StartsWith}|EQ:({string.Join(":", NameEqualsCaseInsensitive)})|CON:{string.Join(":", NameContainsSubstringCaseInsensitive)}";
@@ -227,7 +247,8 @@ public class AdjustTypesXmlConfigurationRule
 public class AdjustTypesXmlConfiguration
 {
     public string Title { get; set; } = "";
-    public List<AdjustTypesXmlConfigurationRule> Rules { get; set; } = new List<AdjustTypesXmlConfigurationRule>();
+    public List<AdjustTypesXmlConfigurationRule> Rules { get; set; } =
+        new List<AdjustTypesXmlConfigurationRule>();
 }
 
 public static class AdjustTypesXmlConfigurationExtensions
@@ -290,7 +311,11 @@ public static class AdjustTypesXmlConfigurationExtensions
         }
     }
 
-    public static bool Matches(this AdjustTypesXmlConfigurationRule rule, DzTypesXmlTypeElement type, string pathToFile)
+    public static bool Matches(
+        this AdjustTypesXmlConfigurationRule rule,
+        DzTypesXmlTypeElement type,
+        string pathToFile
+    )
     {
         ////if (rule.NameEqualsCaseInsensitive.Count > 0)
         ////{
@@ -312,7 +337,9 @@ public static class AdjustTypesXmlConfigurationExtensions
 
         if (rule.NameEqualsCaseInsensitive.Count > 0)
         {
-            var equals = rule.NameEqualsCaseInsensitive.Any(x => x.ToUpperInvariant() == type.NameUpper);
+            var equals = rule.NameEqualsCaseInsensitive.Any(
+                x => x.ToUpperInvariant() == type.NameUpper
+            );
             if (!equals)
             {
                 match = false;
@@ -338,20 +365,24 @@ public static class AdjustTypesXmlConfigurationExtensions
 
         if (rule.NotNameContainsSubstringCaseInsensitive.Count > 0)
         {
-            match = match && rule.NotNameContainsSubstringCaseInsensitive.All(substr =>
-            {
-                var nameUpper = type.Name.ToUpperInvariant();
-                return !nameUpper.Contains(substr.ToUpperInvariant());
-            });
+            match =
+                match
+                && rule.NotNameContainsSubstringCaseInsensitive.All(substr =>
+                {
+                    var nameUpper = type.Name.ToUpperInvariant();
+                    return !nameUpper.Contains(substr.ToUpperInvariant());
+                });
         }
 
         if (rule.NameContainsSubstringCaseInsensitive.Count > 0)
         {
-            match = match && rule.NameContainsSubstringCaseInsensitive.Any(substr =>
-            {
-                var nameUpper = type.Name.ToUpperInvariant();
-                return nameUpper.Contains(substr.ToUpperInvariant());
-            });
+            match =
+                match
+                && rule.NameContainsSubstringCaseInsensitive.Any(substr =>
+                {
+                    var nameUpper = type.Name.ToUpperInvariant();
+                    return nameUpper.Contains(substr.ToUpperInvariant());
+                });
         }
 
         return match;

@@ -11,7 +11,11 @@ class CleanUpProfileCommand
 
         cmd.Add(optionRootDir);
 
-        Option<string> profileDirName = new("--profile-directory-name", description: "The name of the $profile directory") { IsRequired = true };
+        Option<string> profileDirName =
+            new("--profile-directory-name", description: "The name of the $profile directory")
+            {
+                IsRequired = true
+            };
         profileDirName.AddAlias("-p");
         cmd.Add(profileDirName);
 
@@ -22,6 +26,7 @@ class CleanUpProfileCommand
                 impl.Process();
             },
             optionRootDir,
-            profileDirName);
+            profileDirName
+        );
     }
 }

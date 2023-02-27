@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml.Linq;
 
 namespace DZT.Lib;
+
 public class ManipulateTerritory
 {
     private readonly ILogger<ManipulateTerritory> _logger;
@@ -22,7 +23,8 @@ public class ManipulateTerritory
         string entityName,
         float? multiplyByFactor,
         uint? setMin,
-        uint? setMax)
+        uint? setMax
+    )
     {
         _logger = logger;
         _rootDir = rootDir;
@@ -35,7 +37,12 @@ public class ManipulateTerritory
 
     public void RestoreBackup()
     {
-        var territoryFilePathRelative = Path.Combine("mpmissions", _mpMissionName, "env", $"{_entityName}_territories.xml");
+        var territoryFilePathRelative = Path.Combine(
+            "mpmissions",
+            _mpMissionName,
+            "env",
+            $"{_entityName}_territories.xml"
+        );
         _logger.LogInformation("Restoring backup: {}", territoryFilePathRelative);
         try
         {
@@ -49,7 +56,12 @@ public class ManipulateTerritory
 
     public void Process()
     {
-        var territoryFilePathRelative = Path.Combine("mpmissions", _mpMissionName, "env", $"{_entityName}_territories.xml");
+        var territoryFilePathRelative = Path.Combine(
+            "mpmissions",
+            _mpMissionName,
+            "env",
+            $"{_entityName}_territories.xml"
+        );
         var territoryFilePath = Path.Combine(_rootDir, territoryFilePathRelative);
         var backupResult = FileManagement.BackupFileV2(_rootDir, territoryFilePathRelative);
         if (backupResult.FileOperationCommitted)
@@ -103,7 +115,9 @@ public class ManipulateTerritory
                 var val = attr.Value;
                 if (int.TryParse(val, out int intval))
                 {
-                    attr.Value = ((int)Math.Ceiling(intval * factor)).ToString(CultureInfo.InvariantCulture);
+                    attr.Value = ((int)Math.Ceiling(intval * factor)).ToString(
+                        CultureInfo.InvariantCulture
+                    );
                 }
             }
         }

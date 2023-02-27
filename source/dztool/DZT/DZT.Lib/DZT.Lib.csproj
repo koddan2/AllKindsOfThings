@@ -12,8 +12,8 @@
     <PackageReference Include="Optional.Collections" Version="1.1.0" />
     <PackageReference Include="Optional.Utilities" Version="1.1.0" />
     <PackageReference Include="Samboy063.Tomlet" Version="5.0.0" />
-    <PackageReference Include="urdep.extensions.augmentation" Version="0.1.0" />
-    <PackageReference Include="urdep.extensions.data" Version="0.1.0" />
+    <PackageReference Include="urdep.extensions.augmentation" Version="0.2.0" />
+    <PackageReference Include="urdep.extensions.data" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup>

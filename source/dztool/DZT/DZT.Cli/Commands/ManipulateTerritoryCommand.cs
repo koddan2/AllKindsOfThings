@@ -19,43 +19,51 @@ internal class ManipulateTerritoryCommand
             name: "--mp-mission",
             description: "The name of the mpmission, e.g. 'dayzOffline.chernarusplus'",
             isRequired: true,
-            aliases: new[] { "-m" });
+            aliases: new[] { "-m" }
+        );
 
         var entityName = cmd.AddOption<string>(
             name: "--entity",
             description: "The name of the entity to manipulate, e.g. 'zombie' or 'wolf'",
             isRequired: true,
-            aliases: new[] { "-e" });
+            aliases: new[] { "-e" }
+        );
 
         var multiplyByFactor = cmd.AddOption<float?>(
             name: "--multiply-by",
             description: "The factor to multiply 'dmin' and 'dmax' by",
-            isRequired: false);
+            isRequired: false
+        );
 
         var setMinValue = cmd.AddOption<uint?>(
             name: "--set-dmin",
             description: "The value to set in 'dmin'. Must be 0 or greater.",
-            isRequired: false);
+            isRequired: false
+        );
 
         var setMaxValue = cmd.AddOption<uint?>(
             name: "--set-dmax",
             description: "The value to set in 'dmax'. Must be equal to, or greater than, [--set-dmin].",
-            isRequired: false);
+            isRequired: false
+        );
 
-        setMaxValue.AddValidator((result) =>
-        {
-            var minVal = result.GetValueForOption(setMinValue);
-            var maxVal = result.GetValueForOption(setMaxValue);
-            if (maxVal < minVal)
+        setMaxValue.AddValidator(
+            (result) =>
             {
-                result.ErrorMessage = "[--set-dmin] must be <= [--set-dmax]";
+                var minVal = result.GetValueForOption(setMinValue);
+                var maxVal = result.GetValueForOption(setMaxValue);
+                if (maxVal < minVal)
+                {
+                    result.ErrorMessage = "[--set-dmin] must be <= [--set-dmax]";
+                }
             }
-        });
+        );
 
         var restoreBackup = cmd.AddOption<bool?>(
             name: "--restore",
             description: "Restores the file from the backup - if one exists.",
-            isRequired: false);
+            isRequired: false
+        );
 
         cmd.SetHandler(
             Handler,
@@ -65,7 +73,8 @@ internal class ManipulateTerritoryCommand
             multiplyByFactor,
             setMinValue,
             setMaxValue,
-            restoreBackup);
+            restoreBackup
+        );
     }
 
     static void Handler(
@@ -75,9 +84,19 @@ internal class ManipulateTerritoryCommand
         float? multiplyByFactor,
         uint? setMin,
         uint? setMax,
-        bool? restoreBackup)
+        bool? restoreBackup
+    )
     {
-        ManipulateTerritory impl = new(Globals.DztLoggerFactory.CreateLogger<ManipulateTerritory>(), rootDir, mpMissionName, entityName, multiplyByFactor, setMin, setMax);
+        ManipulateTerritory impl =
+            new(
+                Globals.DztLoggerFactory.CreateLogger<ManipulateTerritory>(),
+                rootDir,
+                mpMissionName,
+                entityName,
+                multiplyByFactor,
+                setMin,
+                setMax
+            );
         if (restoreBackup is true)
         {
             impl.RestoreBackup();

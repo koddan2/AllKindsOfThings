@@ -5,13 +5,21 @@ namespace DZT.Lib.Helpers;
 
 public static class DayzFilesHelper
 {
-    public static IEnumerable<string> GetAllSpawnableTypesXmlFileNames(string rootDir, string mpMissionName)
+    public static IEnumerable<string> GetAllSpawnableTypesXmlFileNames(
+        string rootDir,
+        string mpMissionName
+    )
     {
         var files = new MpMissionFiles(rootDir, mpMissionName);
-        var baseXmlFilePath = Path.Combine(files.PathToMpMissionDirectory, DayzConstants.FileNames.CfgSpawnableTypes);
+        var baseXmlFilePath = Path.Combine(
+            files.PathToMpMissionDirectory,
+            DayzConstants.FileNames.CfgSpawnableTypes
+        );
         yield return baseXmlFilePath;
 
-        foreach (var also in GetCentralEconomyXmlFileNames(rootDir, mpMissionName, "spawnabletypes"))
+        foreach (
+            var also in GetCentralEconomyXmlFileNames(rootDir, mpMissionName, "spawnabletypes")
+        )
         {
             yield return also;
         }
@@ -21,7 +29,11 @@ public static class DayzFilesHelper
     {
         var files = new MpMissionFiles(rootDir, mpMissionName);
         var mpMissionRoot = files.PathToMpMissionDirectory;
-        var baseDbTypesXmlFilePath = Path.Combine(mpMissionRoot, DayzConstants.SubdirectoryNames.Db, DayzConstants.FileNames.Types);
+        var baseDbTypesXmlFilePath = Path.Combine(
+            mpMissionRoot,
+            DayzConstants.SubdirectoryNames.Db,
+            DayzConstants.FileNames.Types
+        );
         yield return baseDbTypesXmlFilePath;
 
         foreach (var also in GetCentralEconomyXmlFileNames(rootDir, mpMissionName, "types"))
@@ -30,7 +42,11 @@ public static class DayzFilesHelper
         }
     }
 
-    public static IEnumerable<string> GetCentralEconomyXmlFileNames(string rootDir, string mpMissionName, string ceType = "types")
+    public static IEnumerable<string> GetCentralEconomyXmlFileNames(
+        string rootDir,
+        string mpMissionName,
+        string ceType = "types"
+    )
     {
         var files = new MpMissionFiles(rootDir, mpMissionName);
         var ceElements = files.GetCentralEconomyElements();
@@ -41,7 +57,10 @@ public static class DayzFilesHelper
 
             foreach (var ceElementFileElement in ceElement.Nodes().OfType<XElement>())
             {
-                if (ceElementFileElement.Attribute("type")?.Value is string fileType && fileType == ceType)
+                if (
+                    ceElementFileElement.Attribute("type")?.Value is string fileType
+                    && fileType == ceType
+                )
                 {
                     var maybeFileName = ceElementFileElement.Attribute("name")?.Value;
                     if (maybeFileName is string fileName)
@@ -59,4 +78,3 @@ public static class DayzFilesHelper
         }
     }
 }
-

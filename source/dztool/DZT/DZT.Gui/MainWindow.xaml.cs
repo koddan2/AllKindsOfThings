@@ -86,11 +86,19 @@ namespace DZT.Gui
                 ILoggerFactory loggerFactory = LoggerFactory.Create(builder =>
                 {
                     //builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, WpfLoggerProvider>());
-                    builder.Services.AddSingleton<ILoggerProvider>((_) => new WpfLoggerProvider(this.InfoTextBox));
+                    builder.Services.AddSingleton<ILoggerProvider>(
+                        (_) => new WpfLoggerProvider(this.InfoTextBox)
+                    );
                 });
 
                 ILogger<AdjustTypesXml> logger = loggerFactory.CreateLogger<AdjustTypesXml>();
-                AdjustTypesXml impl = new(logger, new AdjustTypesXmlConfiguration(), Prefs.DayzServerRootDirectoryPath, Prefs.MpMissionName);
+                AdjustTypesXml impl =
+                    new(
+                        logger,
+                        new AdjustTypesXmlConfiguration(),
+                        Prefs.DayzServerRootDirectoryPath,
+                        Prefs.MpMissionName
+                    );
                 impl.Process();
             }
         }

@@ -13,7 +13,8 @@ public class CategorizedDouble
         double small = 0,
         double medium = 0,
         double large = 0,
-        double max = 1)
+        double max = 1
+    )
     {
         _minimal = minimal;
         _small = small;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 
 namespace DZT.Lib;
+
 public class UpdateAiPatrols
 {
     private readonly string _json;
@@ -19,17 +20,19 @@ public class UpdateAiPatrols
     };
     private readonly ExtraPatrols _extraPatrols = new();
 
-    public CategorizedDouble CategorizedDouble { get; set; } = new CategorizedDouble(
-        /// high
-        // minimal: 0.004,
-        // small: 0.07,
-        // medium: 0.45,
-        // large: 0.7);
-        /// lagom
-        minimal: 0.001,
-        small: 0.02,
-        medium: 0.17,
-        large: 0.25);
+    public CategorizedDouble CategorizedDouble { get; set; } =
+        new CategorizedDouble(
+            /// high
+            // minimal: 0.004,
+            // small: 0.07,
+            // medium: 0.45,
+            // large: 0.7);
+            /// lagom
+            minimal: 0.001,
+            small: 0.02,
+            medium: 0.17,
+            large: 0.25
+        );
 
     double Chance(CategoryValue category, double modifier = 0d)
     {
@@ -39,7 +42,11 @@ public class UpdateAiPatrols
     public UpdateAiPatrols(string rootDir, string mpMissionName)
     {
         Validators.ValidateDirExists(rootDir);
-        var relativePathToFile = Path.Combine("mpmissions", mpMissionName, @"expansion\settings\AIPatrolSettings.json");
+        var relativePathToFile = Path.Combine(
+            "mpmissions",
+            mpMissionName,
+            @"expansion\settings\AIPatrolSettings.json"
+        );
         _aiPatrolSettingsJsonFile = Path.Combine(rootDir, relativePathToFile);
         Validators.ValidateFileExists(_aiPatrolSettingsJsonFile);
 
@@ -52,10 +59,15 @@ public class UpdateAiPatrols
         _json = File.ReadAllText(_aiPatrolSettingsJsonFile);
         _settings = JsonSerializer.Deserialize<AiPatrolSettingsRoot>(_json)!;
 
-        var extraPatrolsFilePath = FileManagement.GetWorkspaceFilePath(rootDir, "chernarusplus.AIPatrolSettings.patch.Patrols.json");
+        var extraPatrolsFilePath = FileManagement.GetWorkspaceFilePath(
+            rootDir,
+            "chernarusplus.AIPatrolSettings.patch.Patrols.json"
+        );
         if (File.Exists(extraPatrolsFilePath))
         {
-            _extraPatrols = JsonSerializer.Deserialize<ExtraPatrols>(File.ReadAllText(extraPatrolsFilePath)) ?? new ExtraPatrols();
+            _extraPatrols =
+                JsonSerializer.Deserialize<ExtraPatrols>(File.ReadAllText(extraPatrolsFilePath))
+                ?? new ExtraPatrols();
         }
     }
 
@@ -78,69 +90,84 @@ public class UpdateAiPatrols
         _settings.ThreatDistanceLimit = 120;
         _settings.DamageMultiplier = 1.0;
 
-        AddObjectPatrol("East", new[] {
-            "Land_City_PoliceStation", "Land_Village_PoliceStation",
-            "Land_Office_Municipal1",
-            "Land_Office_Municipal2",
-            "Land_Office1",
-            "Land_Office2",
-            "Land_Misc_FeedShack",
-            "Land_Misc_DeerStand2",
-            "Land_Misc_DeerStand1",
-            }, p =>
-        {
-            p.LoadoutFile = "SplattedLoadout";
-            p.Chance = Chance(CategoryValue.Medium, 0.1);
-        });
-        AddObjectPatrol("East", new[]
-        {
-            "Land_City_Hospital",
-            "Land_Village_HealthCare",
-            "Land_Village_store",
-            "Land_Power_Station",
-            "Land_City_Store",
-            "Land_City_Store_WithStairs",
-        },
-        p =>
-        {
-            p.NumberOfAI = -6;
-            p.Faction = "Raiders";
-            p.LoadoutFile = "SplattedLoadout";
-            p.Chance = Chance(CategoryValue.Medium, 0.1);
-        });
+        AddObjectPatrol(
+            "East",
+            new[]
+            {
+                "Land_City_PoliceStation",
+                "Land_Village_PoliceStation",
+                "Land_Office_Municipal1",
+                "Land_Office_Municipal2",
+                "Land_Office1",
+                "Land_Office2",
+                "Land_Misc_FeedShack",
+                "Land_Misc_DeerStand2",
+                "Land_Misc_DeerStand1",
+            },
+            p =>
+            {
+                p.LoadoutFile = "SplattedLoadout";
+                p.Chance = Chance(CategoryValue.Medium, 0.1);
+            }
+        );
+        AddObjectPatrol(
+            "East",
+            new[]
+            {
+                "Land_City_Hospital",
+                "Land_Village_HealthCare",
+                "Land_Village_store",
+                "Land_Power_Station",
+                "Land_City_Store",
+                "Land_City_Store_WithStairs",
+            },
+            p =>
+            {
+                p.NumberOfAI = -6;
+                p.Faction = "Raiders";
+                p.LoadoutFile = "SplattedLoadout";
+                p.Chance = Chance(CategoryValue.Medium, 0.1);
+            }
+        );
 
-        AddObjectPatrol("East", new[] { "Land_Mil_Airfield_HQ", "Land_Mil_ATC_Small", "Land_Mil_ATC_Big" }, p =>
-        {
-            p.Faction = "Raiders";
-            p.LoadoutFile = "SplattedLoadout";
-            p.Chance = Chance(CategoryValue.Medium);
-            p.NumberOfAI = -4;
-        });
+        AddObjectPatrol(
+            "East",
+            new[] { "Land_Mil_Airfield_HQ", "Land_Mil_ATC_Small", "Land_Mil_ATC_Big" },
+            p =>
+            {
+                p.Faction = "Raiders";
+                p.LoadoutFile = "SplattedLoadout";
+                p.Chance = Chance(CategoryValue.Medium);
+                p.NumberOfAI = -4;
+            }
+        );
 
-        AddObjectPatrol("East", new[] { "Land_City_FireStation" }, p =>
-        {
-            p.Chance = Chance(CategoryValue.Medium);
-            p.Faction = "Raiders";
-            p.LoadoutFile = "SplattedLoadout";
-            p.NumberOfAI = -4;
-        });
+        AddObjectPatrol(
+            "East",
+            new[] { "Land_City_FireStation" },
+            p =>
+            {
+                p.Chance = Chance(CategoryValue.Medium);
+                p.Faction = "Raiders";
+                p.LoadoutFile = "SplattedLoadout";
+                p.NumberOfAI = -4;
+            }
+        );
 
-        AddObjectPatrol("East", new[] {
-            "Land_City_Stand_Grocery",
-            "Land_House_1B01_Pub",
-            }, p =>
-        {
-            p.Faction = "Raiders";
-            p.LoadoutFile = "SplattedLoadout";
-            p.NumberOfAI = -4;
-            p.Chance = Chance(CategoryValue.Medium);
-        });
+        AddObjectPatrol(
+            "East",
+            new[] { "Land_City_Stand_Grocery", "Land_House_1B01_Pub", },
+            p =>
+            {
+                p.Faction = "Raiders";
+                p.LoadoutFile = "SplattedLoadout";
+                p.NumberOfAI = -4;
+                p.Chance = Chance(CategoryValue.Medium);
+            }
+        );
 
         var structureClassNames = DataHelper.GetStructureClassNames();
-        var objectsForPatrolCity = new[]
-            {
-                structureClassNames["**Residential**"],
-            }
+        var objectsForPatrolCity = new[] { structureClassNames["**Residential**"], }
             .SelectMany(x => x)
             .Where(x => !_forbiddenObjects.Contains(x))
             .ToArray();
@@ -154,14 +181,15 @@ public class UpdateAiPatrols
                 p.LoadoutFile = "SplattedLoadout";
                 p.Chance = Chance(CategoryValue.Minimal);
                 p.NumberOfAI = -2;
-            });
+            }
+        );
 
         var objectsForPatrolRest = new[]
-            {
-                structureClassNames["**Industrial**"],
-                structureClassNames["**Specific**"],
-                structureClassNames["**Military**"],
-            }
+        {
+            structureClassNames["**Industrial**"],
+            structureClassNames["**Specific**"],
+            structureClassNames["**Military**"],
+        }
             .SelectMany(x => x)
             .Where(x => !_forbiddenObjects.Contains(x))
             .ToArray();
@@ -175,76 +203,83 @@ public class UpdateAiPatrols
                 p.LoadoutFile = "SplattedLoadout";
                 p.Chance = Chance(CategoryValue.Small);
                 p.NumberOfAI = -3;
-            });
-
+            }
+        );
 
         AddObjectPatrol(
             "East",
-            new[]
-            {
-                "Land_Misc_FeedShack",
-                "Land_Misc_DeerStand2",
-                "Land_Misc_DeerStand1",
-            },
+            new[] { "Land_Misc_FeedShack", "Land_Misc_DeerStand2", "Land_Misc_DeerStand1", },
             p =>
             {
                 p.Faction = "Mercenaries";
                 p.LoadoutFile = "SplattedLoadout";
                 p.Chance = Chance(CategoryValue.Max);
                 p.NumberOfAI = -2;
+            }
+        );
+
+        AddObjectPatrol(
+            "East",
+            structureClassNames["**Military**"].ToArray(),
+            p =>
+            {
+                p.Faction = "East";
+                p.LoadoutFile = "SplattedLoadout";
+                p.Chance = Chance(CategoryValue.Minimal);
+                p.NumberOfAI = -3;
+            }
+        );
+
+        AddObjectPatrol(
+            "West",
+            structureClassNames["**Military**"].ToArray(),
+            p =>
+            {
+                p.Faction = "West";
+                p.LoadoutFile = "SplattedLoadout";
+                p.Chance = Chance(CategoryValue.Minimal);
+                p.NumberOfAI = -3;
+            }
+        );
+
+        _settings.ObjectPatrols
+            .ToList()
+            .ForEach(p =>
+            {
+                p.Faction = "Mercenaries";
+                p.UnlimitedReload = 1;
+                p.Behaviour = "ALTERNATE";
+                p.LoadoutFile = "SplattedLoadout";
+                p.ThreatDistanceLimit = -1;
+                p.DamageMultiplier = -1;
+                p.RespawnTime = -2;
             });
 
-        AddObjectPatrol("East", structureClassNames["**Military**"].ToArray(), p =>
-        {
-            p.Faction = "East";
-            p.LoadoutFile = "SplattedLoadout";
-            p.Chance = Chance(CategoryValue.Minimal);
-            p.NumberOfAI = -3;
-        });
+        _settings.Patrols.AddRange(
+            _extraPatrols.Patrols.SideEffect(x =>
+            {
+                ////x.Chance = 0.25;
+            })
+        );
 
-        AddObjectPatrol("West", structureClassNames["**Military**"].ToArray(), p =>
-        {
-            p.Faction = "West";
-            p.LoadoutFile = "SplattedLoadout";
-            p.Chance = Chance(CategoryValue.Minimal);
-            p.NumberOfAI = -3;
-        });
+        _settings.Patrols
+            .ToList()
+            .ForEach(p =>
+            {
+                p.Chance = 1.0;
+                p.NumberOfAI = -4;
 
-        _settings.ObjectPatrols.ToList().ForEach(p =>
-        {
-            p.Faction = "Mercenaries";
-            p.UnlimitedReload = 1;
-            p.Behaviour = "ALTERNATE";
-            p.LoadoutFile = "SplattedLoadout";
-            p.ThreatDistanceLimit = -1;
-            p.DamageMultiplier = -1;
-            p.RespawnTime = -2;
-        });
-
-        _settings.Patrols.AddRange(_extraPatrols.Patrols.SideEffect(x =>
-        {
-            ////x.Chance = 0.25;
-        }));
-
-        _settings.Patrols.ToList().ForEach(p =>
-        {
-            p.Chance = 1.0;
-            p.NumberOfAI = -4;
-
-            p.Faction = "Mercenaries";
-            p.UnlimitedReload = 1;
-            p.Behaviour = "ALTERNATE";
-            p.LoadoutFile = "SplattedLoadout";
-            p.ThreatDistanceLimit = -1;
-            p.DamageMultiplier = -1;
-            p.RespawnTime = -2;
-        });
+                p.Faction = "Mercenaries";
+                p.UnlimitedReload = 1;
+                p.Behaviour = "ALTERNATE";
+                p.LoadoutFile = "SplattedLoadout";
+                p.ThreatDistanceLimit = -1;
+                p.DamageMultiplier = -1;
+                p.RespawnTime = -2;
+            });
 
         using var fs = FileManagement.Utf8WithoutBomWriter(_aiPatrolSettingsJsonFile);
-        var jsonOptions = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-        };
+        var jsonOptions = new JsonSerializerOptions { WriteIndented = true, };
         JsonSerializer.Serialize(fs.BaseStream, _settings, jsonOptions);
     }
 
@@ -254,7 +289,11 @@ public class UpdateAiPatrols
         return settings.ObjectPatrols.First(x => x.Faction == faction);
     }
 
-    private void AddObjectPatrol(string faction, string className, Action<ObjectPatrol>? mutate = null)
+    private void AddObjectPatrol(
+        string faction,
+        string className,
+        Action<ObjectPatrol>? mutate = null
+    )
     {
         var extraPatrol = GetObjectPatrol(faction);
         extraPatrol.ClassName = className;
@@ -262,7 +301,11 @@ public class UpdateAiPatrols
         _settings.ObjectPatrols.Add(extraPatrol);
     }
 
-    private void AddObjectPatrol(string faction, string[] classNames, Action<ObjectPatrol>? mutate = null)
+    private void AddObjectPatrol(
+        string faction,
+        string[] classNames,
+        Action<ObjectPatrol>? mutate = null
+    )
     {
         foreach (var className in classNames)
         {
@@ -270,4 +313,3 @@ public class UpdateAiPatrols
         }
     }
 }
-

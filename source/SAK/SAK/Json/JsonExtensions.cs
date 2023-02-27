@@ -1,4 +1,5 @@
 
+using Urdep.Extensions.Augmentation;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -10,12 +11,12 @@ public static class JsonExtensions
 {
     private static readonly JsonSerializerOptions _DefaultPretty = new() { WriteIndented = true };
 
-    public static string ToJson<T>(this T obj, JsonSerializerOptions serializerOptions) =>
+    public static string ToJson<T>(this IAugmented<T> obj, JsonSerializerOptions serializerOptions) =>
         JsonSerializer.Serialize(obj, serializerOptions);
 
-    public static string ToJson<T>(this T obj) => JsonSerializer.Serialize(obj);
+    public static string ToJson<T>(this IAugmented<T> obj) => JsonSerializer.Serialize(obj);
 
-    public static string ToJson<T>(this T obj, bool prettyPrint) =>
+    public static string ToJson<T>(this IAugmented<T> obj, bool prettyPrint) =>
         prettyPrint
             ? JsonSerializer.Serialize(obj, _DefaultPretty)
             : obj.ToJson();
@@ -44,7 +45,8 @@ public class PrivateConstructorContractResolver : DefaultJsonTypeInfoResolver
 			{
 				// The type doesn't have public constructors
 				jsonTypeInfo.CreateObject = () =>
-					Activator.CreateInstance(jsonTypeInfo.Type, true);
+					Activator.CreateInstance(jsonTypeInfo.Type, true)
+						?? throw new InvalidOperationException($"Could not instantiate type {type}");
 			}
 		}
 

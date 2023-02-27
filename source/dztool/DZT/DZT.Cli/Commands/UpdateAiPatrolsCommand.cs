@@ -1,5 +1,6 @@
 ﻿using DZT.Lib;
 using System.CommandLine;
+
 class UpdateAiPatrolsCommand
 {
     internal static void AddToCommand(Command addTo, Option<string> optionRootDir)
@@ -13,7 +14,8 @@ class UpdateAiPatrolsCommand
             name: "--mp-mission-name",
             description: "The name of the mission, e.g. dayzOffline.chernarusplus",
             isRequired: true,
-            aliases: new[] { "-m" });
+            aliases: new[] { "-m" }
+        );
 
         cmd.SetHandler(
             (rootDir, mpMissionName) =>
@@ -22,6 +24,7 @@ class UpdateAiPatrolsCommand
                 impl.Process();
             },
             optionRootDir,
-            mpMissionName);
+            mpMissionName
+        );
     }
 }

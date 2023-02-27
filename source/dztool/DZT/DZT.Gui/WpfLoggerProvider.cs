@@ -15,8 +15,7 @@ namespace DZT.Gui
         private readonly ConcurrentDictionary<string, WpfLogger> _loggers =
             new(StringComparer.OrdinalIgnoreCase);
 
-        public WpfLoggerProvider(
-            IOptionsMonitor<WpfLoggerConfiguration> config)
+        public WpfLoggerProvider(IOptionsMonitor<WpfLoggerConfiguration> config)
         {
             _currentConfig = config.CurrentValue;
             _onChangeToken = config.OnChange(updatedConfig => _currentConfig = updatedConfig);

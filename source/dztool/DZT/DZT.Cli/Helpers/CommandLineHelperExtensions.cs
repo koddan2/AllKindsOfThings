@@ -8,12 +8,12 @@ static class CommandLineHelperExtensions
         string? description = null,
         bool isRequired = false,
         string[]? aliases = null,
-        Func<T>? getDefaultValue = null)
+        Func<T>? getDefaultValue = null
+    )
     {
         Option<T> opt = getDefaultValue is null
             ? new(name, description: description)
-            : new(name, getDefaultValue, description: description)
-            ;
+            : new(name, getDefaultValue, description: description);
 
         opt.IsRequired = isRequired;
 

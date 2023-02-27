@@ -37,6 +37,11 @@ public static class FileSystemUtility
 
             try
             {
+                if (!Directory.Exists(currentDirectory))
+                {
+                    continue;
+                }
+
                 // B
                 // Add all files at this directory to the result List.
                 result.AddRange(Directory.GetFiles(currentDirectory, "*.*"));

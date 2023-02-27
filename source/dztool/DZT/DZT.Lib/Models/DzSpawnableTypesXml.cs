@@ -12,7 +12,6 @@ namespace DZT.Lib.Models;
 [XmlRoot(ElementName = "item")]
 public class Item
 {
-
     [XmlAttribute(AttributeName = "name")]
     public string? Name { get; set; }
 
@@ -23,7 +22,6 @@ public class Item
 [XmlRoot(ElementName = "attachments")]
 public class Attachment
 {
-
     [XmlElement(ElementName = "item")]
     public List<Item> Item { get; set; } = new List<Item>();
 
@@ -34,7 +32,6 @@ public class Attachment
 [XmlRoot(ElementName = "type")]
 public class Type
 {
-
     [XmlElement(ElementName = "attachments")]
     public List<Attachment> Attachments { get; set; } = new List<Attachment>();
 
@@ -45,7 +42,6 @@ public class Type
 [XmlRoot(ElementName = "spawnabletypes")]
 public class Spawnabletypes
 {
-
     [XmlElement(ElementName = "type")]
     public List<Type> Type { get; set; } = new List<Type>();
 }

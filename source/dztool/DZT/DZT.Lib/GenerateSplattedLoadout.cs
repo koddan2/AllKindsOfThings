@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Xml.Linq;
 
 namespace DZT.Lib;
+
 public class GenerateSplattedLoadout
 {
     private readonly string _loadoutDir;
@@ -16,13 +17,24 @@ public class GenerateSplattedLoadout
     private readonly string _mpMissionName;
     private readonly string _profileDirectoryName = "config";
 
-    private readonly CategorizedDouble _weaponChanceCategories = new(
-        minimal:/**/0.002,
-        small:/*  */0.015,
-        medium:/*  */0.03,
-        large:/*   */0.05);
+    private readonly CategorizedDouble _weaponChanceCategories =
+        new(
+            minimal: /**/
+            0.002,
+            small: /*  */
+            0.015,
+            medium: /*  */
+            0.03,
+            large: /*   */
+            0.05
+        );
 
-    public GenerateSplattedLoadout(ILogger logger, string rootDir, string mpMissionName, string profileDirectoryName)
+    public GenerateSplattedLoadout(
+        ILogger logger,
+        string rootDir,
+        string mpMissionName,
+        string profileDirectoryName
+    )
     {
         _logger = logger;
         _rootDir = rootDir;
@@ -37,9 +49,17 @@ public class GenerateSplattedLoadout
 
     public void Process()
     {
-        var loadoutFiles = Directory.EnumerateFiles(_loadoutDir).Where(file => Path.GetFileName(file) != OutputFileName);
-        _logger.LogInformation("Found {} loadout files ({@list})", loadoutFiles.Count(), loadoutFiles.Select(x => Path.GetFileName(x)));
-        var model = loadoutFiles.Select(file => JsonSerializer.Deserialize<AiLoadoutRoot>(File.ReadAllText(file))).ToList();
+        var loadoutFiles = Directory
+            .EnumerateFiles(_loadoutDir)
+            .Where(file => Path.GetFileName(file) != OutputFileName);
+        _logger.LogInformation(
+            "Found {} loadout files ({@list})",
+            loadoutFiles.Count(),
+            loadoutFiles.Select(x => Path.GetFileName(x))
+        );
+        var model = loadoutFiles
+            .Select(file => JsonSerializer.Deserialize<AiLoadoutRoot>(File.ReadAllText(file)))
+            .ToList();
 
         ////var invAttachmentsSlotNames = new[]
         ////{
@@ -70,7 +90,10 @@ public class GenerateSplattedLoadout
         AssignSets(splat, model);
 
         var outputPath = Path.Combine(_loadoutDir, OutputFileName);
-        File.WriteAllText(outputPath, JsonSerializer.Serialize(splat, DefaultSettings.JsonSerializerOptions));
+        File.WriteAllText(
+            outputPath,
+            JsonSerializer.Serialize(splat, DefaultSettings.JsonSerializerOptions)
+        );
     }
 
     private static readonly string[] _ForbiddenClassNamesStartsWith = new[]
@@ -129,16 +152,18 @@ public class GenerateSplattedLoadout
             return false;
         }
 
-        if (_ForbiddenClassNamesStartsWith.Any(x => type.NameUpper.StartsWith(x.ToUpperInvariant())))
+        if (
+            _ForbiddenClassNamesStartsWith.Any(x => type.NameUpper.StartsWith(x.ToUpperInvariant()))
+        )
         {
             return true;
         }
 
-        var forbid0 = type.Category == "containers"
+        var forbid0 =
+            type.Category == "containers"
             || (type.Category == "clothes" && !type.NameUpper.Contains("POUCH"))
             || type.Tags?.Contains("floor") is true
-            || type.Flags?["crafted"] == "1"
-            ;
+            || type.Flags?["crafted"] == "1";
         if (forbid0)
         {
             return true;
@@ -167,7 +192,9 @@ public class GenerateSplattedLoadout
     private IEnumerable<DzTypesXmlTypeElement> GetCargoCandidates()
     {
         var seen = new Dictionary<string, bool>();
-        foreach (var typesXmlFile in DayzFilesHelper.GetAllTypesXmlFileNames(_rootDir, _mpMissionName))
+        foreach (
+            var typesXmlFile in DayzFilesHelper.GetAllTypesXmlFileNames(_rootDir, _mpMissionName)
+        )
         {
             var xd = XDocument.Load(typesXmlFile);
             var types = DzTypesXmlTypeElement.FromDocument(xd);
@@ -221,7 +248,8 @@ public class GenerateSplattedLoadout
 
         double GetChance(DzTypesXmlTypeElement x)
         {
-            var thoseWithMoreChance = new[] {
+            var thoseWithMoreChance = new[]
+            {
                 "50CAL",
                 "AMMO",
                 "SNAFU_AMMO_338",
@@ -257,28 +285,42 @@ public class GenerateSplattedLoadout
             return result;
         }
 
-        var extras = cargoCandidates
-            .Select(x => new InventoryCargoModel
-            {
-                ClassName = x.Name,
-                Chance = GetChance(x),
-                Sets = new List<LoadoutSet>(),
-                Quantity = new Quantity { Min = 0, Max = 0 },
-                Health = new List<Health> { new Health { Min = 0.1, Max = 0.9, Zone = "" } },
-                ConstructionPartsBuilt = new List<object>(),
-                // InventoryAttachments = new List<InventoryAttachment>(),
-                InventoryAttachments = _spawnableTypesHelper.GetAdditionalAttachments(x.Name).ToList().SideEffect(x =>
+        var extras = cargoCandidates.Select(
+            x =>
+                new InventoryCargoModel
                 {
-                    x.Items.ForEach(y =>
+                    ClassName = x.Name,
+                    Chance = GetChance(x),
+                    Sets = new List<LoadoutSet>(),
+                    Quantity = new Quantity { Min = 0, Max = 0 },
+                    Health = new List<Health>
                     {
-                        if (!IsSuppressor(y.ClassName))
+                        new Health
                         {
-                            y.Chance = 0.2;
+                            Min = 0.1,
+                            Max = 0.9,
+                            Zone = ""
                         }
-                    });
-                }).ToList(),
-                InventoryCargo = new List<InventoryCargoModel>(),
-            });
+                    },
+                    ConstructionPartsBuilt = new List<object>(),
+                    // InventoryAttachments = new List<InventoryAttachment>(),
+                    InventoryAttachments = _spawnableTypesHelper
+                        .GetAdditionalAttachments(x.Name)
+                        .ToList()
+                        .SideEffect(x =>
+                        {
+                            x.Items.ForEach(y =>
+                            {
+                                if (!IsSuppressor(y.ClassName))
+                                {
+                                    y.Chance = 0.2;
+                                }
+                            });
+                        })
+                        .ToList(),
+                    InventoryCargo = new List<InventoryCargoModel>(),
+                }
+        );
 
         splat.InventoryCargo.AddRange(extras);
         splat.InventoryCargo = splat.InventoryCargo.DistinctBy(x => x.ClassName).ToList();
@@ -318,9 +360,18 @@ public class GenerateSplattedLoadout
 
         var extraStuff = new Dictionary<string, string[]>
         {
-            ["Vest"] = new[] {
-                "MMG_JPC_Vest_black", "MMG_tt_Vest_black", "MMG_chestrig_black", "MMG_MK_III_Armor_black", "MMG_MK_V_Armor_black",
-                "MMG_JPC_Vest_green", "MMG_tt_Vest_green", "MMG_chestrig_green", "MMG_MK_III_Armor_green", "MMG_MK_V_Armor_green",
+            ["Vest"] = new[]
+            {
+                "MMG_JPC_Vest_black",
+                "MMG_tt_Vest_black",
+                "MMG_chestrig_black",
+                "MMG_MK_III_Armor_black",
+                "MMG_MK_V_Armor_black",
+                "MMG_JPC_Vest_green",
+                "MMG_tt_Vest_green",
+                "MMG_chestrig_green",
+                "MMG_MK_III_Armor_green",
+                "MMG_MK_V_Armor_green",
                 "MMG_tt_Vest_police",
                 // "JuggernautLVL5_Suit",
                 // "JuggernautLVL5_Tan",
@@ -331,46 +382,80 @@ public class GenerateSplattedLoadout
                 "JuggernautLVL1_Suit_Black",
                 // "JuggernautLVL1_Suit_Winter",
             },
-            ["Back"] = new[] {
-                "MMG_carrier_backpack_black", "MMG_supplybag_black", "MMG_assault_pack_black", "MMG_camelback_black", "MMG_mmps_bag_black",
-                "MMG_carrier_backpack_green", "MMG_supplybag_green", "MMG_assault_pack_green", "MMG_camelback_green", "MMG_mmps_bag_green",
-                "bag_6B38_black_mung", "bag_6B38_LETO_mung",
-                },
-            ["Hips"] = new[] {
+            ["Back"] = new[]
+            {
+                "MMG_carrier_backpack_black",
+                "MMG_supplybag_black",
+                "MMG_assault_pack_black",
+                "MMG_camelback_black",
+                "MMG_mmps_bag_black",
+                "MMG_carrier_backpack_green",
+                "MMG_supplybag_green",
+                "MMG_assault_pack_green",
+                "MMG_camelback_green",
+                "MMG_mmps_bag_green",
+                "bag_6B38_black_mung",
+                "bag_6B38_LETO_mung",
+            },
+            ["Hips"] = new[]
+            {
                 "MMG_falcon_b1_belt_black",
                 "MMG_falcon_b1_belt_green",
                 "mmg_cargobelt_black",
                 "mmg_cargobelt_green",
                 "mmg_cargobelt_tan",
-                },
-            ["Headgear"] = new[] {
-                "MMG_tactical_helmet_black", "MMG_striker_helmet_black", "mmg_armored_helmet_black",
-                "MMG_tactical_helmet_green", "MMG_striker_helmet_green", "mmg_armored_helmet_green",
+            },
+            ["Headgear"] = new[]
+            {
+                "MMG_tactical_helmet_black",
+                "MMG_striker_helmet_black",
+                "mmg_armored_helmet_black",
+                "MMG_tactical_helmet_green",
+                "MMG_striker_helmet_green",
+                "mmg_armored_helmet_green",
                 "MMG_tactical_helmet_police",
-                },
-            ["Body"] = new[] {
-                "MMG_operatorshirt_black", "MMG_tactical_shirt_black", "MMG_combatshirt_black",
-                "MMG_operatorshirt_green", "MMG_tactical_shirt_green", "MMG_combatshirt_green",
+            },
+            ["Body"] = new[]
+            {
+                "MMG_operatorshirt_black",
+                "MMG_tactical_shirt_black",
+                "MMG_combatshirt_black",
+                "MMG_operatorshirt_green",
+                "MMG_tactical_shirt_green",
+                "MMG_combatshirt_green",
                 "MMG_combatshirt_police",
-                },
-            ["Legs"] = new[] {
-                "MMG_combatpants_black", "mmg_tactical_pants_black",
-                "MMG_combatpants_green", "mmg_tactical_pants_green",
+            },
+            ["Legs"] = new[]
+            {
+                "MMG_combatpants_black",
+                "mmg_tactical_pants_black",
+                "MMG_combatpants_green",
+                "mmg_tactical_pants_green",
                 "MMG_combatpants_police",
-                },
+            },
         }.ToDictionary(
             kvp => kvp.Key,
-            kvp => kvp.Value.Select(item => new Item
-            {
-                Chance = _weaponChanceCategories.Get(CategoryValue.Medium),
-                ClassName = item,
-                Quantity = new Quantity { Min = 0, Max = 0 },
-                Sets = new List<LoadoutSet>(),
-                ConstructionPartsBuilt = new List<object>(),
-                Health = new List<Health> { new Health { Min = 0.5, Max = 0.9 } },
-                InventoryAttachments = _spawnableTypesHelper.GetAdditionalAttachments(item).ToList(),
-                InventoryCargo = new List<InventoryCargoModel>(),
-            }));
+            kvp =>
+                kvp.Value.Select(
+                    item =>
+                        new Item
+                        {
+                            Chance = _weaponChanceCategories.Get(CategoryValue.Medium),
+                            ClassName = item,
+                            Quantity = new Quantity { Min = 0, Max = 0 },
+                            Sets = new List<LoadoutSet>(),
+                            ConstructionPartsBuilt = new List<object>(),
+                            Health = new List<Health>
+                            {
+                                new Health { Min = 0.5, Max = 0.9 }
+                            },
+                            InventoryAttachments = _spawnableTypesHelper
+                                .GetAdditionalAttachments(item)
+                                .ToList(),
+                            InventoryCargo = new List<InventoryCargoModel>(),
+                        }
+                )
+        );
 
         foreach (var att in splat.InventoryAttachments)
         {
@@ -384,14 +469,18 @@ public class GenerateSplattedLoadout
             // else if (att.SlotName == "Headgear") att.Items.AddRange(extraStuff["Headgear"]);
         }
 
-        splat.InventoryAttachments = splat.InventoryAttachments.Where(x => x.SlotName != "Shoulder").ToList();
+        splat.InventoryAttachments = splat.InventoryAttachments
+            .Where(x => x.SlotName != "Shoulder")
+            .ToList();
     }
 
     private static void AssignInventoryAttachments(AiLoadoutRoot splat, AiLoadoutRoot item)
     {
         foreach (var attachment in item.InventoryAttachments)
         {
-            var toAssign = splat.InventoryAttachments.FirstOrDefault(x => x.SlotName == attachment.SlotName);
+            var toAssign = splat.InventoryAttachments.FirstOrDefault(
+                x => x.SlotName == attachment.SlotName
+            );
             if (toAssign is null)
             {
                 splat.InventoryAttachments.Add(attachment);
@@ -463,70 +552,119 @@ public class WeaponSetDefs
     private readonly SpawnableTypesHelper _spawnableTypesHelper;
     private readonly CategorizedDouble _weaponChanceCategories;
 
-    public WeaponSetDefs(string rootDir, string mpMissionName, CategorizedDouble weaponChanceCategories)
+    public WeaponSetDefs(
+        string rootDir,
+        string mpMissionName,
+        CategorizedDouble weaponChanceCategories
+    )
     {
         _spawnableTypesHelper = new SpawnableTypesHelper(rootDir, mpMissionName);
         _weaponChanceCategories = weaponChanceCategories;
     }
 
-    public IEnumerable<LoadoutSet> All => new[]
-    {
-        Awm,
-        Kiivari,
-        // Aek545,
-        S_R700,
-        M_R700,
-        ScarH,
-        AK12,
-        AK19,
-        MMAKM,
-        MMMk47,
-    };
+    public IEnumerable<LoadoutSet> All =>
+        new[]
+        {
+            Awm,
+            Kiivari,
+            // Aek545,
+            S_R700,
+            M_R700,
+            ScarH,
+            AK12,
+            AK19,
+            MMAKM,
+            MMMk47,
+        };
 
-    public LoadoutSet MMMk47 => GetLoadoutSetWeapon("TTC_Mk47", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
-    public LoadoutSet MMAKM => GetLoadoutSetWeapon("TTC_AKM", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", });
-    public LoadoutSet AK19 => GetLoadoutSetWeapon("SNAFU_AK19", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_556x45", "Ammo_556x45", "Ammo_556x45", });
-    public LoadoutSet AK12 => GetLoadoutSetWeapon("SNAFU_AK12A", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_545x39", "Ammo_545x39", "Ammo_545x39" });
-    public LoadoutSet ScarH => GetLoadoutSetWeapon("Snafu_ScarH_Black_GUN", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "Ammo_308Win", "Ammo_308Win" });
-    public LoadoutSet M_R700 => GetLoadoutSetWeapon("TTC_R700", _weaponChanceCategories.Get(CategoryValue.Medium), new[] { "Ammo_308Win", "Ammo_308Win" });
-    public LoadoutSet S_R700 => GetLoadoutSetWeapon("GCGN_M700", _weaponChanceCategories.Get(CategoryValue.Medium), new[] { "Ammo_308Win", "Ammo_308Win" });
-    public LoadoutSet Aek545 => GetLoadoutSetWeapon("SNAFU_AEK545_Gun", _weaponChanceCategories.Get(CategoryValue.Minimal));
-    public LoadoutSet Awm => GetLoadoutSetWeapon("SNAFU_AWM_Gun", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "SNAFU_Ammo_338", "SNAFU_Ammo_338" });
-    public LoadoutSet Kiivari => GetLoadoutSetWeapon("SNAFUKivaari_Black_GUN", _weaponChanceCategories.Get(CategoryValue.Minimal), new[] { "SNAFU_Ammo_338", "SNAFU_Ammo_338" });
+    public LoadoutSet MMMk47 =>
+        GetLoadoutSetWeapon(
+            "TTC_Mk47",
+            _weaponChanceCategories.Get(CategoryValue.Minimal),
+            new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", }
+        );
+    public LoadoutSet MMAKM =>
+        GetLoadoutSetWeapon(
+            "TTC_AKM",
+            _weaponChanceCategories.Get(CategoryValue.Minimal),
+            new[] { "Ammo_762x39", "Ammo_762x39", "Ammo_762x39", }
+        );
+    public LoadoutSet AK19 =>
+        GetLoadoutSetWeapon(
+            "SNAFU_AK19",
+            _weaponChanceCategories.Get(CategoryValue.Minimal),
+            new[] { "Ammo_556x45", "Ammo_556x45", "Ammo_556x45", }
+        );
+    public LoadoutSet AK12 =>
+        GetLoadoutSetWeapon(
+            "SNAFU_AK12A",
+            _weaponChanceCategories.Get(CategoryValue.Minimal),
+            new[] { "Ammo_545x39", "Ammo_545x39", "Ammo_545x39" }
+        );
+    public LoadoutSet ScarH =>
+        GetLoadoutSetWeapon(
+            "Snafu_ScarH_Black_GUN",
+            _weaponChanceCategories.Get(CategoryValue.Minimal),
+            new[] { "Ammo_308Win", "Ammo_308Win" }
+        );
+    public LoadoutSet M_R700 =>
+        GetLoadoutSetWeapon(
+            "TTC_R700",
+            _weaponChanceCategories.Get(CategoryValue.Medium),
+            new[] { "Ammo_308Win", "Ammo_308Win" }
+        );
+    public LoadoutSet S_R700 =>
+        GetLoadoutSetWeapon(
+            "GCGN_M700",
+            _weaponChanceCategories.Get(CategoryValue.Medium),
+            new[] { "Ammo_308Win", "Ammo_308Win" }
+        );
+    public LoadoutSet Aek545 =>
+        GetLoadoutSetWeapon("SNAFU_AEK545_Gun", _weaponChanceCategories.Get(CategoryValue.Minimal));
+    public LoadoutSet Awm =>
+        GetLoadoutSetWeapon(
+            "SNAFU_AWM_Gun",
+            _weaponChanceCategories.Get(CategoryValue.Minimal),
+            new[] { "SNAFU_Ammo_338", "SNAFU_Ammo_338" }
+        );
+    public LoadoutSet Kiivari =>
+        GetLoadoutSetWeapon(
+            "SNAFUKivaari_Black_GUN",
+            _weaponChanceCategories.Get(CategoryValue.Minimal),
+            new[] { "SNAFU_Ammo_338", "SNAFU_Ammo_338" }
+        );
 
-    private LoadoutSet GetLoadoutSetWeapon(string className, double chance = 1, IEnumerable<string>? extraInventory = null)
+    private LoadoutSet GetLoadoutSetWeapon(
+        string className,
+        double chance = 1,
+        IEnumerable<string>? extraInventory = null
+    )
     {
         extraInventory ??= new List<string>();
-        var possibleAttachments = _spawnableTypesHelper.GetAdditionalAttachments(className).SelectMany(x => x.Items);
+        var possibleAttachments = _spawnableTypesHelper
+            .GetAdditionalAttachments(className)
+            .SelectMany(x => x.Items);
         var additionalMags = possibleAttachments
             .Where(y => y.ClassName.ToUpper().Contains("MAG"))
-            .Select(y => new InventoryCargoModel
-            {
-                Chance = 1,
-                ClassName = y.ClassName,
-            }).ToList();
+            .Select(y => new InventoryCargoModel { Chance = 1, ClassName = y.ClassName, })
+            .ToList();
 
         if (additionalMags.Count == 1)
         {
             additionalMags.Add(additionalMags.Single());
         }
 
-        var extraInventoryCargo = extraInventory.Select(extra =>
-            new InventoryCargoModel
-            {
-                Chance = 1,
-                ClassName = extra,
-            });
-        var inventoryCargo = additionalMags
-                        .Concat(extraInventoryCargo)
-                        .ToList();
+        var extraInventoryCargo = extraInventory.Select(
+            extra => new InventoryCargoModel { Chance = 1, ClassName = extra, }
+        );
+        var inventoryCargo = additionalMags.Concat(extraInventoryCargo).ToList();
         return new LoadoutSet
         {
             ClassName = "WEAPON",
             Chance = chance,
             Health = new List<Health>
             {
-                new Health {Min=0.4, Max=0.9},
+                new Health { Min = 0.4, Max = 0.9 },
             },
             InventoryAttachments = new List<InventoryAttachment>
             {
@@ -539,8 +677,13 @@ public class WeaponSetDefs
                         {
                             Chance = 1,
                             ClassName = className,
-                            Health = new List<Health> { new Health { Min = 0.5, Max = 0.9 } },
-                            InventoryAttachments = _spawnableTypesHelper.GetAdditionalAttachments(className).ToList(),
+                            Health = new List<Health>
+                            {
+                                new Health { Min = 0.5, Max = 0.9 }
+                            },
+                            InventoryAttachments = _spawnableTypesHelper
+                                .GetAdditionalAttachments(className)
+                                .ToList(),
                         }
                     }
                 }
