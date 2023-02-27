@@ -1,0 +1,19 @@
+{
+  "UsePascalCase": true,
+  "UseNestedClasses": false,
+  "AttributeLibrary": "SystemTextJson",
+  "NullValueHandlingIgnore": true,
+  "AttributeUsage": "Always",
+  "OutputType": "MutableClass",
+  "OutputMembers": "AsProperties",
+  "ReadOnlyCollectionProperties": false,
+  "AlwaysUseNullables": true,
+  "Namespace": "Generated",
+  "HasNamespace": true,
+  "SecondaryNamespace": "Generated",
+  "ExamplesInDocumentation": false,
+  "ApplyObfuscationAttributes": false,
+  "MainClass": null,
+  "InternalVisibility": false,
+  "CollectionType": "Array"
+}

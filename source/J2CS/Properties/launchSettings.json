@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "J2CS": {
+      "commandName": "Project",
+      "commandLineArgs": "-c example-config.json -d ./Test -i *.json"
+    }
+  }
+}

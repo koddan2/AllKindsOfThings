@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "J2CS", "J2CS.csproj", "{2FA7EE73-8978-4613-857C-9F15D600A645}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonClassGeneratorLib", "..\..\submodules\Json2CSharpCodeGenerator\JsonClassGeneratorLib\JsonClassGeneratorLib.csproj", "{CC0CC10E-B4C3-4703-A331-E63FF20D20A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2FA7EE73-8978-4613-857C-9F15D600A645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FA7EE73-8978-4613-857C-9F15D600A645}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FA7EE73-8978-4613-857C-9F15D600A645}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FA7EE73-8978-4613-857C-9F15D600A645}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC0CC10E-B4C3-4703-A331-E63FF20D20A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC0CC10E-B4C3-4703-A331-E63FF20D20A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC0CC10E-B4C3-4703-A331-E63FF20D20A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC0CC10E-B4C3-4703-A331-E63FF20D20A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {21DDFACA-1461-40F8-B515-1BE2FFD31A57}
+	EndGlobalSection
+EndGlobal

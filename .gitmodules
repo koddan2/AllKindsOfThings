@@ -10,3 +10,6 @@
 [submodule "submodules/CQRS"]
 	path = submodules/CQRS
 	url = https://github.com/Chinchilla-Software-Com/CQRS.git
+[submodule "submodules/Json2CSharpCodeGenerator"]
+	path = submodules/Json2CSharpCodeGenerator
+	url = https://github.com/Json2CSharp/Json2CSharpCodeGenerator.git
