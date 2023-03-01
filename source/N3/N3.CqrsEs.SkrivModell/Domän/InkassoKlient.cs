@@ -6,17 +6,18 @@ using SmartAnalyzers.CSharpExtensions.Annotations;
 namespace N3.CqrsEs.SkrivModell.Domän
 {
     [InitRequired]
-    public sealed class InkassoKlient : IAggregatBas
+    public sealed class InkassoKlient : AbstraktAggregatBasKlass<InkassoKlient>
     {
-        private InkassoKlient() { }
-
         public InkassoKlient(UnikIdentifierare identifierare)
+            : base(identifierare)
         {
-            Identifierare = identifierare;
+            ////Identifierare = identifierare;
         }
 
-        public UnikIdentifierare Identifierare { get; }
-        public long Revision { get; private set; }
+        public override string Id => this.TillStrömIdentifierare().ByggStrömIdentifierare();
+
+        ////public UnikIdentifierare Identifierare { get; }
+        ////public long Revision { get; private set; }
 
         public string? FullkomligtNamn { get; private set; }
 
@@ -26,19 +27,23 @@ namespace N3.CqrsEs.SkrivModell.Domän
         )
         {
             var händelse = new InkassoKlientSkapades(Identifierare, FullkomligtNamn);
-            await händelseRegistrator.Registrera(this.TillStrömIdentifierare(), händelse);
+            await händelseRegistrator.Registrera(
+                this.TillStrömIdentifierare(),
+                händelse,
+                HändelseModus.SkapaNy
+            );
         }
 
-        internal void Ladda(IEnumerable<IHändelse> händelser)
-        {
-            foreach (var händelse in händelser)
-            {
-                if (händelse is InkassoKlientSkapades skapades)
-                {
-                    Revision = skapades.Revision;
-                    FullkomligtNamn = skapades.FullkomligtNamn;
-                }
-            }
-        }
+        ////internal void Ladda(IEnumerable<IHändelse> händelser)
+        ////{
+        ////    foreach (var händelse in händelser)
+        ////    {
+        ////        if (händelse is InkassoKlientSkapades skapades)
+        ////        {
+        ////            Revision = skapades.Revision;
+        ////            FullkomligtNamn = skapades.FullkomligtNamn;
+        ////        }
+        ////    }
+        ////}
     }
 }

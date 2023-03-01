@@ -7,9 +7,10 @@ using SAK;
 using Dapper;
 using System.Data;
 using Microsoft.Data.Sqlite;
-using System.Text;
 using System.Text.Unicode;
 using System.Text.Encodings.Web;
+using Npgsql;
+using Marten;
 
 namespace N3.Låtsas
 {
@@ -26,31 +27,31 @@ namespace N3.Låtsas
                     UnicodeRanges.Latin1Supplement
                 ),
             };
-        private readonly static string _DatabasNamn = "LåtsasAktivitetsBuss.db";
 
-        public LåtsasAktivitetsBuss(IOptions<LåtsasAktivitetsBussKonfiguration> options)
+        private readonly IDocumentStore _store;
+
+        public LåtsasAktivitetsBuss(
+            IOptions<LåtsasAktivitetsBussKonfiguration> options,
+            IDocumentStore store
+        )
         {
             Konfiguration = options.Value;
             Initialisera();
+            _store = store;
         }
 
         private LåtsasAktivitetsBussKonfiguration Konfiguration { get; }
-
-        private string Sökväg => Path.Combine(Konfiguration.Katalog.OrFail(), _DatabasNamn);
 
         public async Task<IEnumerable<AktivitetsStatus>> HämtaStatus(
             AktivitetsKategori kategori,
             AktivitetsStatusFiltrering filtrering = AktivitetsStatusFiltrering.EjAvslutade
         )
         {
-            await ValueTask.CompletedTask;
-            using var koppling = TaDatabasKoppling();
-            var parametrar = new { Kategori = kategori.Namn, };
-            var poster = koppling.Query<LåtsasAktivitetsPost>(
-                "select * from aktivitet where kategori=@Kategori",
-                parametrar
-            );
-
+            await using var session = _store.LightweightSession();
+            var poster = await session
+                .Query<LåtsasAktivitetsPost>()
+                .Where(x => x.Kategori == kategori.Namn)
+                .ToListAsync();
             return poster.Select(
                 post =>
                     new AktivitetsStatus(
@@ -63,13 +64,12 @@ namespace N3.Låtsas
 
         public async Task<AktivitetsStatus> HämtaStatus(UnikIdentifierare aktivitetsIdentifierare)
         {
-            await ValueTask.CompletedTask;
-            using var koppling = TaDatabasKoppling();
+            await using var session = _store.LightweightSession();
             var parametrar = new { AktivitetsIdentifierare = aktivitetsIdentifierare.ToString(), };
-            var post = koppling.QueryFirst<LåtsasAktivitetsPost>(
-                "select * from aktivitet where aktivitetsidentifierare=@AktivitetsIdentifierare",
-                parametrar
-            );
+            var post = await session
+                .Query<LåtsasAktivitetsPost>()
+                .Where(x => x.AktivitetsIdentifierare == (string)aktivitetsIdentifierare)
+                .SingleAsync();
 
             return new AktivitetsStatus(
                 aktivitetsIdentifierare,
@@ -81,8 +81,7 @@ namespace N3.Låtsas
         public async Task Kölägg<T>(T data)
             where T : IAktivitet
         {
-            await ValueTask.CompletedTask;
-            using var koppling = TaDatabasKoppling();
+            await using var session = _store.LightweightSession();
             var post = new LåtsasAktivitetsPost
             {
                 AktivitetsIdentifierare = (string)data.AktivitetsIdentifierare,
@@ -90,40 +89,30 @@ namespace N3.Låtsas
                 TypNamn = typeof(T).Name,
                 JsonData = JsonSerializer.Serialize((object)data, _JsonSerializerOptions),
             };
-            var sql =
-                @"insert into aktivitet( aktivitetsidentifierare,  kategori,  typnamn,  jsondata)
-                                      values (@AktivitetsIdentifierare, @Kategori, @TypNamn, @JsonData)";
-            _ = koppling.Execute(sql, post);
+
+            session.Store(post);
+            await session.SaveChangesAsync();
         }
 
         public async Task<AktivitetsKvitto> Reservera(UnikIdentifierare aktivitetsIdentifierare)
         {
-            await ValueTask.CompletedTask;
-            using var koppling = TaDatabasKoppling();
+            await using var session = _store.LightweightSession();
             var parametrar = new
             {
                 AktivitetsIdentifierare = aktivitetsIdentifierare.ToString(),
                 ReservationsIdentifierare = UnikIdentifierare.Skapa().ToString(),
             };
-            var post = koppling.QueryFirstOrDefault<LåtsasAktivitetsPost>(
-                "select * from aktivitet where aktivitetsidentifierare=@AktivitetsIdentifierare",
-                parametrar
-            );
-            if (
-                post is not null && post.AktivitetsIdentifierare.OrFail() == aktivitetsIdentifierare
-            )
-            {
-                var antal = koppling.Execute(
-                    @"update aktivitet
-                    set reservationstidsstämpel=@ReservationsTidsstämpel,
-                        reservationsidentifierare=@ReservationsIdentifierare
-                    where aktivitetsidentifierare=@AktivitetsIdentifierare",
-                    parametrar
+            var post = await session
+                .Query<LåtsasAktivitetsPost>()
+                .FirstOrDefaultAsync(
+                    x => (string)x.AktivitetsIdentifierare! == (string)aktivitetsIdentifierare
                 );
-                if (antal != 1)
-                {
-                    throw new Exception();
-                }
+            if (post is not null)
+            {
+                post.ReservationsIdentifierare = UnikIdentifierare.Skapa();
+                post.ReservationsTidsstämpel = DateTimeOffset.Now;
+                session.Update(post);
+                await session.SaveChangesAsync();
                 return new AktivitetsKvitto(
                     aktivitetsIdentifierare,
                     parametrar.ReservationsIdentifierare
@@ -137,37 +126,23 @@ namespace N3.Låtsas
         {
             lock (_Lock)
             {
-                var katalog = Konfiguration.Katalog.OrFail();
-                if (!Directory.Exists(katalog))
-                {
-                    _ = Directory.CreateDirectory(katalog);
-                }
-
-                using var koppling = TaDatabasKoppling();
-                long? result = koppling.ExecuteScalar("PRAGMA user_version;") as long?;
-                if (result is 0)
-                {
-                    var ddl =
-                        @"create table aktivitet(
-                        id integer primary key
-                        , aktivitetsidentifierare text not null unique
-                        , kategori text not null
-                        , typnamn text not null
-                        , jsondata text not null
-                        , reservationstidsstämpel text null
-                        , reservationsidentifierare text null
-                    );";
-                    _ = koppling.Execute(ddl);
-                    _ = koppling.Execute("PRAGMA user_version = 1;");
-                }
+                using var conn = new NpgsqlConnection(
+                    Konfiguration.PostgresConnectionString.OrFail()
+                );
+                conn.Open();
+                var exists =
+                    conn.ExecuteScalar(
+                        @"
+                SELECT EXISTS (
+                    SELECT FROM 
+                        pg_tables
+                    WHERE 
+                        schemaname = 'public' AND 
+                        tablename  = 'n3schemaversion'
+                );"
+                    ) as bool?;
+                if (exists is false) { }
             }
-        }
-
-        private IDbConnection TaDatabasKoppling()
-        {
-            var connection = new SqliteConnection($"Data Source={this.Sökväg}");
-            connection.Open();
-            return connection;
         }
     }
 }

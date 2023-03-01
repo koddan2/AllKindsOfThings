@@ -44,11 +44,14 @@ namespace N3
 
         private static void ValideraSträngVärde(string s)
         {
-            Guid? ok = new Guid(Base62.EncodingExtensions.FromBase62(s));
-            if (ok is null)
+            try
+            {
+                _ = new Guid(Base62.EncodingExtensions.FromBase62(s));
+            }
+            catch (Exception)
             {
                 throw new ArgumentException(
-                    $"Kunde inte konvertera värdet {s} till en System.Guid!"
+                    $"Värdet {s} gick inte att läsa som en {nameof(UnikIdentifierare)}!"
                 );
             }
         }

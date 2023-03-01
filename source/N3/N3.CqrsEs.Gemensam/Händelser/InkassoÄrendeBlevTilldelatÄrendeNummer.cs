@@ -1,11 +1,15 @@
 ﻿using N3.CqrsEs.Ramverk;
 using SmartAnalyzers.CSharpExtensions.Annotations;
+using System.Text.Json.Serialization;
 
 namespace N3.CqrsEs.Gemensam.Händelser
 {
     [InitRequired]
     public sealed class InkassoÄrendeBlevTilldelatÄrendeNummer : IAggregatHändelse
     {
+        [JsonPropertyName("$typ")]
+        public string Typ => nameof(InkassoÄrendeBlevTilldelatÄrendeNummer);
+
         public InkassoÄrendeBlevTilldelatÄrendeNummer(
             UnikIdentifierare aggregatIdentifierare,
             int ärendeNummer

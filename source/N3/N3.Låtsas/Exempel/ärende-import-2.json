@@ -1,0 +1,24 @@
+{
+  "Fakturor": [
+    {
+      "RänteSats": { "Enheter": 8 },
+      "FakturaDatum": "2020-10-13",
+      "FakturaNummer": "967509",
+      "RänteSatsTyp": "ÖverGällandeReferensRänta",
+      "FörfalloDatum": "2020-11-12",
+      "RänteStoppsDatum": null,
+      "RänteUträkningsSätt": "DagligUträkningPåÅrsbasis",
+      "KvarvarandeKapitalBelopp": { "belopp": 955884.68, "valutaKod": "SEK" },
+      "UrsprungligBetalReferens": "6709782200938706199",
+      "UrsprungligtKapitalBelopp": { "belopp": 955884.68, "valutaKod": "SEK" },
+      "KvarvarandePåminnelseKostnad": { "belopp": 60, "valutaKod": "SEK" }
+    }
+  ],
+  "Historia": [],
+  "Revision": 0,
+  "Tidsstämpel": "0001-01-01T00:00:00+00:00",
+  "KlientReferens": "6GYArcrNj6uO3ReGaX8GVO",
+  "AggregatIdentifierare": "1RQx7LZMdtzciniv1m1K62",
+  "GäldenärsReferenser": ["1KtcKiWBsIzmmQYUA9JAyj"],
+  "KorrelationsIdentifierare": null
+}

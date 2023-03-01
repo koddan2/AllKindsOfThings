@@ -1,15 +1,18 @@
 ﻿////using SAK;
 
+using SmartAnalyzers.CSharpExtensions.Annotations;
+
 namespace N3.Låtsas
 {
-    public record LåtsasAktivitetsPost
+    [InitRequired]
+    public class LåtsasAktivitetsPost
     {
-        public long? Id { get; set; }
-        public string? AktivitetsIdentifierare { get; internal set; }
-        public string? Kategori { get; internal set; }
-        public string? TypNamn { get; internal set; }
-        public string? JsonData { get; internal set; }
-        public string? ReservationsTidsstämpel { get; internal set; }
-        public string? ReservationsIdentifierare { get; internal set; }
+        public string Id => AktivitetsIdentifierare;
+        public string AktivitetsIdentifierare { get; set; }
+        public string? Kategori { get; set; }
+        public string? TypNamn { get; set; }
+        public string? JsonData { get; set; }
+        public DateTimeOffset? ReservationsTidsstämpel { get; set; }
+        public string? ReservationsIdentifierare { get; set; }
     }
 }

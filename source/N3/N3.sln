@@ -34,11 +34,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.App.Domän.Api.Web", "N3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.CqrsEs.Sagor", "N3.CqrsEs.Sagor\N3.CqrsEs.Sagor.csproj", "{F27A6D01-EB13-49FF-A8D7-7A01C8B88009}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3.Låtsas", "N3.Låtsas\N3.Låtsas.csproj", "{D475A9F7-579C-47E2-88A1-F2EED857FDA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.Låtsas", "N3.Låtsas\N3.Låtsas.csproj", "{D475A9F7-579C-47E2-88A1-F2EED857FDA8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAK", "..\SAK\SAK\SAK.csproj", "{F0684B29-F061-4C41-9B8F-49F89FA56009}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3.Infrastruktur.Gemensam", "N3.Infrastruktur.Gemensam\N3.Infrastruktur.Gemensam.csproj", "{8C955934-A7A6-4D1B-8C68-DEFB4FFFBF08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N3.Infrastruktur.Gemensam", "N3.Infrastruktur.Gemensam\N3.Infrastruktur.Gemensam.csproj", "{8C955934-A7A6-4D1B-8C68-DEFB4FFFBF08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3.CqrsEs.IntegrationTest", "N3.CqrsEs.IntegrationTest\N3.CqrsEs.IntegrationTest.csproj", "{D4C5B38A-7781-4DEF-95D3-69E095D47C05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "N3.CqrsEs.Infrastruktur.Marten", "N3.CqrsEs.Infrastruktur.Marten\N3.CqrsEs.Infrastruktur.Marten.csproj", "{FD0F1975-A2CD-431B-86F5-7FAD41240D36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,6 +114,14 @@ Global
 		{8C955934-A7A6-4D1B-8C68-DEFB4FFFBF08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C955934-A7A6-4D1B-8C68-DEFB4FFFBF08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C955934-A7A6-4D1B-8C68-DEFB4FFFBF08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4C5B38A-7781-4DEF-95D3-69E095D47C05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4C5B38A-7781-4DEF-95D3-69E095D47C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4C5B38A-7781-4DEF-95D3-69E095D47C05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4C5B38A-7781-4DEF-95D3-69E095D47C05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD0F1975-A2CD-431B-86F5-7FAD41240D36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD0F1975-A2CD-431B-86F5-7FAD41240D36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD0F1975-A2CD-431B-86F5-7FAD41240D36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD0F1975-A2CD-431B-86F5-7FAD41240D36}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

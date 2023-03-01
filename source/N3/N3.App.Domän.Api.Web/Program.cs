@@ -34,7 +34,10 @@ namespace N3.App.Domän.Api.Web
             });
 
             var svc = builder.Services;
-            _ = svc.InstalleraLåtsasTjänster(builder.Configuration.GetRequiredSection("Låtsas"));
+            _ = svc.InstalleraLåtsasTjänster(
+                builder.Configuration.GetRequiredSection("Låtsas"),
+                builder.Environment
+            );
 
             var app = builder.Build();
 

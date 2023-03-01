@@ -39,7 +39,11 @@ namespace N3.CqrsEs.Test.TestTjänster
             return new List<IHändelse>();
         }
 
-        public async Task Registrera<T>(AggregatStrömIdentifierare<T> ström, IHändelse händelse)
+        public async Task Registrera<T>(
+            AggregatStrömIdentifierare<T> ström,
+            IHändelse händelse,
+            HändelseModus modus
+        )
             where T : IAggregatBas
         {
             await ValueTask.CompletedTask;

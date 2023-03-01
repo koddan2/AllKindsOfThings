@@ -32,8 +32,7 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
             }
 
             var ärende = new InkassoÄrende(kommando.AggregatIdentifierare);
-            await ärende.SkapaÄrende(
-                _händelseKassa,
+            ärende.SkapaÄrende(
                 kommando.KlientReferens,
                 gäldenärsReferenser: kommando.GäldenärsReferenser,
                 fakturor: kommando.Fakturor
@@ -55,7 +54,7 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
             }
             var ärende = new InkassoÄrende(kommando.AggregatIdentifierare);
             ärende.Ladda(händelser);
-            await ärende.TilldelaÄrendeNummer(_händelseKassa, kommando.ÄrendeNummer);
+            ärende.TilldelaÄrendeNummer(kommando.ÄrendeNummer);
         }
     }
 }

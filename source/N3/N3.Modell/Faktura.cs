@@ -1,6 +1,6 @@
 ﻿namespace N3.Modell
 {
-    public readonly record struct Faktura(
+    public record Faktura(
         string FakturaNummer,
         string UrsprungligBetalReferens,
         DateOnly FakturaDatum,
@@ -12,5 +12,19 @@
         RänteSatsTyp RänteSatsTyp,
         DateOnly? RänteStoppsDatum = null,
         Pengar? KvarvarandePåminnelseKostnad = null
-    );
+    )
+    {
+        public Faktura()
+            : this(
+                "",
+                "",
+                DateOnly.MinValue,
+                DateOnly.MinValue,
+                new Pengar(0, ""),
+                new Pengar(0, ""),
+                new Procent(0),
+                RänteUträkningsSätt.DagligUträkningPåÅrsbasis,
+                RänteSatsTyp.Fixerad
+            ) { }
+    };
 }

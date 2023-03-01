@@ -5,6 +5,6 @@ namespace N3.Låtsas
 {
     public class LåtsasAktivitetsBussKonfiguration
     {
-        public string? Katalog { get; set; }
+        public string? PostgresConnectionString { get; set; }
     }
 }
