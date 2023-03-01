@@ -1,9 +1,11 @@
 ﻿using N3.CqrsEs.Gemensam.Händelser;
 using N3.CqrsEs.Ramverk;
 using N3.Modell;
+using SmartAnalyzers.CSharpExtensions.Annotations;
 
 namespace N3.CqrsEs.SkrivModell.Domän
 {
+    [InitRequired]
     public sealed class InkassoÄrende : IAggregatBas
     {
         private InkassoÄrende() { }

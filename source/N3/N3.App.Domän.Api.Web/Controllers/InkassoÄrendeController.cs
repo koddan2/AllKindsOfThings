@@ -6,13 +6,22 @@ using N3.Modell;
 
 namespace N3.App.Domän.Api.Web.Controllers
 {
+    public record ImporteraInkassoÄrendeModell(
+        UnikIdentifierare AktivitetsIdentifierare,
+        ÄrendeImportModell ÄrendeImportModell
+    ) : IAktivitet
+    {
+        public const string Kategori = "ImporteraInkassoÄrende";
+        public AktivitetsKategori AktivitetsKategori => new(Kategori);
+    }
+
     [ApiController]
     [Route("[controller]")]
     public class InkassoÄrendeController : ControllerBase
     {
         private readonly ILogger<InkassoÄrendeController> _logger;
 
-        public IAktivitetsBuss AktivitetsBuss { get; }
+        private IAktivitetsBuss AktivitetsBuss { get; }
 
         public InkassoÄrendeController(
             ILogger<InkassoÄrendeController> logger,
@@ -23,20 +32,26 @@ namespace N3.App.Domän.Api.Web.Controllers
             AktivitetsBuss = aktivitetsBuss;
         }
 
-        public record ImporteraInkassoÄrendeModell(
-            UnikIdentifierare AktivitetsIdentifierare,
-            ÄrendeImportModell ÄrendeImportModell
-        ) : IAktivitet;
+        [HttpGet]
+        [Route("Import/Status/{aktivitetsIdentifierare}")]
+        public async Task<IActionResult> HämtaStatusFörImportAvInkassoÄrende(
+            [FromRoute] string aktivitetsIdentifierare
+        )
+        {
+            using var logScope = _logger.BeginScope(aktivitetsIdentifierare);
+            var status = await AktivitetsBuss.HämtaStatus(aktivitetsIdentifierare);
+            return Ok(status);
+        }
 
         [HttpPost]
-        [Route("SkapaInkassoÄrende")]
+        [Route("Import")]
         public async Task<IActionResult> ImporteraInkassoÄrende(
             [FromBody] ImporteraInkassoÄrendeModell modell
         )
         {
             using var logScope = _logger.BeginScope(modell.AktivitetsIdentifierare);
             _logger.LogTrace("Lägger aktivitet för processering på aktivitetsbussen");
-            await AktivitetsBuss.Registrera(modell);
+            await AktivitetsBuss.Kölägg(modell);
             return Ok(modell.AktivitetsIdentifierare);
         }
     }

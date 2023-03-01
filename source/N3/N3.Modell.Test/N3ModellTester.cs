@@ -158,6 +158,16 @@ namespace N3.Modell.Test
             });
         }
 
+        [Test]
+        public void TestaUnikIdentifierareSlump()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                var uid = UnikIdentifierare.Skapa();
+                Console.WriteLine(uid);
+            }
+        }
+
         static void TestaSerialiseringTurOchRetur<T>(T ingåendeVärde)
         {
             var json = JsonSerializer.Serialize(ingåendeVärde);

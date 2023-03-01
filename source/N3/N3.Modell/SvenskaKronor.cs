@@ -3,16 +3,16 @@ using System.Text.Json.Serialization;
 
 namespace N3.Modell
 {
-    public readonly record struct SvenskaKronorOchMoms(SvenskaKronor MomsBas, Moms Moms)
+    public record SvenskaKronorOchMoms(SvenskaKronor MomsBas, Moms Moms)
     {
         public SvenskaKronor TotalBelopp => MomsBas.LäggPå(Moms);
     }
 
     [DataContract]
-    public readonly record struct SvenskaKronor([property: DataMember] decimal Belopp) : IPengar
+    public record SvenskaKronor : Pengar
     {
-        [DataMember]
-        public string ValutaKod => "SEK";
+        public SvenskaKronor(decimal belopp)
+            : base(belopp, "SEK") { }
 
         public override string ToString() => $"{Belopp} kr";
 

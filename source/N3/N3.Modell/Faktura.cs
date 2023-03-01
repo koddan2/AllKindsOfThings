@@ -5,12 +5,12 @@
         string UrsprungligBetalReferens,
         DateOnly FakturaDatum,
         DateOnly FörfalloDatum,
-        IPengar UrsprungligtKapitalBelopp,
-        IPengar KvarvarandeKapitalBelopp,
+        Pengar UrsprungligtKapitalBelopp,
+        Pengar KvarvarandeKapitalBelopp,
         Procent RänteSats,
         RänteUträkningsSätt RänteUträkningsSätt,
         RänteSatsTyp RänteSatsTyp,
         DateOnly? RänteStoppsDatum = null,
-        IPengar? KvarvarandePåminnelseKostnad = null
+        Pengar? KvarvarandePåminnelseKostnad = null
     );
 }

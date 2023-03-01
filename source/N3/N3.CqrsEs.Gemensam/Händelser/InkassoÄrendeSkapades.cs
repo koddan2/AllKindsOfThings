@@ -1,8 +1,10 @@
 ﻿using N3.CqrsEs.Ramverk;
 using N3.Modell;
+using SmartAnalyzers.CSharpExtensions.Annotations;
 
 namespace N3.CqrsEs.Gemensam.Händelser
 {
+    [InitRequired]
     public sealed class InkassoKlientSkapades : IAggregatHändelse
     {
         public InkassoKlientSkapades(
@@ -24,6 +26,7 @@ namespace N3.CqrsEs.Gemensam.Händelser
         public string FullkomligtNamn { get; }
     }
 
+    [InitRequired]
     public sealed class InkassoÄrendeSkapades : IAggregatHändelse
     {
         public InkassoÄrendeSkapades(

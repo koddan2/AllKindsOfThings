@@ -1,3 +1,10 @@
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.OpenApi.Models;
+using N3.App.Domän.Api.Web.Vanligt;
+using N3.Infrastruktur.Gemensam.Json;
+using N3.Låtsas;
+using System.ComponentModel;
+
 namespace N3.App.Domän.Api.Web
 {
     public class Program
@@ -8,10 +15,26 @@ namespace N3.App.Domän.Api.Web
 
             // Add services to the container.
 
-            _ = builder.Services.AddControllers();
+            _ = builder.Services.AddControllers()
+            ////.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new UnikIdentifierareJsonConverter()))
+            ;
+
+            _ = builder.Services.Configure<JsonOptions>(options =>
+            {
+                ////options.SerializerOptions.Encoder = null;
+                options.SerializerOptions.Converters.Add(new UnikIdentifierareJsonConverter());
+                options.SerializerOptions.AddDateOnlyConverters();
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             _ = builder.Services.AddEndpointsApiExplorer();
-            _ = builder.Services.AddSwaggerGen();
+            _ = builder.Services.AddSwaggerGen(options =>
+            {
+                options.MapType<UnikIdentifierare>(() => new OpenApiSchema { Type = "string", });
+                options.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", });
+            });
+
+            var svc = builder.Services;
+            _ = svc.InstalleraLåtsasTjänster(builder.Configuration.GetRequiredSection("Låtsas"));
 
             var app = builder.Build();
 

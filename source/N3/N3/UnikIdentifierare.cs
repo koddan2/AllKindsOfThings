@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System;
+using System.Text.Json.Serialization;
 
 namespace N3
 {
@@ -15,15 +17,9 @@ namespace N3
     /// bibliotek: https://www.nuget.org/packages/Base62-Net
     /// </summary>
     /// <param name="Värde">Själva värdet.</param>
-    public readonly record struct UnikIdentifierare(
-        [property:JsonPropertyName("ID")]
-        string Värde)
+    [JsonConverter(typeof(UnikIdentifierareJsonConverter))]
+    public record UnikIdentifierare(string Värde)
     {
-        [JsonPropertyName("$type")]
-#pragma warning disable CA1822 // Mark members as static
-        public string _ => "N3.UnikIdentifierare";
-
-#pragma warning restore CA1822 // Mark members as static
         public static implicit operator string(UnikIdentifierare u) => u.Värde;
 
         public static implicit operator UnikIdentifierare(string s)
@@ -44,13 +40,32 @@ namespace N3
 
         public readonly static UnikIdentifierare Ingen = Guid.Empty;
 
+        public override string ToString() => this;
+
         private static void ValideraSträngVärde(string s)
         {
             Guid? ok = new Guid(Base62.EncodingExtensions.FromBase62(s));
             if (ok is null)
             {
-                throw new ArgumentException($"Kunde inte konvertera värdet {s} till en System.Guid!");
+                throw new ArgumentException(
+                    $"Kunde inte konvertera värdet {s} till en System.Guid!"
+                );
             }
         }
+    }
+
+    public class UnikIdentifierareJsonConverter : JsonConverter<UnikIdentifierare>
+    {
+        public override UnikIdentifierare Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        ) => reader.GetString()!;
+
+        public override void Write(
+            Utf8JsonWriter writer,
+            UnikIdentifierare value,
+            JsonSerializerOptions options
+        ) => writer.WriteStringValue((string)value);
     }
 }

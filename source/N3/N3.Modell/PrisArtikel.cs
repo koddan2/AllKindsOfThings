@@ -14,7 +14,7 @@
     public readonly record struct PrisArtikel(
         string Namn,
         string Kod,
-        IPengar Pris,
+        Pengar Pris,
         BokföringsKonto BokföringsKonto,
         Moms Moms,
         FaktureringsTillfälle FaktureringsTillfälle,

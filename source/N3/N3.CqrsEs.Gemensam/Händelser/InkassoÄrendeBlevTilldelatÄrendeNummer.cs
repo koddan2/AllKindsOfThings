@@ -1,7 +1,9 @@
 ﻿using N3.CqrsEs.Ramverk;
+using SmartAnalyzers.CSharpExtensions.Annotations;
 
 namespace N3.CqrsEs.Gemensam.Händelser
 {
+    [InitRequired]
     public sealed class InkassoÄrendeBlevTilldelatÄrendeNummer : IAggregatHändelse
     {
         public InkassoÄrendeBlevTilldelatÄrendeNummer(

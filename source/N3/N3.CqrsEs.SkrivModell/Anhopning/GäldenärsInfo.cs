@@ -1,5 +1,4 @@
-﻿
-using N3.Modell;
+﻿using N3.Modell;
 
 namespace N3.CqrsEs.SkrivModell.Anhopning
 {
@@ -7,5 +6,6 @@ namespace N3.CqrsEs.SkrivModell.Anhopning
         PersonNummer PersonNummer,
         string FullkomligtNamn,
         PostAdress HuvudsakligAdress,
-        string? EpostAdress = null);
+        string? EpostAdress = null
+    );
 }

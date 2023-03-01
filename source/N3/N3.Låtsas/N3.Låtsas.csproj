@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="LanguageExt.Core" Version="4.4.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.0.123" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.0" />
+
+        <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\SAK\SAK\SAK.csproj" />
+        <ProjectReference Include="..\N3.CqrsEs.Gemensam\N3.CqrsEs.Gemensam.csproj" />
+        <ProjectReference Include="..\N3.CqrsEs.LäsModell\N3.CqrsEs.LäsModell.csproj" />
+        <ProjectReference Include="..\N3.CqrsEs.Ramverk\N3.CqrsEs.Ramverk.csproj" />
+        <ProjectReference Include="..\N3.CqrsEs.Sagor\N3.CqrsEs.Sagor.csproj" />
+        <ProjectReference Include="..\N3.CqrsEs.SkrivModell\N3.CqrsEs.SkrivModell.csproj" />
+        <ProjectReference Include="..\N3.CqrsEs\N3.CqrsEs.csproj" />
+        <ProjectReference Include="..\N3.Modell\N3.Modell.csproj" />
+        <ProjectReference Include="..\N3\N3.csproj" />
+    </ItemGroup>
+</Project>

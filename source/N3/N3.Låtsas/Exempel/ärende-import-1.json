@@ -1,0 +1,45 @@
+{
+  "aktivitetsIdentifierare": "320cgsx6zW3AXMwvGgDqOc",
+  "ärendeImportModell": {
+    "ärendeIdentifierare": "1KzjB0djVhrNpoem1UgMlr",
+    "klientReferens": "4sL8RKODF7lUnuG0orn8Aj",
+    "gäldenärsInfo": [
+      {
+        "personNummer": {
+          "värde": "601010-1010"
+        },
+        "fullkomligtNamn": "Test Testsson",
+        "huvudsakligAdress": {
+          "adressRad1": "Testgatan 1",
+          "adressRad2": "",
+          "adressRad3": "",
+          "careOf": "",
+          "postNummer": "123 45",
+          "ortsnamn": "Teststad",
+          "land": {
+            "namn": "Sverige"
+          }
+        },
+        "epostAdress": "test@example.org.null"
+      }
+    ],
+    "fakturor": [
+      {
+        "fakturaNummer": "1234",
+        "ursprungligBetalReferens": "990000000012",
+        "fakturaDatum": "2020-10-10",
+        "förfalloDatum": "2020-10-30",
+        "ursprungligtKapitalBelopp": { "belopp": 2519, "valutaKod": "SEK" },
+        "kvarvarandeKapitalBelopp": { "belopp": 2519, "valutaKod": "SEK" },
+        "ränteSats": {
+          "enheter": 8
+        },
+        "ränteUträkningsSätt": 1,
+        "ränteSatsTyp": 1,
+        "ränteStoppsDatum": null,
+        "kvarvarandePåminnelseKostnad": { "belopp": 60, "valutaKod": "SEK" }
+      }
+    ],
+    "flerSkuldElement": []
+  }
+}

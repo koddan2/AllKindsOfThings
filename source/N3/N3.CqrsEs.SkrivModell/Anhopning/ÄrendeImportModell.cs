@@ -1,5 +1,4 @@
-﻿
-using N3.Modell;
+﻿using N3.Modell;
 
 namespace N3.CqrsEs.SkrivModell.Anhopning
 {
@@ -9,5 +8,5 @@ namespace N3.CqrsEs.SkrivModell.Anhopning
         GäldenärsInfo[] GäldenärsInfo,
         Faktura[] Fakturor,
         SkuldElement[] FlerSkuldElement
-        );
+    );
 }

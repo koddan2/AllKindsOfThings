@@ -9,6 +9,7 @@ namespace N3.Modell
         string? AdressRad3,
         string? CareOf,
         string PostNummer,
+        string Ortsnamn,
         Land Land
     )
     {
