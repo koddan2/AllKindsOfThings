@@ -35,10 +35,15 @@ namespace N3.CqrsEs.SkrivModell.Domän
             string id,
             int? version = null,
             CancellationToken ct = default
-        ) where T : AbstraktAggregatBasKlass
+        )
+            where T : AbstraktAggregatBasKlass
         {
             await using var session = _store.LightweightSession();
-            var aggregate = await session.Events.AggregateStreamAsync<T>(id, version ?? 0, token: ct);
+            var aggregate = await session.Events.AggregateStreamAsync<T>(
+                id,
+                version ?? 0,
+                token: ct
+            );
             return aggregate ?? throw new InvalidOperationException($"No aggregate by id {id}.");
         }
     }

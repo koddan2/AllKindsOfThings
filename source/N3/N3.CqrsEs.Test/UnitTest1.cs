@@ -109,7 +109,10 @@ namespace N3.CqrsEs.Test
                 await kommandoSkickare.Hantera(kommando);
             });
 
-            Assert.That((string)ex.AggregatIdentifierare!, Is.EqualTo(kommando.AggregatIdentifierare));
+            Assert.That(
+                (string)ex.AggregatIdentifierare!,
+                Is.EqualTo(kommando.AggregatIdentifierare)
+            );
         }
 
         [Test]

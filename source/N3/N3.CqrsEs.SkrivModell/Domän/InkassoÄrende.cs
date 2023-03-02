@@ -8,7 +8,9 @@ namespace N3.CqrsEs.SkrivModell.Domän
     [InitRequired]
     public sealed class InkassoÄrende : AbstraktAggregatBasKlass
     {
-        private InkassoÄrende() : this(UnikIdentifierare.Ingen) { }
+        private InkassoÄrende()
+            : this(UnikIdentifierare.Ingen) { }
+
         public InkassoÄrende(UnikIdentifierare identifierare)
         {
             Id = identifierare;
@@ -22,8 +24,7 @@ namespace N3.CqrsEs.SkrivModell.Domän
         ////}
 
         public string KlientReferens { get; private set; } = UnikIdentifierare.Ingen;
-        public string[] GäldenärsReferenser { get; private set; } =
-            Array.Empty<string>();
+        public string[] GäldenärsReferenser { get; private set; } = Array.Empty<string>();
         public Faktura[] Fakturor { get; private set; } = Array.Empty<Faktura>();
         public int? ÄrendeNummer { get; private set; }
 
@@ -65,10 +66,7 @@ namespace N3.CqrsEs.SkrivModell.Domän
         {
             if (ÄrendeNummer is null)
             {
-                var händelse = new InkassoÄrendeBlevTilldelatÄrendeNummer(
-                    Id,
-                    ärendeNummer
-                );
+                var händelse = new InkassoÄrendeBlevTilldelatÄrendeNummer(Id, ärendeNummer);
                 Applicera(händelse);
                 AddUncommittedEvent(händelse);
             }

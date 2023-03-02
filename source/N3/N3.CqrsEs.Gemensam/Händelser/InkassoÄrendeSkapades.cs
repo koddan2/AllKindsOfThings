@@ -7,10 +7,7 @@ namespace N3.CqrsEs.Gemensam.Händelser
     [InitRequired]
     public sealed class InkassoKlientSkapades : IAggregatHändelse
     {
-        public InkassoKlientSkapades(
-            string aggregatIdentifierare,
-            string fullkomligtNamn
-        )
+        public InkassoKlientSkapades(string aggregatIdentifierare, string fullkomligtNamn)
         {
             AggregatIdentifierare = aggregatIdentifierare;
             FullkomligtNamn = fullkomligtNamn;

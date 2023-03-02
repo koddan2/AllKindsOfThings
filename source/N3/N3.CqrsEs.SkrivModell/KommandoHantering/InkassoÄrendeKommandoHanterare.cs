@@ -11,7 +11,10 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
         private readonly IHändelseKassa _händelseKassa;
         private readonly IAggregateRepository _repo;
 
-        public InkassoÄrendeKommandoHanterare(IHändelseKassa händelseKassa, IAggregateRepository repo)
+        public InkassoÄrendeKommandoHanterare(
+            IHändelseKassa händelseKassa,
+            IAggregateRepository repo
+        )
         {
             _händelseKassa = händelseKassa;
             _repo = repo;

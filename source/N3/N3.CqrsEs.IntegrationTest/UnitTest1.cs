@@ -8,6 +8,7 @@ using N3.CqrsEs.SkrivModell.Domän;
 using N3.Modell;
 
 [assembly: LevelOfParallelism(4)]
+
 namespace N3.CqrsEs.IntegrationTest
 {
     public class Tests

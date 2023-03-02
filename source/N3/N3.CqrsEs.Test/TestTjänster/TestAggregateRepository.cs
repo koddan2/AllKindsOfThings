@@ -12,7 +12,13 @@ namespace N3.CqrsEs.Test.TestTjänster
         {
             _händelseKassa = händelseKassa;
         }
-        public async Task<T> LoadAsync<T>(string id, int? version = null, CancellationToken ct = default) where T : AbstraktAggregatBasKlass
+
+        public async Task<T> LoadAsync<T>(
+            string id,
+            int? version = null,
+            CancellationToken ct = default
+        )
+            where T : AbstraktAggregatBasKlass
         {
             var result = JsonSerializer.Deserialize<T>("{}");
             var ev = await _händelseKassa.Hämta(new AggregatStrömIdentifierare<T>(id));
@@ -26,11 +32,16 @@ namespace N3.CqrsEs.Test.TestTjänster
             return result!;
         }
 
-        public async Task StoreAsync<T>(T aggregate, CancellationToken ct = default) where T : AbstraktAggregatBasKlass
+        public async Task StoreAsync<T>(T aggregate, CancellationToken ct = default)
+            where T : AbstraktAggregatBasKlass
         {
             foreach (IHändelse item in aggregate.GetUncommittedEvents())
             {
-                await _händelseKassa.Registrera(new AggregatStrömIdentifierare<T>(aggregate.Id), item, HändelseModus.SkapaNy);
+                await _händelseKassa.Registrera(
+                    new AggregatStrömIdentifierare<T>(aggregate.Id),
+                    item,
+                    HändelseModus.SkapaNy
+                );
             }
         }
     }
