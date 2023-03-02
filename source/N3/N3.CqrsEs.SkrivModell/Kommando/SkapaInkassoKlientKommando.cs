@@ -8,7 +8,7 @@ namespace N3.CqrsEs.SkrivModell.Kommando
     public sealed class SkapaInkassoKlientKommando : IKommando, IValidatableObject
     {
         public SkapaInkassoKlientKommando(
-            UnikIdentifierare aggregatIdentifierare,
+            string aggregatIdentifierare,
             string fullkomligtKlientNamn
         )
         {
@@ -20,9 +20,9 @@ namespace N3.CqrsEs.SkrivModell.Kommando
         public long FörväntadRevision { get; init; }
 
         [Required]
-        public UnikIdentifierare KorrelationsIdentifierare { get; init; }
+        public string KorrelationsIdentifierare { get; init; }
         public IEnumerable<string> Historia { get; } = new List<string>();
-        public UnikIdentifierare AggregatIdentifierare { get; }
+        public string AggregatIdentifierare { get; }
 
         public string FullkomligtKlientNamn { get; }
 

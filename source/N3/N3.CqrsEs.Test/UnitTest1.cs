@@ -72,9 +72,9 @@ namespace N3.CqrsEs.Test
             );
 
             var kommando = new SkapaInkassoÄrendeKommando(
-                Guid.NewGuid(),
-                Guid.NewGuid(),
-                new[] { (UnikIdentifierare)Guid.NewGuid() },
+                UnikIdentifierare.Skapa(),
+                UnikIdentifierare.Skapa(),
+                new[] { (string)UnikIdentifierare.Skapa() },
                 new[] { faktura }
             );
             await kommandoSkickare.Hantera(kommando);
@@ -98,9 +98,9 @@ namespace N3.CqrsEs.Test
             >();
 
             var kommando = new SkapaInkassoÄrendeKommando(
-                Guid.NewGuid(),
-                Guid.NewGuid(),
-                Array.Empty<UnikIdentifierare>(),
+                UnikIdentifierare.Skapa(),
+                UnikIdentifierare.Skapa(),
+                Array.Empty<string>(),
                 Array.Empty<Faktura>()
             );
             await kommandoSkickare.Hantera(kommando);
@@ -109,7 +109,7 @@ namespace N3.CqrsEs.Test
                 await kommandoSkickare.Hantera(kommando);
             });
 
-            Assert.That(ex.AggregatIdentifierare, Is.EqualTo(kommando.AggregatIdentifierare));
+            Assert.That((string)ex.AggregatIdentifierare!, Is.EqualTo(kommando.AggregatIdentifierare));
         }
 
         [Test]
@@ -132,9 +132,9 @@ namespace N3.CqrsEs.Test
                 UnikIdentifierare aggId;
                 {
                     var kommando = new SkapaInkassoÄrendeKommando(
-                        Guid.NewGuid(),
-                        Guid.NewGuid(),
-                        Array.Empty<UnikIdentifierare>(),
+                        UnikIdentifierare.Skapa(),
+                        UnikIdentifierare.Skapa(),
+                        Array.Empty<string>(),
                         Array.Empty<Faktura>()
                     );
                     await kommandoSkickareSkapa.Hantera(kommando);

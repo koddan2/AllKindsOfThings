@@ -9,9 +9,9 @@ namespace N3.CqrsEs.SkrivModell.Kommando
     public sealed class SkapaInkassoÄrendeKommando : IKommando, IValidatableObject
     {
         public SkapaInkassoÄrendeKommando(
-            UnikIdentifierare aggregatIdentifierare,
-            UnikIdentifierare klientReferens,
-            UnikIdentifierare[] gäldenärsReferenser,
+            string aggregatIdentifierare,
+            string klientReferens,
+            string[] gäldenärsReferenser,
             Faktura[] fakturor
         )
         {
@@ -22,20 +22,20 @@ namespace N3.CqrsEs.SkrivModell.Kommando
         }
 
         [Required]
-        public UnikIdentifierare KorrelationsIdentifierare { get; init; }
+        public string KorrelationsIdentifierare { get; init; }
         public IEnumerable<string> Historia { get; } = new List<string>();
 
         public string Auktorisering { get; init; }
         public long FörväntadRevision { get; init; }
 
         [Required]
-        public UnikIdentifierare AggregatIdentifierare { get; }
+        public string AggregatIdentifierare { get; }
 
         [Required]
-        public UnikIdentifierare KlientReferens { get; }
+        public string KlientReferens { get; }
 
         [Required]
-        public UnikIdentifierare[] GäldenärsReferenser { get; }
+        public string[] GäldenärsReferenser { get; }
 
         [Required]
         public Faktura[] Fakturor { get; }

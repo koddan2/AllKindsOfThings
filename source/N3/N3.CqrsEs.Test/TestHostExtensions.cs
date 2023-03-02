@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using N3.CqrsEs.LäsModell.Infrastruktur;
 using N3.CqrsEs.Ramverk;
+using N3.CqrsEs.SkrivModell.Domän;
 using N3.CqrsEs.SkrivModell.KommandoHantering;
 using N3.CqrsEs.Test.TestTjänster;
 
@@ -13,6 +14,7 @@ namespace N3.CqrsEs.Test
         {
             return services
                 .AddScoped<TestVyLagringDatabas>()
+                .AddScoped<IAggregateRepository, TestAggregateRepository>()
                 .AddScoped<IVyLagring, TestVyLagring>()
                 .AddScoped<IÄrendeNummerUträknare, TestVyLagring>()
                 .AddScoped<IHändelseKassa, MinnesBaseradHändelseKassa>();

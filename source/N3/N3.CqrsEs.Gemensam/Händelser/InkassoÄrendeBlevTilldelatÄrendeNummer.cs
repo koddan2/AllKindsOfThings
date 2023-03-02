@@ -1,17 +1,13 @@
 ﻿using N3.CqrsEs.Ramverk;
 using SmartAnalyzers.CSharpExtensions.Annotations;
-using System.Text.Json.Serialization;
 
 namespace N3.CqrsEs.Gemensam.Händelser
 {
     [InitRequired]
     public sealed class InkassoÄrendeBlevTilldelatÄrendeNummer : IAggregatHändelse
     {
-        [JsonPropertyName("$typ")]
-        public string Typ => nameof(InkassoÄrendeBlevTilldelatÄrendeNummer);
-
         public InkassoÄrendeBlevTilldelatÄrendeNummer(
-            UnikIdentifierare aggregatIdentifierare,
+            string aggregatIdentifierare,
             int ärendeNummer
         )
         {
@@ -19,10 +15,10 @@ namespace N3.CqrsEs.Gemensam.Händelser
             ÄrendeNummer = ärendeNummer;
         }
 
-        public UnikIdentifierare KorrelationsIdentifierare { get; init; }
+        public string KorrelationsIdentifierare { get; init; }
         public IEnumerable<string> Historia { get; } = new List<string>();
 
-        public UnikIdentifierare AggregatIdentifierare { get; init; }
+        public string AggregatIdentifierare { get; init; }
         public long Revision { get; init; }
         public DateTimeOffset Tidsstämpel { get; init; }
 

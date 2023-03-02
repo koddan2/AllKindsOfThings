@@ -9,10 +9,12 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
             IKommandoHanterare<TilldelaÄrendeNummerTillInkassoÄrendeKommando>
     {
         private readonly IHändelseKassa _händelseKassa;
+        private readonly IAggregateRepository _repo;
 
-        public InkassoÄrendeKommandoHanterare(IHändelseKassa händelseKassa)
+        public InkassoÄrendeKommandoHanterare(IHändelseKassa händelseKassa, IAggregateRepository repo)
         {
             _händelseKassa = händelseKassa;
+            _repo = repo;
         }
 
         public async Task Hantera(SkapaInkassoÄrendeKommando kommando)
@@ -37,6 +39,7 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
                 gäldenärsReferenser: kommando.GäldenärsReferenser,
                 fakturor: kommando.Fakturor
             );
+            await _repo.StoreAsync(ärende);
         }
 
         public async Task Hantera(TilldelaÄrendeNummerTillInkassoÄrendeKommando kommando)
@@ -55,6 +58,7 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
             var ärende = new InkassoÄrende(kommando.AggregatIdentifierare);
             ärende.Ladda(händelser);
             ärende.TilldelaÄrendeNummer(kommando.ÄrendeNummer);
+            await _repo.StoreAsync(ärende);
         }
     }
 }

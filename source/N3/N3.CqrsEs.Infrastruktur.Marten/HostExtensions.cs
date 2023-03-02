@@ -60,6 +60,13 @@ namespace N3.CqrsEs.Infrastruktur.Marten
         private static void Anpassa(StoreOptions options)
         {
             options.Events.StreamIdentity = StreamIdentity.AsString;
+            options.Events.MetadataConfig.HeadersEnabled = true;
+            options.Events.MetadataConfig.CausationIdEnabled = true;
+            options.Events.MetadataConfig.CorrelationIdEnabled = true;
+            _ = options.Policies.ForAllDocuments(mapping =>
+            {
+                mapping.Metadata.DotNetType.Enabled = true;
+            });
 
             var ser = new SystemTextJsonSerializer { EnumStorage = EnumStorage.AsString };
             ser.Customize(opts =>

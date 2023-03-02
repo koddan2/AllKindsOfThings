@@ -5,7 +5,7 @@
         public static AggregatStrömIdentifierare<T> TillStrömIdentifierare<T>(this T aggregat)
             where T : IAggregatBas
         {
-            return new AggregatStrömIdentifierare<T>(aggregat.Identifierare);
+            return new AggregatStrömIdentifierare<T>(aggregat.Id);
         }
 
         public static string ByggStrömIdentifierare(this AggregatStrömIdentifierare data)

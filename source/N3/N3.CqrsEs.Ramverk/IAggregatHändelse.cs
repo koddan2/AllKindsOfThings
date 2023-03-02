@@ -2,6 +2,6 @@
 {
     public interface IAggregatHändelse : IHändelse
     {
-        public UnikIdentifierare AggregatIdentifierare { get; }
+        public string AggregatIdentifierare { get; }
     }
 }

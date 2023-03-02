@@ -6,18 +6,12 @@ using SmartAnalyzers.CSharpExtensions.Annotations;
 namespace N3.CqrsEs.SkrivModell.Domän
 {
     [InitRequired]
-    public sealed class InkassoKlient : AbstraktAggregatBasKlass<InkassoKlient>
+    public sealed class InkassoKlient : AbstraktAggregatBasKlass
     {
         public InkassoKlient(UnikIdentifierare identifierare)
-            : base(identifierare)
         {
-            ////Identifierare = identifierare;
+            Id = identifierare;
         }
-
-        public override string Id => this.TillStrömIdentifierare().ByggStrömIdentifierare();
-
-        ////public UnikIdentifierare Identifierare { get; }
-        ////public long Revision { get; private set; }
 
         public string? FullkomligtNamn { get; private set; }
 
@@ -26,7 +20,7 @@ namespace N3.CqrsEs.SkrivModell.Domän
             string FullkomligtNamn
         )
         {
-            var händelse = new InkassoKlientSkapades(Identifierare, FullkomligtNamn);
+            var händelse = new InkassoKlientSkapades(Id, FullkomligtNamn);
             await händelseRegistrator.Registrera(
                 this.TillStrömIdentifierare(),
                 händelse,

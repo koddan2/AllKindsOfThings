@@ -8,7 +8,7 @@ namespace N3.CqrsEs.Gemensam.Händelser
     public sealed class InkassoKlientSkapades : IAggregatHändelse
     {
         public InkassoKlientSkapades(
-            UnikIdentifierare aggregatIdentifierare,
+            string aggregatIdentifierare,
             string fullkomligtNamn
         )
         {
@@ -16,10 +16,10 @@ namespace N3.CqrsEs.Gemensam.Händelser
             FullkomligtNamn = fullkomligtNamn;
         }
 
-        public UnikIdentifierare KorrelationsIdentifierare { get; init; }
+        public string KorrelationsIdentifierare { get; init; }
         public IEnumerable<string> Historia { get; } = new List<string>();
 
-        public UnikIdentifierare AggregatIdentifierare { get; }
+        public string AggregatIdentifierare { get; }
         public long Revision { get; }
         public DateTimeOffset Tidsstämpel { get; }
 
@@ -30,9 +30,9 @@ namespace N3.CqrsEs.Gemensam.Händelser
     public sealed class InkassoÄrendeSkapades : IAggregatHändelse
     {
         public InkassoÄrendeSkapades(
-            UnikIdentifierare aggregatIdentifierare,
-            UnikIdentifierare klientReferens,
-            UnikIdentifierare[] gäldenärsReferenser,
+            string aggregatIdentifierare,
+            string klientReferens,
+            string[] gäldenärsReferenser,
             Faktura[] fakturor
         )
         {
@@ -42,15 +42,15 @@ namespace N3.CqrsEs.Gemensam.Händelser
             Fakturor = fakturor;
         }
 
-        public UnikIdentifierare KorrelationsIdentifierare { get; init; }
+        public string KorrelationsIdentifierare { get; init; }
         public IEnumerable<string> Historia { get; } = new List<string>();
 
-        public UnikIdentifierare AggregatIdentifierare { get; }
+        public string AggregatIdentifierare { get; }
         public long Revision { get; }
         public DateTimeOffset Tidsstämpel { get; }
 
-        public UnikIdentifierare KlientReferens { get; }
-        public UnikIdentifierare[] GäldenärsReferenser { get; }
+        public string KlientReferens { get; }
+        public string[] GäldenärsReferenser { get; }
         public Faktura[] Fakturor { get; }
     }
 }

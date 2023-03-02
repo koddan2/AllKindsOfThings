@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using SmartAnalyzers.CSharpExtensions.Annotations;
+using System.Text.Json.Serialization;
 
 namespace N3.CqrsEs.Ramverk
 {
@@ -8,34 +9,15 @@ namespace N3.CqrsEs.Ramverk
     public interface IAggregatBas
     {
         string Id { get; }
-        UnikIdentifierare Identifierare { get; }
         int Version { get; }
     }
 
     // Infrastructure to capture modifications to state in events
-    public abstract class AbstraktAggregatBasKlass<T> : IAggregatBas
-        where T : IAggregatBas
+    [InitRequired]
+    public abstract class AbstraktAggregatBasKlass : IAggregatBas
     {
-        ////public UnikIdentifierare Identifierare { get; private set; }
-
-        public AbstraktAggregatBasKlass() { }
-            ////=>
-            ////Identifierare = UnikIdentifierare.Ingen;
-        public AbstraktAggregatBasKlass(UnikIdentifierare identifierare) =>
-            Identifierare = identifierare;
-
         // For indexing our event streams
-        public string Id { get; set; }
-        ////{
-        ////    get
-        ////    {
-        ////        return new AggregatStrömIdentifierare(typeof(T), Identifierare).ByggStrömIdentifierare();
-        ////    }
-        ////    set
-        ////    {
-        ////        this.Identifierare = new AggregatIdentifierareFrånStröm(typeof(T), value).TillIdentifierare();
-        ////    }
-        ////}
+        public string Id { get; protected set; }
 
         // For protecting the state, i.e. conflict prevention
         public int Version { get; protected set; }

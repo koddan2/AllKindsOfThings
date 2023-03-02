@@ -6,37 +6,35 @@ using SmartAnalyzers.CSharpExtensions.Annotations;
 namespace N3.CqrsEs.SkrivModell.Domän
 {
     [InitRequired]
-    public sealed class InkassoÄrende : AbstraktAggregatBasKlass<InkassoÄrende>
+    public sealed class InkassoÄrende : AbstraktAggregatBasKlass
     {
-        public InkassoÄrende()
-            : base() { }
+        private InkassoÄrende() : this(UnikIdentifierare.Ingen) { }
         public InkassoÄrende(UnikIdentifierare identifierare)
-            : base(identifierare)
         {
-            ////Identifierare = identifierare;
+            Id = identifierare;
         }
 
-        public override string Id => this
-            .TillStrömIdentifierare()
-            .ByggStrömIdentifierare();
+        ////private InkassoÄrende Create(object s)
+        ////{
+        ////    var a = new InkassoÄrende("");
+        ////    //a.Applicera(s);
+        ////    return a;
+        ////}
 
-        ////public UnikIdentifierare Identifierare { get; }
-        public long Revision { get; private set; }
-
-        public UnikIdentifierare KlientReferens { get; private set; } = UnikIdentifierare.Ingen;
-        public UnikIdentifierare[] GäldenärsReferenser { get; private set; } =
-            Array.Empty<UnikIdentifierare>();
+        public string KlientReferens { get; private set; } = UnikIdentifierare.Ingen;
+        public string[] GäldenärsReferenser { get; private set; } =
+            Array.Empty<string>();
         public Faktura[] Fakturor { get; private set; } = Array.Empty<Faktura>();
         public int? ÄrendeNummer { get; private set; }
 
         public void SkapaÄrende(
-            UnikIdentifierare klientReferens,
-            UnikIdentifierare[] gäldenärsReferenser,
+            string klientReferens,
+            string[] gäldenärsReferenser,
             Faktura[] fakturor
         )
         {
             var händelse = new InkassoÄrendeSkapades(
-                Identifierare,
+                Id,
                 klientReferens,
                 gäldenärsReferenser,
                 fakturor
@@ -52,7 +50,6 @@ namespace N3.CqrsEs.SkrivModell.Domän
             {
                 if (händelse is InkassoÄrendeSkapades skapades)
                 {
-                    Revision = skapades.Revision;
                     KlientReferens = skapades.KlientReferens;
                     GäldenärsReferenser = skapades.GäldenärsReferenser;
                     Fakturor = skapades.Fakturor;
@@ -69,7 +66,7 @@ namespace N3.CqrsEs.SkrivModell.Domän
             if (ÄrendeNummer is null)
             {
                 var händelse = new InkassoÄrendeBlevTilldelatÄrendeNummer(
-                    Identifierare,
+                    Id,
                     ärendeNummer
                 );
                 Applicera(händelse);
@@ -96,5 +93,19 @@ namespace N3.CqrsEs.SkrivModell.Domän
             this.ÄrendeNummer = händelse.ÄrendeNummer;
             this.Version++;
         }
+
+#if DEBUG
+        public void _Applicera(object e)
+        {
+            if (e is InkassoÄrendeSkapades e0)
+            {
+                Applicera(e0);
+            }
+            else if (e is InkassoÄrendeBlevTilldelatÄrendeNummer e1)
+            {
+                Applicera(e1);
+            }
+        }
+#endif
     }
 }

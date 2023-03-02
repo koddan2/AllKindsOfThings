@@ -15,13 +15,13 @@ namespace N3.CqrsEs.SkrivModell.Kommando
             ÄrendeNummer = ärendeNummer;
         }
 
-        public UnikIdentifierare KorrelationsIdentifierare { get; init; }
+        public string KorrelationsIdentifierare { get; init; }
         public IEnumerable<string> Historia { get; } = new List<string>();
 
         public string Auktorisering { get; init; }
         public long FörväntadRevision { get; init; }
 
-        public UnikIdentifierare AggregatIdentifierare { get; }
+        public string AggregatIdentifierare { get; }
         public int ÄrendeNummer { get; }
     }
 }

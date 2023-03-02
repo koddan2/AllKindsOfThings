@@ -4,8 +4,8 @@ using N3.Modell;
 namespace N3.CqrsEs.LäsModell.Frågor
 {
     public record HämtaSpecifiktInkassoÄrende(
-        UnikIdentifierare ÄrendeIdentifierare,
-        UnikIdentifierare KorrelationsIdentifierare
+        string ÄrendeIdentifierare,
+        string KorrelationsIdentifierare
     ) : IMeddelande
     {
         public IEnumerable<string> Historia { get; } = new List<string>();

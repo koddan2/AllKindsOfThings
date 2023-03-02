@@ -2,12 +2,12 @@ using Bogus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using N3.CqrsEs.Gemensam.Händelser;
 using N3.CqrsEs.Infrastruktur.Marten;
 using N3.CqrsEs.Ramverk;
 using N3.CqrsEs.SkrivModell.Domän;
 using N3.Modell;
 
+[assembly: LevelOfParallelism(4)]
 namespace N3.CqrsEs.IntegrationTest
 {
     public class Tests
@@ -49,27 +49,40 @@ namespace N3.CqrsEs.IntegrationTest
         }
 
         [Test]
-        public async Task Test1()
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(7)]
+        [TestCase(8)]
+        [TestCase(9)]
+        [TestCase(10)]
+        [TestCase(11)]
+        [TestCase(12)]
+        public async Task Test1(object _)
         {
             var faker = new Faker();
             var hk = _scope.ServiceProvider.GetRequiredService<IHändelseKassa>();
             var aggRepo = _scope.ServiceProvider.GetRequiredService<AggregateRepository>();
             var agg = new InkassoÄrende(UnikIdentifierare.Skapa());
 
-            var klientref = UnikIdentifierare.Skapa();
-            var glref = new UnikIdentifierare[] { UnikIdentifierare.Skapa() };
+            string klientref = UnikIdentifierare.Skapa();
+            var glref = new string[] { (string)UnikIdentifierare.Skapa() };
             var fakturor = new Faktura[] { Generatorer.BasGeneratorer.TestFakturor.Generate() };
             agg.SkapaÄrende(klientref, glref, fakturor);
             await aggRepo.StoreAsync(agg);
-            ////await hk.Registrera(agg.TillStrömIdentifierare(), event1, HändelseModus.SkapaNy);
 
             var agg2 = await aggRepo.LoadAsync<InkassoÄrende>(agg.Id);
             var ärendeNummer = faker.Random.Int(100, 99999);
             agg2.TilldelaÄrendeNummer(ärendeNummer);
             await aggRepo.StoreAsync(agg2);
-            ////await hk.Registrera(agg.TillStrömIdentifierare(), @event, HändelseModus.SkapaNy);
-            ////var event2 = new InkassoÄrendeBlevTilldelatÄrendeNummer(agg.Identifierare, 101);
-            ////await hk.Registrera(agg.TillStrömIdentifierare(), event2, HändelseModus.LäggTill);
+            Assert.Multiple(() =>
+            {
+                Assert.That(agg2.Id, Is.EqualTo(agg.Id));
+                Assert.That(agg2.ÄrendeNummer, Is.EqualTo(ärendeNummer));
+            });
         }
     }
 }
