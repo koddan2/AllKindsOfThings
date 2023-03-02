@@ -15,7 +15,7 @@
         <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.3" />
         <PackageReference Include="Npgsql" Version="7.0.2" />
         <!--<PackageReference Include="Marten" Version="5.11.0" />-->
-        <!--<PackageReference Include="Marten" Version="6.0.0-alpha.8" />-->
+        <PackageReference Include="Marten" Version="6.0.0-alpha.8" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,7 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\..\marten\src\Marten\Marten.csproj" />
         <ProjectReference Include="..\..\SAK\SAK\SAK.csproj" />
         <ProjectReference Include="..\N3.CqrsEs.Gemensam\N3.CqrsEs.Gemensam.csproj" />
         <ProjectReference Include="..\N3.CqrsEs.LäsModell\N3.CqrsEs.LäsModell.csproj" />
