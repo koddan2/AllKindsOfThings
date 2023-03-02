@@ -44,7 +44,7 @@ namespace N3.CqrsEs.Infrastruktur.Marten
                     var connString = configuration.GetConnectionString("Marten").OrFail();
                     options.Connection(connString);
 
-                    Anpassa(options);
+                    Anpassa(configuration, options);
 
                     // If we're running in development mode, let Marten just take care
                     // of all necessary schema building and patching behind the scenes
@@ -57,10 +57,10 @@ namespace N3.CqrsEs.Infrastruktur.Marten
             return services;
         }
 
-        private static void Anpassa(StoreOptions options)
+        private static void Anpassa(IConfiguration configuration, StoreOptions options)
         {
             options.Events.StreamIdentity = StreamIdentity.AsString;
-            options.Events.MetadataConfig.HeadersEnabled = true;
+            ////options.Events.MetadataConfig.HeadersEnabled = true;
             options.Events.MetadataConfig.CausationIdEnabled = true;
             options.Events.MetadataConfig.CorrelationIdEnabled = true;
             _ = options.Policies.ForAllDocuments(mapping =>
@@ -74,7 +74,14 @@ namespace N3.CqrsEs.Infrastruktur.Marten
                 opts.WriteIndented = true;
             });
             options.Serializer(ser);
+
+            // instead of
             ////options.Serializer<SystemTextJsonSerializer>();
+
+            if (configuration["SchemaName"] is string schemaName)
+            {
+                options.DatabaseSchemaName = schemaName;
+            }
         }
     }
 }
