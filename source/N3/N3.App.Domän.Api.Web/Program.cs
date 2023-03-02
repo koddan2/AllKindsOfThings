@@ -1,12 +1,25 @@
 using Microsoft.AspNetCore.Http.Json;
+using NSwag;
+using NSwag.AspNetCore;
 using Microsoft.OpenApi.Models;
 using N3.App.Domän.Api.Web.Vanligt;
 using N3.Infrastruktur.Gemensam.Json;
 using N3.Låtsas;
+using Rebus.Config;
 using System.ComponentModel;
+using Newtonsoft.Json.Converters;
+using Rebus.Routing.TypeBased;
+using N3.App.Domän.Api.Web.Controllers;
+using Rebus.Bus.Advanced;
+using Rebus.Bus;
 
 namespace N3.App.Domän.Api.Web
 {
+    public static class Topics
+    {
+        public const string ImporteraÄrende = "importera-ärende";
+    }
+
     public class Program
     {
         public static void Main(string[] args)
@@ -27,29 +40,90 @@ namespace N3.App.Domän.Api.Web
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             _ = builder.Services.AddEndpointsApiExplorer();
-            _ = builder.Services.AddSwaggerGen(options =>
-            {
-                options.MapType<UnikIdentifierare>(() => new OpenApiSchema { Type = "string", });
-                options.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", });
-            });
+            ////_ = builder.Services.AddSwaggerGen(options =>
+            ////{
+            ////    options.MapType<UnikIdentifierare>(() => new OpenApiSchema { Type = "string", });
+            ////    options.MapType<DateOnly>(() => new OpenApiSchema { Type = "string", });
+
+            ////    options.SwaggerDoc(
+            ////        "v1",
+            ////        new OpenApiInfo
+            ////        {
+            ////            Description = "Version 1",
+            ////            Title = "Version 1",
+            ////            Version = "v1",
+            ////        }
+            ////    );
+            ////});
 
             var svc = builder.Services;
-            _ = svc.InstalleraLåtsasTjänster(
-                builder.Configuration.GetRequiredSection("Låtsas"),
-                builder.Environment
-            );
+            ////_ = svc.InstalleraLåtsasTjänster(
+            ////    builder.Configuration.GetRequiredSection("Låtsas"),
+            ////    builder.Environment
+            ////);
+
+            _ = svc.AddRebus(
+                configure =>
+                    configure
+                        .Transport(
+                            t =>
+                                t.UsePostgreSql(
+                                    builder.Configuration.GetConnectionString("Rebus"),
+                                    "rebus_transport",
+                                    "inpq"
+                                )
+                        )
+                        .Routing(
+                            r =>
+                                r.TypeBased()
+                                    .Map<ImporteraInkassoÄrendeModell>(Topics.ImporteraÄrende)
+                        )
+                        .Subscriptions(s =>
+                        {
+                            s.StoreInPostgres(
+                                builder.Configuration.GetConnectionString("Rebus"),
+                                "rebus_subscriptions",
+                                isCentralized: true
+                            );
+                        })
+                        ,onCreated: async bus =>
+                        {
+                            await bus.Subscribe<ImporteraInkassoÄrendeModell>();
+                        }
+            )
+                .AddRebusHandler<ImporteraInkassoÄrendeHanterare>()
+                .AddRebusHandler<ImporteraInkassoÄrendeHanterare2>()
+                ;
+
+            _ = svc.AddMemoryCache(opts =>
+            {
+                ////opts.
+            });
+
+            _ = svc.AddSwaggerDocument(cfg =>
+            {
+                cfg.ApiGroupNames = new[] { "v1" };
+                cfg.SerializerSettings = new Newtonsoft.Json.JsonSerializerSettings()
+                {
+                    Converters = { new StringEnumConverter(), }
+                };
+            });
+
+            ////svc.AddHostedService<BusAccumulator>();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                _ = app.UseSwagger().UseSwaggerUI();
-            }
+            ////if (app.Environment.IsDevelopment())
+            ////{
+            ////    _ = app.UseSwagger().UseSwaggerUI();
+            ////}
 
             _ = app.UseHttpsRedirection();
 
             _ = app.UseAuthorization();
+
+            _ = app.UseOpenApi().UseSwaggerUi3();
 
             _ = app.MapControllers();
 

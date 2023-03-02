@@ -17,27 +17,34 @@ namespace N3.Låtsas
             IHostEnvironment hostEnvironment
         )
         {
+            if (!hostEnvironment.IsDevelopment())
+            {
+                throw new ApplicationException(
+                    "Cannot use these services in a non-development environment."
+                );
+            }
             _ = services
                 .Configure<LåtsasAktivitetsBussKonfiguration>(opts =>
                 {
                     opts.PostgresConnectionString = configuration.GetConnectionString("Postgres");
                 })
                 .AddScoped<IAktivitetsBuss, LåtsasAktivitetsBuss>()
-                .AddMarten(options =>
-                {
-                    // This is the absolute, simplest way to integrate Marten into your
-                    // .Net Core application with Marten's default configuration
-                    // Establish the connection string to your Marten database
-                    var connString = configuration.GetConnectionString("Marten").OrFail();
-                    options.Connection(connString);
+            ////.AddMarten(options =>
+            ////{
+            ////    // This is the absolute, simplest way to integrate Marten into your
+            ////    // .Net Core application with Marten's default configuration
+            ////    // Establish the connection string to your Marten database
+            ////    var connString = configuration.GetConnectionString("Marten").OrFail();
+            ////    options.Connection(connString);
 
-                    // If we're running in development mode, let Marten just take care
-                    // of all necessary schema building and patching behind the scenes
-                    if (hostEnvironment.IsDevelopment())
-                    {
-                        options.AutoCreateSchemaObjects = AutoCreate.All;
-                    }
-                });
+            ////    // If we're running in development mode, let Marten just take care
+            ////    // of all necessary schema building and patching behind the scenes
+            ////    if (hostEnvironment.IsDevelopment())
+            ////    {
+            ////        options.AutoCreateSchemaObjects = AutoCreate.All;
+            ////    }
+            ////})
+            ;
 
             return services;
         }

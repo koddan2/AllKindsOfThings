@@ -1,35 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using N3.CqrsEs.Ramverk;
-using N3.CqrsEs.SkrivModell.Anhopning;
 using N3.CqrsEs.SkrivModell.Kommando;
 using N3.Modell;
+using Rebus.Bus;
 
 namespace N3.App.Domän.Api.Web.Controllers
 {
-    public record ImporteraInkassoÄrendeModell(
-        UnikIdentifierare AktivitetsIdentifierare,
-        ÄrendeImportModell ÄrendeImportModell
-    ) : IAktivitet
-    {
-        public const string Kategori = "ImporteraInkassoÄrende";
-        public AktivitetsKategori AktivitetsKategori => new(Kategori);
-    }
-
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("v1")]
+    [ApiExplorerSettings(GroupName = "v1")]
+    [Route("v1/[controller]")]
     public class InkassoÄrendeController : ControllerBase
     {
         private readonly ILogger<InkassoÄrendeController> _logger;
+        private readonly IBus _bus;
 
-        private IAktivitetsBuss AktivitetsBuss { get; }
-
-        public InkassoÄrendeController(
-            ILogger<InkassoÄrendeController> logger,
-            IAktivitetsBuss aktivitetsBuss
-        )
+        public InkassoÄrendeController(ILogger<InkassoÄrendeController> logger, IBus bus)
         {
             _logger = logger;
-            AktivitetsBuss = aktivitetsBuss;
+            _bus = bus;
         }
 
         [HttpGet]
@@ -38,8 +27,10 @@ namespace N3.App.Domän.Api.Web.Controllers
             [FromRoute] string aktivitetsIdentifierare
         )
         {
+            await ValueTask.CompletedTask;
             using var logScope = _logger.BeginScope(aktivitetsIdentifierare);
-            var status = await AktivitetsBuss.HämtaStatus(aktivitetsIdentifierare);
+            //var status = await _bus.HämtaStatus(aktivitetsIdentifierare);
+            var status = new object();
             return Ok(status);
         }
 
@@ -51,7 +42,9 @@ namespace N3.App.Domän.Api.Web.Controllers
         {
             using var logScope = _logger.BeginScope(modell.AktivitetsIdentifierare);
             _logger.LogTrace("Lägger aktivitet för processering på aktivitetsbussen");
-            await AktivitetsBuss.Kölägg(modell);
+            ////await AktivitetsBuss.Kölägg(modell);
+            ////await _bus.SendLocal(modell);
+            await _bus.Send(modell);
             return Ok(modell.AktivitetsIdentifierare);
         }
     }

@@ -1,12 +1,14 @@
 version: "3"
 services:
-  # n3-redis:
-  #   hostname: redis
-  #   image: docker.io/redis:7.0.9-alpine
-  #   command: ["redis-server", "--appendonly", "no"]
-  #   volumes:
-  #     - ./Instance/redis:/data
-  #   restart: unless-stopped
+  n3-redis:
+    hostname: redis
+    image: docker.io/redis:7.0.9-alpine
+    command: ["redis-server", "--appendonly", "no"]
+    ports:
+      - "6379:6379/tcp"
+    volumes:
+      - ./Instance/redis:/data
+    restart: unless-stopped
 
   # rabbit:
   #   hostname: rabbit
