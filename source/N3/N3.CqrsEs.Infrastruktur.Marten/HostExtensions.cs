@@ -25,6 +25,7 @@ namespace N3.CqrsEs.Infrastruktur.Marten
         {
             _ = services
                 .AddScoped<IHändelseKassa, MartenHändelseKassa>()
+                .AddScoped<IJobbKö, IhärdigAktivitetsBuss>()
                 .AddScoped<AggregateRepository>()
                 ////.Configure<JsonSerializerOptions>(opts =>
                 ////{

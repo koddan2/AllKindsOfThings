@@ -1,7 +1,4 @@
-using N3.App.Domän.Api.Web;
-using N3.App.Domän.Api.Web.Controllers;
-using Rebus.Config;
-using Rebus.Routing.TypeBased;
+using Yarp.ReverseProxy.Transforms;
 
 namespace N3.App.Ombud.Web
 {
@@ -12,63 +9,47 @@ namespace N3.App.Ombud.Web
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            _ = builder.Services.AddControllersWithViews();
 
             var svc = builder.Services;
-            _ = svc.AddRebus(
-                configure =>
-                    configure
-                        .Transport(
-                            t =>
-                                t.UsePostgreSql(
-                                    builder.Configuration.GetConnectionString("Rebus"),
-                                    "rebus_transport",
-                                    "inpq"
-                                )
-                        )
-                        .Routing(
-                            r =>
-                                r.TypeBased()
-                                    .Map<ImporteraInkassoÄrendeModell>(Topics.ImporteraÄrende)
-                        )
-                        .Subscriptions(s =>
-                        {
-                            s.StoreInPostgres(
-                                builder.Configuration.GetConnectionString("Rebus"),
-                                "rebus_subscriptions",
-                                isCentralized: true
-                            );
-                        })
-                        , onCreated: async bus =>
-                        {
-                            await bus.Subscribe<ImporteraInkassoÄrendeModell>();
-                        }
-            )
-                .AddRebusHandler<ImporteraInkassoÄrendeHanterare>()
-                .AddRebusHandler<ImporteraInkassoÄrendeHanterare2>()
-                ;
+            _ = svc.AddReverseProxy()
+                .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
+                .AddTransforms(ctx =>
+                {
+                    //_ = ctx.AddPathRemovePrefix(new PathString("/api"));
+                    _ = ctx.AddRequestTransform(async (req) =>
+                    {
+                        await ValueTask.CompletedTask;
+                        req.Path = new PathString(req.Path.Value!.Replace("/api", ""));
+                    });
+                });
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+                _ = app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                _ = app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            _ = app.UseHttpsRedirection();
+            _ = app.UseStaticFiles();
 
-            app.UseRouting();
+            _ = app.UseRouting();
 
-            app.UseAuthorization();
+            _ = app.UseAuthorization();
 
-            app.MapControllerRoute(
+            _ = app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}"
             );
+
+            _ = app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapReverseProxy();
+            });
 
             app.Run();
         }

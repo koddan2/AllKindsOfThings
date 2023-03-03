@@ -85,5 +85,35 @@ namespace N3.CqrsEs.IntegrationTest
                 Assert.That(agg2.ÄrendeNummer, Is.EqualTo(ärendeNummer));
             });
         }
+
+        public class TestJobbTyp : AbstraktJobb
+        {
+            public int Nummer { get; set; }
+        }
+
+        [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        [TestCase(4)]
+        [TestCase(5)]
+        [TestCase(6)]
+        [TestCase(7)]
+        [TestCase(8)]
+        [TestCase(9)]
+        [TestCase(10)]
+        [TestCase(11)]
+        [TestCase(12)]
+        public async Task TestBuss1(object _)
+        {
+            var buss = _scope.ServiceProvider.GetRequiredService<IJobbKö>();
+            var sak = new TestJobbTyp { Id = UnikIdentifierare.Skapa(), Nummer = 8 };
+            await buss.Kölägg(sak);
+            var status = await buss.HämtaStatus<TestJobbTyp>(sak.Id);
+            Assert.That(status, Is.Not.Null);
+            var reservation = await buss.Reservera<TestJobbTyp>(sak.Id);
+            Assert.That(reservation, Is.Not.Null);
+            await buss.TaBort<TestJobbTyp>(sak.Id, reservation);
+        }
     }
 }

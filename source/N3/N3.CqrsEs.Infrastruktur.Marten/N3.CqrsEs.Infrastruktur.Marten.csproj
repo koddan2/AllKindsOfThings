@@ -17,6 +17,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\SAK\SAK\SAK.csproj" />
         <ProjectReference Include="..\N3.CqrsEs.Ramverk\N3.CqrsEs.Ramverk.csproj" />
+        <ProjectReference Include="..\N3.CqrsEs.SkrivModell\N3.CqrsEs.SkrivModell.csproj" />
         <ProjectReference Include="..\N3.Infrastruktur.Gemensam\N3.Infrastruktur.Gemensam.csproj" />
     </ItemGroup>
 

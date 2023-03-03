@@ -1,5 +1,4 @@
 ﻿using N3.App.Domän.Api.Web.Controllers;
-using Rebus.Bus;
 
 namespace N3.App.Domän.Api.Web
 {
@@ -11,11 +10,10 @@ namespace N3.App.Domän.Api.Web
         {
             _services = services;
         }
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var scope = _services.CreateAsyncScope();
-            var bus = scope.ServiceProvider.GetRequiredService<IBus>();
-            await bus.Subscribe<ImporteraInkassoÄrendeModell>();
 
             while (!cancellationToken.IsCancellationRequested)
             {

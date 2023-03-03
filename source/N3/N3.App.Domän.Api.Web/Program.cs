@@ -1,17 +1,8 @@
 using Microsoft.AspNetCore.Http.Json;
-using NSwag;
-using NSwag.AspNetCore;
-using Microsoft.OpenApi.Models;
-using N3.App.Domän.Api.Web.Vanligt;
 using N3.Infrastruktur.Gemensam.Json;
-using N3.Låtsas;
-using Rebus.Config;
-using System.ComponentModel;
 using Newtonsoft.Json.Converters;
-using Rebus.Routing.TypeBased;
 using N3.App.Domän.Api.Web.Controllers;
-using Rebus.Bus.Advanced;
-using Rebus.Bus;
+using N3.CqrsEs.Infrastruktur.Marten;
 
 namespace N3.App.Domän.Api.Web
 {
@@ -27,19 +18,20 @@ namespace N3.App.Domän.Api.Web
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            var svc = builder.Services;
 
-            _ = builder.Services.AddControllers()
+            _ = svc.AddControllers()
             ////.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new UnikIdentifierareJsonConverter()))
             ;
 
-            _ = builder.Services.Configure<JsonOptions>(options =>
+            _ = svc.Configure<JsonOptions>(options =>
             {
                 ////options.SerializerOptions.Encoder = null;
                 options.SerializerOptions.Converters.Add(new UnikIdentifierareJsonConverter());
                 options.SerializerOptions.AddDateOnlyConverters();
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            _ = builder.Services.AddEndpointsApiExplorer();
+            _ = svc.AddEndpointsApiExplorer();
             ////_ = builder.Services.AddSwaggerGen(options =>
             ////{
             ////    options.MapType<UnikIdentifierare>(() => new OpenApiSchema { Type = "string", });
@@ -56,44 +48,12 @@ namespace N3.App.Domän.Api.Web
             ////    );
             ////});
 
-            var svc = builder.Services;
             ////_ = svc.InstalleraLåtsasTjänster(
             ////    builder.Configuration.GetRequiredSection("Låtsas"),
             ////    builder.Environment
             ////);
 
-            _ = svc.AddRebus(
-                configure =>
-                    configure
-                        .Transport(
-                            t =>
-                                t.UsePostgreSql(
-                                    builder.Configuration.GetConnectionString("Rebus"),
-                                    "rebus_transport",
-                                    "inpq"
-                                )
-                        )
-                        .Routing(
-                            r =>
-                                r.TypeBased()
-                                    .Map<ImporteraInkassoÄrendeModell>(Topics.ImporteraÄrende)
-                        )
-                        .Subscriptions(s =>
-                        {
-                            s.StoreInPostgres(
-                                builder.Configuration.GetConnectionString("Rebus"),
-                                "rebus_subscriptions",
-                                isCentralized: true
-                            );
-                        })
-                        ,onCreated: async bus =>
-                        {
-                            await bus.Subscribe<ImporteraInkassoÄrendeModell>();
-                        }
-            )
-                .AddRebusHandler<ImporteraInkassoÄrendeHanterare>()
-                .AddRebusHandler<ImporteraInkassoÄrendeHanterare2>()
-                ;
+            _ = svc.LäggTillCqrsEsInfrastrukturMarten(builder.Configuration, builder.Environment);
 
             _ = svc.AddMemoryCache(opts =>
             {

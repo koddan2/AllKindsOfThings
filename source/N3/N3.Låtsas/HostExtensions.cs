@@ -17,18 +17,18 @@ namespace N3.Låtsas
             IHostEnvironment hostEnvironment
         )
         {
-            if (!hostEnvironment.IsDevelopment())
+            if (!hostEnvironment.IsDevelopment() || configuration["test"] is "true")
             {
                 throw new ApplicationException(
                     "Cannot use these services in a non-development environment."
                 );
             }
-            _ = services
-                .Configure<LåtsasAktivitetsBussKonfiguration>(opts =>
-                {
-                    opts.PostgresConnectionString = configuration.GetConnectionString("Postgres");
-                })
-                .AddScoped<IAktivitetsBuss, LåtsasAktivitetsBuss>()
+            ////_ = services
+            ////    .Configure<LåtsasAktivitetsBussKonfiguration>(opts =>
+            ////    {
+            ////        opts.PostgresConnectionString = configuration.GetConnectionString("Postgres");
+            ////    })
+            ////    .AddScoped<IAktivitetsBuss, LåtsasAktivitetsBuss>()
             ////.AddMarten(options =>
             ////{
             ////    // This is the absolute, simplest way to integrate Marten into your
