@@ -72,7 +72,7 @@ namespace N3.App.Domän.Api.Web.Controllers
                 "Lägger aktivitet för processering på aktivitetsbussen (id={id})",
                 modell.Jobb.Id
             );
-            await _bus.Publish(new ImporteraInkassoÄrendeJobbKommando(modell.Jobb));
+            await _bus.SendLocal(new ImporteraInkassoÄrendeJobbKommando(modell.Jobb));
             return Ok(new KöläggningsKvitto(modell.Jobb.Id));
         }
     }

@@ -1,6 +1,5 @@
 ﻿using N3.CqrsEs.Messages;
-using SlimMessageBus;
-using SlimMessageBus.Host;
+using Rebus.Bus;
 
 namespace N3.App.Ombud.Web
 {
@@ -21,9 +20,8 @@ namespace N3.App.Ombud.Web
             >();
             while (!cancellationToken.IsCancellationRequested)
             {
-                var bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
-                ////await bus.Publish(new ImportAvInkassoÄrendeKölagt { JobbId = "" }, cancellationToken: cancellationToken);
-                var cc = scope.ServiceProvider.GetRequiredService<IConsumerControl>();
+                //var _ = scope.ServiceProvider.GetRequiredService<IBus>();
+                logger.LogInformation("OK");
                 await Task.Delay(10000, cancellationToken);
             }
 

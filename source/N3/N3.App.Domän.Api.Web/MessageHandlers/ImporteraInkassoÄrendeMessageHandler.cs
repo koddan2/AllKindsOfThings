@@ -33,7 +33,7 @@ namespace N3.App.Domän.Api.Web.MessageHandlers
                 .FirstOrDefaultAsync(x => x.Id == message.Jobb.Id);
             if (existing is null)
             {
-                session.Store(message);
+                session.Store(message.Jobb);
                 await session.SaveChangesAsync();
                 var msg = new ImportAvInkassoÄrendeKölagt { JobbId = message.Jobb.Id };
                 _logger.LogInformation("Publishing: {msg}", msg);
