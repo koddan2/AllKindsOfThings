@@ -20,7 +20,7 @@ namespace N3.App.Ombud.Web
             while (!cancellationToken.IsCancellationRequested)
             {
                 var bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
-                await bus.Publish(new ImportAvInkassoÄrendeKölagt { JobbId = "" }, cancellationToken: cancellationToken);
+                ////await bus.Publish(new ImportAvInkassoÄrendeKölagt { JobbId = "" }, cancellationToken: cancellationToken);
                 var cc = scope.ServiceProvider.GetRequiredService<IConsumerControl>();
                 await Task.Delay(10000, cancellationToken);
             }

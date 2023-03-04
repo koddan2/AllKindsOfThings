@@ -11,14 +11,15 @@
 
         <PackageReference Include="SlimMessageBus" Version="1.8.0" />
         <PackageReference Include="SlimMessageBus.Host.AspNetCore" Version="1.8.0" />
-        <!--<PackageReference Include="SlimMessageBus.Host.MsDependencyInjection" Version="1.8.0" />-->
-        <PackageReference Include="SlimMessageBus.Host.Redis" Version="1.23.0" />
-        <PackageReference Include="SlimMessageBus.Host.Memory" Version="1.23.0" />
-        <PackageReference Include="SlimMessageBus.Host.Hybrid" Version="1.23.0" />
+        <PackageReference Include="SlimMessageBus.Host.MsDependencyInjection" Version="1.8.0" />
+        <!--<PackageReference Include="SlimMessageBus.Host.Redis" Version="1.23.0" />-->
+        <!--<PackageReference Include="SlimMessageBus.Host.Memory" Version="1.23.0" />-->
+        <!--<PackageReference Include="SlimMessageBus.Host.Hybrid" Version="1.23.0" />-->
         <PackageReference Include="SlimMessageBus.Host.Serialization.SystemTextJson" Version="1.5.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\..\SlimMessageBus\src\SlimMessageBus.Host.Redis\SlimMessageBus.Host.Redis.csproj" />
       <ProjectReference Include="..\N3.CqrsEs.Façade\N3.CqrsEs.Façade.csproj" />
       <ProjectReference Include="..\N3.CqrsEs.Gemensam\N3.CqrsEs.Gemensam.csproj" />
       <ProjectReference Include="..\N3.CqrsEs.Infrastruktur.Marten\N3.CqrsEs.Infrastruktur.Marten.csproj" />

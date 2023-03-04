@@ -14,7 +14,7 @@ namespace N3.App.Ombud.Web
             var svc = builder.Services;
             _ = svc.AddReverseProxy()
                 .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
-            _ = svc.AddMessageBus(builder.Configuration);
+            _ = svc.AddMessageBus0(builder.Configuration);
 
             var app = builder.Build();
 

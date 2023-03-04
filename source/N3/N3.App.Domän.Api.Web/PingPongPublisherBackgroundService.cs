@@ -24,6 +24,10 @@ namespace N3.App.Domän.Api.Web
                     new PingPongMessage { MessageText = "ping" },
                     cancellationToken: cancellationToken
                 );
+                await bus.Publish(
+                    new ImportAvInkassoÄrendeKölagt { JobbId = "ping" },
+                    cancellationToken: cancellationToken
+                );
                 await Task.Delay(15000, cancellationToken);
             }
         }
