@@ -18,7 +18,7 @@ namespace N3.CqrsEs.Test.TestTjänster
             int? version = null,
             CancellationToken ct = default
         )
-            where T : AbstraktAggregatBasKlass
+            where T : AbstraktAggregatRotBasKlass
         {
             var result = JsonSerializer.Deserialize<T>("{}");
             var ev = await _händelseKassa.Hämta(new AggregatStrömIdentifierare<T>(id));
@@ -33,7 +33,7 @@ namespace N3.CqrsEs.Test.TestTjänster
         }
 
         public async Task StoreAsync<T>(T aggregate, CancellationToken ct = default)
-            where T : AbstraktAggregatBasKlass
+            where T : AbstraktAggregatRotBasKlass
         {
             foreach (IHändelse item in aggregate.GetUncommittedEvents())
             {

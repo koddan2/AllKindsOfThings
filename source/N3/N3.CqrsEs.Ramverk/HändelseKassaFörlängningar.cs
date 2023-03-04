@@ -3,7 +3,7 @@
     public static class HändelseKassaFörlängningar
     {
         public static AggregatStrömIdentifierare<T> TillStrömIdentifierare<T>(this T aggregat)
-            where T : IAggregatBas
+            where T : IAggregatRot
         {
             return new AggregatStrömIdentifierare<T>(aggregat.Id);
         }
@@ -20,7 +20,7 @@
         }
 
         public static string ByggStrömIdentifierare<T>(this AggregatStrömIdentifierare<T> data)
-            where T : IAggregatBas
+            where T : IAggregatRot
         {
             return $"{typeof(T).Name}-{data.Identifierare}";
         }

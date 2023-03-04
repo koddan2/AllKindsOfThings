@@ -11,5 +11,5 @@
     );
 
     public readonly record struct AggregatStrömIdentifierare<T>(UnikIdentifierare Identifierare)
-        where T : IAggregatBas;
+        where T : IAggregatRot;
 }

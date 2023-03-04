@@ -14,12 +14,12 @@
             IHändelse händelse,
             HändelseModus modus
         )
-            where T : IAggregatBas;
+            where T : IAggregatRot;
     }
 
     public interface IHändelseKassa : IHändelseRegistrator
     {
         Task<IEnumerable<IHändelse>> Hämta<T>(AggregatStrömIdentifierare<T> ström)
-            where T : IAggregatBas;
+            where T : IAggregatRot;
     }
 }

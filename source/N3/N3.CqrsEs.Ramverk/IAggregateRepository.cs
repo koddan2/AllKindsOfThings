@@ -5,8 +5,8 @@ namespace N3.CqrsEs.SkrivModell.Domän
     public interface IAggregateRepository
     {
         Task<T> LoadAsync<T>(string id, int? version = null, CancellationToken ct = default)
-            where T : AbstraktAggregatBasKlass;
+            where T : AbstraktAggregatRotBasKlass;
         Task StoreAsync<T>(T aggregate, CancellationToken ct = default)
-            where T : AbstraktAggregatBasKlass;
+            where T : AbstraktAggregatRotBasKlass;
     }
 }

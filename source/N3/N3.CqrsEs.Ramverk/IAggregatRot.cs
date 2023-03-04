@@ -6,7 +6,7 @@ namespace N3.CqrsEs.Ramverk
     /// <summary>
     /// Dvs. AggregateRoot
     /// </summary>
-    public interface IAggregatBas
+    public interface IAggregatRot
     {
         string Id { get; }
         int Version { get; }
@@ -14,7 +14,7 @@ namespace N3.CqrsEs.Ramverk
 
     // Infrastructure to capture modifications to state in events
     [InitRequired]
-    public abstract class AbstraktAggregatBasKlass : IAggregatBas
+    public abstract class AbstraktAggregatRotBasKlass : IAggregatRot
     {
         // For indexing our event streams
         public string Id { get; protected set; }

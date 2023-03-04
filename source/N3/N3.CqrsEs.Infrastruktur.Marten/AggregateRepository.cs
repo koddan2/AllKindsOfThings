@@ -13,7 +13,7 @@ namespace N3.CqrsEs.SkrivModell.Domän
         }
 
         public async Task StoreAsync<T>(T aggregate, CancellationToken ct = default)
-            where T : AbstraktAggregatBasKlass
+            where T : AbstraktAggregatRotBasKlass
         {
             await using var session = _store.LightweightSession();
             // Take non-persisted events, push them to the event stream, indexed by the aggregate ID
@@ -36,7 +36,7 @@ namespace N3.CqrsEs.SkrivModell.Domän
             int? version = null,
             CancellationToken ct = default
         )
-            where T : AbstraktAggregatBasKlass
+            where T : AbstraktAggregatRotBasKlass
         {
             await using var session = _store.LightweightSession();
             var aggregate = await session.Events.AggregateStreamAsync<T>(

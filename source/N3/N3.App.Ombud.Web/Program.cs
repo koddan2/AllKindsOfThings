@@ -13,16 +13,8 @@ namespace N3.App.Ombud.Web
 
             var svc = builder.Services;
             _ = svc.AddReverseProxy()
-                .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
-                .AddTransforms(ctx =>
-                {
-                    //_ = ctx.AddPathRemovePrefix(new PathString("/api"));
-                    _ = ctx.AddRequestTransform(async (req) =>
-                    {
-                        await ValueTask.CompletedTask;
-                        req.Path = new PathString(req.Path.Value!.Replace("/api", ""));
-                    });
-                });
+                .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+            _ = svc.AddMessageBus(builder.Configuration);
 
             var app = builder.Build();
 
@@ -46,10 +38,11 @@ namespace N3.App.Ombud.Web
                 pattern: "{controller=Home}/{action=Index}/{id?}"
             );
 
-            _ = app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapReverseProxy();
-            });
+            _ = app.MapReverseProxy();
+            //_ = app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapReverseProxy();
+            //});
 
             app.Run();
         }

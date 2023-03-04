@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using N3.App.Ombud.Web.Models;
+using SlimMessageBus;
+using SlimMessageBus.Host;
 using System.Diagnostics;
 
 namespace N3.App.Ombud.Web.Controllers

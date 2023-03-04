@@ -14,7 +14,7 @@ namespace N3.CqrsEs.Infrastruktur.Marten
         }
 
         public async Task<IEnumerable<IHändelse>> Hämta<T>(AggregatStrömIdentifierare<T> ström)
-            where T : IAggregatBas
+            where T : IAggregatRot
         {
             await using var session = _store.LightweightSession();
             var events = await session.Events.FetchStreamAsync(ström.ByggStrömIdentifierare());
@@ -26,7 +26,7 @@ namespace N3.CqrsEs.Infrastruktur.Marten
             IHändelse händelse,
             HändelseModus modus
         )
-            where T : IAggregatBas
+            where T : IAggregatRot
         {
             await using var session = _store.LightweightSession();
             if (modus == HändelseModus.SkapaNy)

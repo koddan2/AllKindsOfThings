@@ -4,6 +4,7 @@ using N3.CqrsEs.Ramverk;
 using N3.CqrsEs.SkrivModell.JobbPaket;
 using N3.CqrsEs.SkrivModell.Kommando;
 using N3.Modell;
+using SlimMessageBus;
 
 namespace N3.App.Domän.Api.Web.Controllers
 {
@@ -14,18 +15,18 @@ namespace N3.App.Domän.Api.Web.Controllers
     public class InkassoÄrendeController : ControllerBase
     {
         private readonly ILogger<InkassoÄrendeController> _logger;
-        private readonly IDocumentStore _store;
-        private readonly IJobbKö _aktivitetsBuss;
+        private readonly IMessageBus _bus;
+        private readonly IJobbKö _jobbKö;
 
         public InkassoÄrendeController(
             ILogger<InkassoÄrendeController> logger,
-            IDocumentStore store,
-            IJobbKö aktivitetsBuss
+            IMessageBus bus,
+            IJobbKö jobbKö
         )
         {
             _logger = logger;
-            _store = store;
-            _aktivitetsBuss = aktivitetsBuss;
+            _bus = bus;
+            _jobbKö = jobbKö;
         }
 
         [HttpGet]
@@ -34,7 +35,7 @@ namespace N3.App.Domän.Api.Web.Controllers
         public async Task<IActionResult> HämtaStatusFörImportAvInkassoÄrenden()
         {
             using var logScope = _logger.BeginScope("Import/Status/Alla");
-            var data = await _aktivitetsBuss.HämtaStatus<ImporteraInkassoÄrendeModell>();
+            var data = await _jobbKö.HämtaStatus<ImporteraInkassoÄrendeModell>();
             return Ok(data);
         }
 
@@ -47,7 +48,7 @@ namespace N3.App.Domän.Api.Web.Controllers
         )
         {
             using var logScope = _logger.BeginScope(aktivitetsIdentifierare);
-            var data = await _aktivitetsBuss.HämtaStatus<ImporteraInkassoÄrendeModell>(
+            var data = await _jobbKö.HämtaStatus<ImporteraInkassoÄrendeModell>(
                 aktivitetsIdentifierare
             );
             return Ok(data);
@@ -71,7 +72,7 @@ namespace N3.App.Domän.Api.Web.Controllers
                 "Lägger aktivitet för processering på aktivitetsbussen (id={id})",
                 modell.Id
             );
-            await _aktivitetsBuss.Kölägg(modell);
+            await _bus.Publish(modell);
             return Ok(new KöläggningsKvitto(modell.Id));
         }
     }

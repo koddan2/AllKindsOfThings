@@ -1,16 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Yarp.ReverseProxy" Version="2.0.0" />
+
+        <PackageReference Include="SlimMessageBus" Version="1.8.0" />
+        <PackageReference Include="SlimMessageBus.Host.AspNetCore" Version="1.8.0" />
+        <!--<PackageReference Include="SlimMessageBus.Host.MsDependencyInjection" Version="1.8.0" />-->
+        <PackageReference Include="SlimMessageBus.Host.Redis" Version="1.23.0" />
+        <PackageReference Include="SlimMessageBus.Host.Memory" Version="1.23.0" />
+        <PackageReference Include="SlimMessageBus.Host.Hybrid" Version="1.23.0" />
+        <PackageReference Include="SlimMessageBus.Host.Serialization.SystemTextJson" Version="1.5.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\N3.App.Domän.Api.Web\N3.App.Domän.Api.Web.csproj" />
+      <ProjectReference Include="..\N3.CqrsEs.Façade\N3.CqrsEs.Façade.csproj" />
+      <ProjectReference Include="..\N3.CqrsEs.Gemensam\N3.CqrsEs.Gemensam.csproj" />
+      <ProjectReference Include="..\N3.CqrsEs.Infrastruktur.Marten\N3.CqrsEs.Infrastruktur.Marten.csproj" />
+      <ProjectReference Include="..\N3.CqrsEs.LäsModell\N3.CqrsEs.LäsModell.csproj" />
+      <ProjectReference Include="..\N3.CqrsEs.Ramverk\N3.CqrsEs.Ramverk.csproj" />
+      <ProjectReference Include="..\N3.CqrsEs.Sagor\N3.CqrsEs.Sagor.csproj" />
+      <ProjectReference Include="..\N3.CqrsEs.SkrivModell\N3.CqrsEs.SkrivModell.csproj" />
+      <ProjectReference Include="..\N3.CqrsEs\N3.CqrsEs.csproj" />
+      <ProjectReference Include="..\N3.Infrastruktur.Gemensam\N3.Infrastruktur.Gemensam.csproj" />
+      <ProjectReference Include="..\N3.Modell\N3.Modell.csproj" />
     </ItemGroup>
 </Project>

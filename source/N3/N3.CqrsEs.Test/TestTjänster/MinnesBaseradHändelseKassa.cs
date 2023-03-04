@@ -27,7 +27,7 @@ namespace N3.CqrsEs.Test.TestTjänster
         > InkassoÄrendeFickÄrendeNummerMottagare { get; }
 
         public async Task<IEnumerable<IHändelse>> Hämta<T>(AggregatStrömIdentifierare<T> ström)
-            where T : IAggregatBas
+            where T : IAggregatRot
         {
             await ValueTask.CompletedTask;
             var hittad = _inMemoryDb.TryGetValue(ström.Identifierare, out var händelser);
@@ -44,7 +44,7 @@ namespace N3.CqrsEs.Test.TestTjänster
             IHändelse händelse,
             HändelseModus modus
         )
-            where T : IAggregatBas
+            where T : IAggregatRot
         {
             await ValueTask.CompletedTask;
             var hittad = _inMemoryDb.TryGetValue(ström.Identifierare, out var händelser);

@@ -6,7 +6,7 @@ using SmartAnalyzers.CSharpExtensions.Annotations;
 namespace N3.CqrsEs.SkrivModell.Domän
 {
     [InitRequired]
-    public sealed class InkassoKlient : AbstraktAggregatBasKlass
+    public sealed class InkassoKlient : AbstraktAggregatRotBasKlass
     {
         public InkassoKlient(UnikIdentifierare identifierare)
         {
