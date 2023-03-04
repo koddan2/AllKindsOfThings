@@ -31,33 +31,35 @@ namespace N3.App.Ombud.Web
                 .AddRebusHandler<ImportAvInkassoÄrendeKölagtMessageHandler>()
                 .AddRebusHandler<PingPongMessageHandler>()
                 .AddRebus(
-                builder =>
-                {
-                    return builder
-                        .Transport(
-                            transport =>
-                                transport.UsePostgreSql(
-                                    configuration.GetConnectionString("RebusPostgres"),
-                                    "main_bus",
-                                    "topic_all"
-                                )
-                        )
-                        .Subscriptions(
-                            sub =>
-                                sub.StoreInPostgres(
-                                    configuration.GetConnectionString("RebusPostgres"),
-                                    "bus_subscriptions",
-                                    isCentralized: true
-                                )
-                        )
-                        .Routing(r => r.TypeBased().MapAssemblyOf<PingPongMessage>("topic_all"));
-                },
-                onCreated: async bus =>
-                {
-                    await bus.Subscribe<ImportAvInkassoÄrendeKölagt>();
-                    await bus.Subscribe<PingPongMessage>();
-                }
-            );
+                    builder =>
+                    {
+                        return builder
+                            .Transport(
+                                transport =>
+                                    transport.UsePostgreSql(
+                                        configuration.GetConnectionString("RebusPostgres"),
+                                        "main_bus",
+                                        Channels.N3DomainCommon
+                                    )
+                            )
+                            .Subscriptions(
+                                sub =>
+                                    sub.StoreInPostgres(
+                                        configuration.GetConnectionString("RebusPostgres"),
+                                        "bus_subscriptions",
+                                        isCentralized: true
+                                    )
+                            )
+                            .Routing(
+                                r => r.TypeBased().MapAssemblyOf<CqrsEsAssemblyMarker>(Channels.N3DomainCommon)
+                            );
+                    },
+                    onCreated: async bus =>
+                    {
+                        await bus.Subscribe<ImportAvInkassoÄrendeKölagt>();
+                        await bus.Subscribe<PingPongMessage>();
+                    }
+                );
 
             return services;
         }

@@ -7,6 +7,7 @@ using Rebus.Config;
 using N3.App.Domän.Api.Web.Messages;
 using Rebus.Routing.TypeBased;
 using N3.App.Domän.Api.Web.MessageHandlers;
+using N3.CqrsEs;
 
 namespace N3.App.Domän.Api.Web
 {
@@ -84,38 +85,43 @@ namespace N3.App.Domän.Api.Web
             _ = services
                 .AddRebusHandler<ImporteraInkassoÄrendeMessageHandler>()
                 .AddRebus(
-                builder =>
-                {
-                    return builder
-                        .Transport(
-                            transport =>
-                                transport.UsePostgreSql(
-                                    configuration.GetConnectionString("RebusPostgres"),
-                                    "main_bus",
-                                    "n3dom"
-                                )
-                        )
-                        .Subscriptions(
-                            sub =>
-                                sub.StoreInPostgres(
-                                    configuration.GetConnectionString("RebusPostgres"),
-                                    "bus_subscriptions",
-                                    isCentralized: true
-                                )
-                        )
-                        .Routing(
-                            r =>
-                                r.TypeBased()
-                                    .MapAssemblyOf<PingPongMessage>("topic_all")
-                                    .MapAssemblyOf<Program>("n3dom")
-                        );
-                },
-                onCreated: async bus =>
-                {
-                    await bus.Subscribe<ImporteraInkassoÄrendeJobbKommando>();
-                    ////await bus.Subscribe<PingPongMessage>();
-                }
-            );
+                    builder =>
+                    {
+                        return builder
+                            .Transport(
+                                transport =>
+                                    transport.UsePostgreSql(
+                                        configuration.GetConnectionString("RebusPostgres"),
+                                        "main_bus",
+                                        // receive on this address
+                                        inputQueueName: Channels.N3DomainInternal
+                                    )
+                            )
+                            .Subscriptions(
+                                sub =>
+                                    sub.StoreInPostgres(
+                                        configuration.GetConnectionString("RebusPostgres"),
+                                        "bus_subscriptions",
+                                        isCentralized: true
+                                    )
+                            )
+                            .Routing(
+                                r =>
+                                    r.TypeBased()
+                                        // internal
+                                        .Map<ImporteraInkassoÄrendeJobbKommando>(Channels.N3DomainInternal)
+                                        // common
+                                        .Map<PingPongMessage>(Channels.N3DomainCommon)
+                                        // common
+                                        .Map<ImportAvInkassoÄrendeKölagt>(Channels.N3DomainCommon)
+                            );
+                    },
+                    onCreated: async bus =>
+                    {
+                        await bus.Subscribe<ImporteraInkassoÄrendeJobbKommando>();
+                        ////await bus.Subscribe<PingPongMessage>();
+                    }
+                );
             return services;
         }
 

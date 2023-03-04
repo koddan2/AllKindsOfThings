@@ -17,12 +17,13 @@ namespace N3.App.Domän.Api.Web
         protected async override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateAsyncScope();
+            var cfg = scope.ServiceProvider.GetRequiredService<IConfiguration>();
             var bus = scope.ServiceProvider.GetRequiredService<IBus>();
             while (!cancellationToken.IsCancellationRequested)
             {
                 await bus.Publish(new PingPongMessage { MessageText = "ping" });
-                await bus.Publish(new ImportAvInkassoÄrendeKölagt { JobbId = "ping" });
-                await Task.Delay(15000, cancellationToken);
+                var timeout = cfg.GetValue("PingPongTimeout", TimeSpan.FromSeconds(30));
+                await Task.Delay(timeout, cancellationToken);
             }
         }
     }
