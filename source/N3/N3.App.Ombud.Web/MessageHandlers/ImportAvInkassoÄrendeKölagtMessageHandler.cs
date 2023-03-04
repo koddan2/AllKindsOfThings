@@ -1,4 +1,4 @@
-﻿using N3.CqrsEs.SkrivModell.JobbPaket;
+﻿using N3.CqrsEs.Messages;
 using SlimMessageBus;
 
 namespace N3.App.Ombud.Web.MessageHandlers

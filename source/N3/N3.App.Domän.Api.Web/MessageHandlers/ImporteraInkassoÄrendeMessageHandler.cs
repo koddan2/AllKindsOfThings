@@ -1,4 +1,5 @@
 ﻿using Marten;
+using N3.CqrsEs.Messages;
 using N3.CqrsEs.SkrivModell.JobbPaket;
 using SlimMessageBus;
 
@@ -6,6 +7,7 @@ namespace N3.App.Domän.Api.Web.MessageHandlers
 {
     public class ImporteraInkassoÄrendeMessageHandler : IConsumer<ImporteraInkassoÄrendeModell>
     {
+        private readonly ILogger<ImporteraInkassoÄrendeMessageHandler> _logger;
         private readonly IDocumentStore _store;
         private readonly IMessageBus _bus;
 
@@ -15,6 +17,7 @@ namespace N3.App.Domän.Api.Web.MessageHandlers
             IMessageBus bus
         )
         {
+            _logger = logger;
             _store = store;
             _bus = bus;
         }
@@ -29,7 +32,9 @@ namespace N3.App.Domän.Api.Web.MessageHandlers
             {
                 session.Store(message);
                 await session.SaveChangesAsync();
-                await _bus.Publish(new ImportAvInkassoÄrendeKölagt(message.Id));
+                var msg = new ImportAvInkassoÄrendeKölagt { JobbId = message.Id };
+                _logger.LogInformation("Publishing: {msg}", msg);
+                await _bus.Publish(msg);
             }
         }
     }

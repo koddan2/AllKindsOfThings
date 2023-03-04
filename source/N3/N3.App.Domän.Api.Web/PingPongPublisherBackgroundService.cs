@@ -1,18 +1,20 @@
-﻿using N3.CqrsEs.SkrivModell.JobbPaket;
+﻿using Microsoft.Extensions.Hosting;
+using N3.CqrsEs.Messages;
+using N3.CqrsEs.SkrivModell.JobbPaket;
 using SlimMessageBus;
 
 namespace N3.App.Domän.Api.Web
 {
-    internal class PingPongPublisherHostedService : IHostedService
+    internal class PingPongPublisherBackgroundService : BackgroundService
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public PingPongPublisherHostedService(IServiceProvider serviceProvider)
+        public PingPongPublisherBackgroundService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        protected async override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateAsyncScope();
             var bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
@@ -22,13 +24,8 @@ namespace N3.App.Domän.Api.Web
                     new PingPongMessage { MessageText = "ping" },
                     cancellationToken: cancellationToken
                 );
-                await Task.Delay(1500, cancellationToken);
+                await Task.Delay(15000, cancellationToken);
             }
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await ValueTask.CompletedTask;
         }
     }
 }

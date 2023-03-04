@@ -12,6 +12,8 @@ using N3.CqrsEs.Infrastruktur.Marten;
 using Newtonsoft.Json.Converters;
 using SlimMessageBus.Host.Hybrid;
 using N3.CqrsEs;
+using System.Reflection;
+using N3.CqrsEs.Messages;
 
 namespace N3.App.Domän.Api.Web
 {
@@ -27,10 +29,9 @@ namespace N3.App.Domän.Api.Web
             ////.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new UnikIdentifierareJsonConverter()))
             ;
 
-            _ = services.AddHttpContextAccessor();
             if (configuration.GetValue<bool>("EnablePingPong"))
             {
-                _ = services.AddHostedService<PingPongPublisherHostedService>();
+                _ = services.AddHostedService<PingPongPublisherBackgroundService>();
             }
             _ = services.AddMessageBus(configuration);
 
@@ -40,8 +41,10 @@ namespace N3.App.Domän.Api.Web
                 options.SerializerOptions.Converters.Add(new UnikIdentifierareJsonConverter());
                 options.SerializerOptions.AddDateOnlyConverters();
             });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             _ = services.AddEndpointsApiExplorer();
+
             ////_ = builder.Services.AddSwaggerGen(options =>
             ////{
             ////    options.MapType<UnikIdentifierare>(() => new OpenApiSchema { Type = "string", });
@@ -85,11 +88,13 @@ namespace N3.App.Domän.Api.Web
             IConfiguration configuration
         )
         {
-            return services.AddSlimMessageBus(
+            return services
+                .AddHttpContextAccessor()
+                .AddSlimMessageBus(
                 builder =>
                 {
-                    ////var a = builder.AutoStartConsumersEnabled(true)
                     _ = builder
+                        .AutoStartConsumersEnabled(true)
                         .AddChildBus(
                             "Memory",
                             (bus) =>
@@ -130,7 +135,7 @@ namespace N3.App.Domän.Api.Web
                         .WithProviderHybrid() // requires SlimMessageBus.Host.Hybrid package
                         .WithSerializer(new JsonMessageSerializer());
                 },
-                addConsumersFromAssembly: new[] { typeof(Program).Assembly }
+                addConsumersFromAssembly: new[] { Assembly.GetExecutingAssembly() }
             );
         }
     }

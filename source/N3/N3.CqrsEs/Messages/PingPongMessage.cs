@@ -1,6 +1,9 @@
-﻿namespace N3.CqrsEs.SkrivModell.JobbPaket
+﻿namespace N3.CqrsEs.Messages
 {
-    public record ImportAvInkassoÄrendeKölagt(string JobbId);
+    public class ImportAvInkassoÄrendeKölagt
+    {
+        public string JobbId { get; init; } = "";
+    };
 
     public class PingPongMessage
     {
