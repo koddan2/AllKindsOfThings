@@ -1,11 +1,11 @@
 ﻿using N3.CqrsEs.Messages;
-using SlimMessageBus;
+using Rebus.Handlers;
 
 namespace N3.App.Ombud.Web.MessageHandlers
 {
-    public class PingPongMessageHandler : IConsumer<PingPongMessage>
+    public class PingPongMessageHandler : IHandleMessages<PingPongMessage>
     {
-        public async Task OnHandle(PingPongMessage message)
+        public async Task Handle(PingPongMessage message)
         {
             await ValueTask.CompletedTask;
             Console.WriteLine("Hello: {0}", message.MessageText);

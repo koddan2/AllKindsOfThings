@@ -1,9 +1,10 @@
 ﻿using N3.CqrsEs.Messages;
-using SlimMessageBus;
+using Rebus.Handlers;
 
 namespace N3.App.Ombud.Web.MessageHandlers
 {
-    public class ImportAvInkassoÄrendeKölagtMessageHandler : IConsumer<ImportAvInkassoÄrendeKölagt>
+    public class ImportAvInkassoÄrendeKölagtMessageHandler
+        : IHandleMessages<ImportAvInkassoÄrendeKölagt>
     {
         private readonly ILogger<ImportAvInkassoÄrendeKölagtMessageHandler> _logger;
 
@@ -14,7 +15,7 @@ namespace N3.App.Ombud.Web.MessageHandlers
             _logger = logger;
         }
 
-        public async Task OnHandle(ImportAvInkassoÄrendeKölagt message)
+        public async Task Handle(ImportAvInkassoÄrendeKölagt message)
         {
             await ValueTask.CompletedTask;
             _logger.LogInformation("Ärende kölagt: {msg}", message);

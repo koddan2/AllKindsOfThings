@@ -16,7 +16,9 @@ namespace N3.App.Ombud.Web
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateAsyncScope();
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<BootstrapperBackgroundService>>();
+            var logger = scope.ServiceProvider.GetRequiredService<
+                ILogger<BootstrapperBackgroundService>
+            >();
             while (!cancellationToken.IsCancellationRequested)
             {
                 var bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();

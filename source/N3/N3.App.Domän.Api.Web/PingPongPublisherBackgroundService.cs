@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using N3.CqrsEs.Messages;
 using N3.CqrsEs.SkrivModell.JobbPaket;
-using SlimMessageBus;
+using Rebus.Bus;
 
 namespace N3.App.Domän.Api.Web
 {
@@ -17,17 +17,11 @@ namespace N3.App.Domän.Api.Web
         protected async override Task ExecuteAsync(CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateAsyncScope();
-            var bus = scope.ServiceProvider.GetRequiredService<IMessageBus>();
+            var bus = scope.ServiceProvider.GetRequiredService<IBus>();
             while (!cancellationToken.IsCancellationRequested)
             {
-                await bus.Publish(
-                    new PingPongMessage { MessageText = "ping" },
-                    cancellationToken: cancellationToken
-                );
-                await bus.Publish(
-                    new ImportAvInkassoÄrendeKölagt { JobbId = "ping" },
-                    cancellationToken: cancellationToken
-                );
+                await bus.Publish(new PingPongMessage { MessageText = "ping" });
+                await bus.Publish(new ImportAvInkassoÄrendeKölagt { JobbId = "ping" });
                 await Task.Delay(15000, cancellationToken);
             }
         }

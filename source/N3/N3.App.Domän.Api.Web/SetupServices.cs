@@ -1,19 +1,12 @@
-﻿using SlimMessageBus.Host.AspNetCore;
-using SlimMessageBus.Host.Serialization.SystemTextJson;
-using N3.CqrsEs.SkrivModell.JobbPaket;
-using SlimMessageBus.Host.Redis;
-using SlimMessageBus.Host.Memory;
-using N3.App.Domän.Api.Web.MessageHandlers;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
+﻿using Microsoft.AspNetCore.Http.Json;
 using N3.Infrastruktur.Gemensam.Json;
 using N3.CqrsEs.Infrastruktur.Marten;
 using Newtonsoft.Json.Converters;
-using SlimMessageBus.Host.Hybrid;
-using N3.CqrsEs;
-using System.Reflection;
 using N3.CqrsEs.Messages;
+using Rebus.Config;
+using N3.App.Domän.Api.Web.Messages;
+using Rebus.Routing.TypeBased;
+using N3.App.Domän.Api.Web.MessageHandlers;
 
 namespace N3.App.Domän.Api.Web
 {
@@ -88,55 +81,98 @@ namespace N3.App.Domän.Api.Web
             IConfiguration configuration
         )
         {
-            return services
-                .AddHttpContextAccessor()
-                .AddSlimMessageBus(
+            _ = services
+                .AddRebusHandler<ImporteraInkassoÄrendeMessageHandler>()
+                .AddRebus(
                 builder =>
                 {
-                    _ = builder
-                        .AutoStartConsumersEnabled(true)
-                        .AddChildBus(
-                            "Memory",
-                            (bus) =>
-                            {
-                                _ = bus.Produce<ImporteraInkassoÄrendeModell>(
-                                        x => x.DefaultTopic(x.MessageType.Name)
-                                    )
-                                    .Consume<ImporteraInkassoÄrendeModell>(
-                                        x =>
-                                            x.Topic(x.MessageType.Name)
-                                                .WithConsumer<ImporteraInkassoÄrendeMessageHandler>()
-                                    )
-                                    .WithProviderMemory(
-                                        new MemoryMessageBusSettings
-                                        {
-                                            EnableMessageSerialization = false
-                                        }
-                                    );
-                            }
+                    return builder
+                        .Transport(
+                            transport =>
+                                transport.UsePostgreSql(
+                                    configuration.GetConnectionString("RebusPostgres"),
+                                    "main_bus",
+                                    "n3dom"
+                                )
                         )
-                        .AddChildBus(
-                            "MainBus",
-                            bus =>
-                            {
-                                _ = bus.Produce<ImportAvInkassoÄrendeKölagt>(
-                                        producer => producer.DefaultTopic(Topics.ÄrendeImport)
-                                    )
-                                    .Produce<PingPongMessage>(
-                                        producer => producer.DefaultTopic(Topics.PingPong)
-                                    )
-                                    .WithProviderRedis(
-                                        new RedisMessageBusSettings(
-                                            configuration.GetConnectionString("Redis")
-                                        )
-                                    );
-                            }
+                        .Subscriptions(
+                            sub =>
+                                sub.StoreInPostgres(
+                                    configuration.GetConnectionString("RebusPostgres"),
+                                    "bus_subscriptions",
+                                    isCentralized: true
+                                )
                         )
-                        .WithProviderHybrid() // requires SlimMessageBus.Host.Hybrid package
-                        .WithSerializer(new JsonMessageSerializer());
+                        .Routing(
+                            r =>
+                                r.TypeBased()
+                                    .MapAssemblyOf<PingPongMessage>("topic_all")
+                                    .MapAssemblyOf<Program>("n3dom")
+                        );
                 },
-                addConsumersFromAssembly: new[] { Assembly.GetExecutingAssembly() }
+                onCreated: async bus =>
+                {
+                    await bus.Subscribe<ImporteraInkassoÄrendeJobbKommando>();
+                    ////await bus.Subscribe<PingPongMessage>();
+                }
             );
+            return services;
         }
+
+        ////public static IServiceCollection AddMessageBus(
+        ////    this IServiceCollection services,
+        ////    IConfiguration configuration
+        ////)
+        ////{
+        ////    return services
+        ////        .AddHttpContextAccessor()
+        ////        .AddSlimMessageBus(
+        ////        builder =>
+        ////        {
+        ////            _ = builder
+        ////                .AutoStartConsumersEnabled(true)
+        ////                .AddChildBus(
+        ////                    "Memory",
+        ////                    (bus) =>
+        ////                    {
+        ////                        _ = bus.Produce<ImporteraInkassoÄrendeModell>(
+        ////                                x => x.DefaultTopic(x.MessageType.Name)
+        ////                            )
+        ////                            .Consume<ImporteraInkassoÄrendeModell>(
+        ////                                x =>
+        ////                                    x.Topic(x.MessageType.Name)
+        ////                                        .WithConsumer<ImporteraInkassoÄrendeMessageHandler>()
+        ////                            )
+        ////                            .WithProviderMemory(
+        ////                                new MemoryMessageBusSettings
+        ////                                {
+        ////                                    EnableMessageSerialization = false
+        ////                                }
+        ////                            );
+        ////                    }
+        ////                )
+        ////                .AddChildBus(
+        ////                    "MainBus",
+        ////                    bus =>
+        ////                    {
+        ////                        _ = bus.Produce<ImportAvInkassoÄrendeKölagt>(
+        ////                                producer => producer.DefaultTopic(Topics.ÄrendeImport)
+        ////                            )
+        ////                            .Produce<PingPongMessage>(
+        ////                                producer => producer.DefaultTopic(Topics.PingPong)
+        ////                            )
+        ////                            .WithProviderRedis(
+        ////                                new RedisMessageBusSettings(
+        ////                                    configuration.GetConnectionString("Redis")
+        ////                                )
+        ////                            );
+        ////                    }
+        ////                )
+        ////                .WithProviderHybrid() // requires SlimMessageBus.Host.Hybrid package
+        ////                .WithSerializer(new JsonMessageSerializer());
+        ////        },
+        ////        addConsumersFromAssembly: new[] { Assembly.GetExecutingAssembly() }
+        ////    );
+        ////}
     }
 }

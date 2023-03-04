@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SlimMessageBus;
 
 namespace N3.App.Domän.Api.Web.Controllers
 {
@@ -10,12 +9,10 @@ namespace N3.App.Domän.Api.Web.Controllers
     public class InkassoKlientController : ControllerBase
     {
         private readonly ILogger<InkassoKlientController> _logger;
-        private readonly IMessageBus _bus;
 
-        public InkassoKlientController(ILogger<InkassoKlientController> logger, IMessageBus bus)
+        public InkassoKlientController(ILogger<InkassoKlientController> logger)
         {
             _logger = logger;
-            _bus = bus;
         }
     }
 }

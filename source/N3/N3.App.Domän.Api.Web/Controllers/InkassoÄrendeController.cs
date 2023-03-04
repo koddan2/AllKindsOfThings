@@ -1,10 +1,8 @@
-using Marten;
 using Microsoft.AspNetCore.Mvc;
+using N3.App.Domän.Api.Web.Messages;
 using N3.CqrsEs.Ramverk;
 using N3.CqrsEs.SkrivModell.JobbPaket;
-using N3.CqrsEs.SkrivModell.Kommando;
-using N3.Modell;
-using SlimMessageBus;
+using Rebus.Bus;
 
 namespace N3.App.Domän.Api.Web.Controllers
 {
@@ -15,12 +13,12 @@ namespace N3.App.Domän.Api.Web.Controllers
     public class InkassoÄrendeController : ControllerBase
     {
         private readonly ILogger<InkassoÄrendeController> _logger;
-        private readonly IMessageBus _bus;
+        private readonly IBus _bus;
         private readonly IJobbKö _jobbKö;
 
         public InkassoÄrendeController(
             ILogger<InkassoÄrendeController> logger,
-            IMessageBus bus,
+            IBus bus,
             IJobbKö jobbKö
         )
         {
@@ -35,7 +33,7 @@ namespace N3.App.Domän.Api.Web.Controllers
         public async Task<IActionResult> HämtaStatusFörImportAvInkassoÄrenden()
         {
             using var logScope = _logger.BeginScope("Import/Status/Alla");
-            var data = await _jobbKö.HämtaStatus<ImporteraInkassoÄrendeModell>();
+            var data = await _jobbKö.HämtaStatus<ImporteraInkassoÄrendeJobb>();
             return Ok(data);
         }
 
@@ -48,7 +46,7 @@ namespace N3.App.Domän.Api.Web.Controllers
         )
         {
             using var logScope = _logger.BeginScope(aktivitetsIdentifierare);
-            var data = await _jobbKö.HämtaStatus<ImporteraInkassoÄrendeModell>(
+            var data = await _jobbKö.HämtaStatus<ImporteraInkassoÄrendeJobb>(
                 aktivitetsIdentifierare
             );
             return Ok(data);
@@ -57,6 +55,8 @@ namespace N3.App.Domän.Api.Web.Controllers
         public record KöläggningsKvitto(string Id);
 
         public record KonfliktId(string Id);
+
+        public record ImporteraInkassoÄrendeModell(ImporteraInkassoÄrendeJobb Jobb);
 
         [HttpPost]
         [Route("Import/Kölägg")]
@@ -67,13 +67,13 @@ namespace N3.App.Domän.Api.Web.Controllers
             [FromBody] ImporteraInkassoÄrendeModell modell
         )
         {
-            using var logScope = _logger.BeginScope(modell.Id);
+            using var logScope = _logger.BeginScope(modell);
             _logger.LogTrace(
                 "Lägger aktivitet för processering på aktivitetsbussen (id={id})",
-                modell.Id
+                modell.Jobb.Id
             );
-            await _bus.Publish(modell);
-            return Ok(new KöläggningsKvitto(modell.Id));
+            await _bus.Publish(new ImporteraInkassoÄrendeJobbKommando(modell.Jobb));
+            return Ok(new KöläggningsKvitto(modell.Jobb.Id));
         }
     }
 }

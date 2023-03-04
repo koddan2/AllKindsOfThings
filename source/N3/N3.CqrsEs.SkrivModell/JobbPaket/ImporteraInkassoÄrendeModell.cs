@@ -5,7 +5,7 @@ using SmartAnalyzers.CSharpExtensions.Annotations;
 namespace N3.CqrsEs.SkrivModell.JobbPaket
 {
     [InitRequired]
-    public class ImporteraInkassoÄrendeModell : AbstraktJobb
+    public class ImporteraInkassoÄrendeJobb : AbstraktJobb
     {
         public ÄrendeImportModell ImportData { get; set; }
     }
