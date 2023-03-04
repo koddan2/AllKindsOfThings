@@ -18,16 +18,7 @@ public class GenerateSplattedLoadout
     private readonly string _profileDirectoryName = "config";
 
     private readonly CategorizedDouble _weaponChanceCategories =
-        new(
-            minimal: /**/
-            0.002,
-            small: /*  */
-            0.015,
-            medium: /*  */
-            0.03,
-            large: /*   */
-            0.05
-        );
+        new(minimal: 0.001, small: 0.005, medium: 0.010, large: 0.025);
 
     public GenerateSplattedLoadout(
         ILogger logger,
