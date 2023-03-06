@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using N3.App.Domän.Api.Web.Messages;
-using N3.CqrsEs.Ramverk;
+using N3.CqrsEs.Ramverk.Jobs;
 using N3.CqrsEs.SkrivModell.JobbPaket;
 using Rebus.Bus;
 
@@ -10,16 +10,16 @@ namespace N3.App.Domän.Api.Web.Controllers
     [ApiVersion("v1")]
     [ApiExplorerSettings(GroupName = "v1")]
     [Route("v1/[controller]")]
-    public class InkassoÄrendeController : ControllerBase
+    public class InkassoÄrendeImportController : ControllerBase
     {
-        private readonly ILogger<InkassoÄrendeController> _logger;
+        private readonly ILogger<InkassoÄrendeImportController> _logger;
         private readonly IBus _bus;
-        private readonly IJobbKö _jobbKö;
+        private readonly IJobQueue _jobbKö;
 
-        public InkassoÄrendeController(
-            ILogger<InkassoÄrendeController> logger,
+        public InkassoÄrendeImportController(
+            ILogger<InkassoÄrendeImportController> logger,
             IBus bus,
-            IJobbKö jobbKö
+            IJobQueue jobbKö
         )
         {
             _logger = logger;
@@ -28,25 +28,25 @@ namespace N3.App.Domän.Api.Web.Controllers
         }
 
         [HttpGet]
-        [Route("Import/Status/Alla")]
-        [ProducesResponseType(200, Type = typeof(ImporteraInkassoÄrendeModell[]))]
+        [Route("Status/Alla")]
+        [ProducesResponseType(200, Type = typeof(JobStatus[]))]
         public async Task<IActionResult> HämtaStatusFörImportAvInkassoÄrenden()
         {
-            using var logScope = _logger.BeginScope("Import/Status/Alla");
-            var data = await _jobbKö.HämtaStatus<ImporteraInkassoÄrendeJobb>();
+            using var logScope = _logger.BeginScope(HämtaStatusFörImportAvInkassoÄrenden);
+            var data = await _jobbKö.GetStatus<ImporteraInkassoÄrendeJobbData>();
             return Ok(data);
         }
 
         [HttpGet]
-        [Route("Import/Status/{aktivitetsIdentifierare}")]
-        [ProducesResponseType(200, Type = typeof(ImporteraInkassoÄrendeModell))]
+        [Route("Status/{aktivitetsIdentifierare}")]
+        [ProducesResponseType(200, Type = typeof(JobStatus))]
         [ProducesResponseType(404, Type = typeof(ProblemDetails))]
         public async Task<IActionResult> HämtaStatusFörImportAvInkassoÄrende(
             [FromRoute] string aktivitetsIdentifierare
         )
         {
-            using var logScope = _logger.BeginScope(aktivitetsIdentifierare);
-            var data = await _jobbKö.HämtaStatus<ImporteraInkassoÄrendeJobb>(
+            using var logScope = _logger.BeginScope(HämtaStatusFörImportAvInkassoÄrende);
+            var data = await _jobbKö.GetStatus<ImporteraInkassoÄrendeJobbData>(
                 aktivitetsIdentifierare
             );
             return Ok(data);
@@ -56,22 +56,18 @@ namespace N3.App.Domän.Api.Web.Controllers
 
         public record KonfliktId(string Id);
 
-        public record ImporteraInkassoÄrendeModell(ImporteraInkassoÄrendeJobb Jobb);
+        public record ImporteraInkassoÄrendeModell(ImporteraInkassoÄrendeJobbData Jobb);
 
         [HttpPost]
-        [Route("Import/Kölägg")]
+        [Route("Kölägg")]
         [ProducesResponseType(200, Type = typeof(KöläggningsKvitto))]
         [ProducesResponseType(400, Type = typeof(ProblemDetails))]
         [ProducesResponseType(409, Type = typeof(KonfliktId))]
-        public async Task<IActionResult> ImporteraInkassoÄrende(
+        public async Task<IActionResult> KöläggImportAvInkassoÄrende(
             [FromBody] ImporteraInkassoÄrendeModell modell
         )
         {
-            using var logScope = _logger.BeginScope(modell);
-            _logger.LogTrace(
-                "Lägger aktivitet för processering på aktivitetsbussen (id={id})",
-                modell.Jobb.Id
-            );
+            using var logScope = _logger.BeginScope(KöläggImportAvInkassoÄrende);
             await _bus.SendLocal(new ImporteraInkassoÄrendeJobbKommando(modell.Jobb));
             return Ok(new KöläggningsKvitto(modell.Jobb.Id));
         }

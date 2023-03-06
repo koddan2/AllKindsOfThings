@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using N3.CqrsEs.Ramverk;
+using N3.CqrsEs.Ramverk.Jobs;
 using N3.CqrsEs.SkrivModell.Domän;
 using SAK;
 using System.Data.Common;
@@ -25,7 +26,7 @@ namespace N3.CqrsEs.Infrastruktur.Marten
         {
             _ = services
                 .AddScoped<IHändelseKassa, MartenHändelseKassa>()
-                .AddScoped<IJobbKö, IhärdigAktivitetsBuss>()
+                .AddScoped<IJobQueue, IhärdigAktivitetsBuss>()
                 .AddScoped<AggregateRepository>()
                 ////.Configure<JsonSerializerOptions>(opts =>
                 ////{

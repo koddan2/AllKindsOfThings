@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using N3.CqrsEs.Infrastruktur.Marten;
 using N3.CqrsEs.Ramverk;
+using N3.CqrsEs.Ramverk.Jobs;
 using N3.CqrsEs.SkrivModell.Domän;
 using N3.Modell;
 
@@ -86,7 +87,7 @@ namespace N3.CqrsEs.IntegrationTest
             });
         }
 
-        public class TestJobbTyp : AbstraktJobb
+        public class TestJobbTyp : AbstractJob
         {
             public int Nummer { get; set; }
         }
@@ -106,14 +107,14 @@ namespace N3.CqrsEs.IntegrationTest
         [TestCase(12)]
         public async Task TestBuss1(object _)
         {
-            var buss = _scope.ServiceProvider.GetRequiredService<IJobbKö>();
+            var buss = _scope.ServiceProvider.GetRequiredService<IJobQueue>();
             var sak = new TestJobbTyp { Id = UnikIdentifierare.Skapa(), Nummer = 8 };
-            await buss.Kölägg(sak);
-            var status = await buss.HämtaStatus<TestJobbTyp>(sak.Id);
+            await buss.Queue(sak);
+            var status = await buss.GetStatus<TestJobbTyp>(sak.Id);
             Assert.That(status, Is.Not.Null);
-            var reservation = await buss.Reservera<TestJobbTyp>(sak.Id);
+            var reservation = await buss.Reserve<TestJobbTyp>(sak.Id);
             Assert.That(reservation, Is.Not.Null);
-            await buss.TaBort<TestJobbTyp>(sak.Id, reservation);
+            await buss.Dequeue<TestJobbTyp>(sak.Id, reservation);
         }
     }
 }

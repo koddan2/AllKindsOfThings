@@ -51,7 +51,11 @@ namespace N3.App.Ombud.Web
                                     )
                             )
                             .Routing(
-                                r => r.TypeBased().MapAssemblyOf<CqrsEsAssemblyMarker>(Channels.N3DomainCommon)
+                                r =>
+                                    r.TypeBased()
+                                        .MapAssemblyOf<CqrsEsAssemblyMarker>(
+                                            Channels.N3DomainCommon
+                                        )
                             );
                     },
                     onCreated: async bus =>

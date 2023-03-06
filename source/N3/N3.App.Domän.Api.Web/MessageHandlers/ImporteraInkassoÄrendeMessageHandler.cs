@@ -29,7 +29,7 @@ namespace N3.App.Domän.Api.Web.MessageHandlers
         {
             using var session = _store.LightweightSession();
             var existing = await session
-                .Query<ImporteraInkassoÄrendeJobb>()
+                .Query<ImporteraInkassoÄrendeJobbData>()
                 .FirstOrDefaultAsync(x => x.Id == message.Jobb.Id);
             if (existing is null)
             {

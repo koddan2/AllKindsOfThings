@@ -109,7 +109,9 @@ namespace N3.App.Domän.Api.Web
                                 r =>
                                     r.TypeBased()
                                         // internal
-                                        .Map<ImporteraInkassoÄrendeJobbKommando>(Channels.N3DomainInternal)
+                                        .Map<ImporteraInkassoÄrendeJobbKommando>(
+                                            Channels.N3DomainInternal
+                                        )
                                         // common
                                         .Map<PingPongMessage>(Channels.N3DomainCommon)
                                         // common
