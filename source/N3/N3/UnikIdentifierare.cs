@@ -48,12 +48,19 @@ namespace N3
             {
                 _ = new Guid(Base62.EncodingExtensions.FromBase62(s));
             }
-            catch (Exception)
+            catch (Exception exn)
             {
                 throw new ArgumentException(
-                    $"Värdet {s} gick inte att läsa som en {nameof(UnikIdentifierare)}!"
+                    $"Värdet {s} gick inte att läsa som en {nameof(UnikIdentifierare)}!",
+                    exn
                 );
             }
+        }
+
+        public static bool ÄrGodkänd(string strVal)
+        {
+            var ba = Base62.EncodingExtensions.FromBase62(strVal);
+            return ba.Length == 16;
         }
     }
 

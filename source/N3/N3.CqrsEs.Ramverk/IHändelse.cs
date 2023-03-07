@@ -2,7 +2,7 @@
 {
     public interface IHändelse : IMeddelande
     {
-        long Revision { get; }
-        DateTimeOffset Tidsstämpel { get; }
+        ////long Revision { get; }
+        ////DateTimeOffset Tidsstämpel { get; }
     }
 }

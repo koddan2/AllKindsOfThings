@@ -1,5 +1,6 @@
 ﻿using N3.CqrsEs.Ramverk;
 using SmartAnalyzers.CSharpExtensions.Annotations;
+using System.Text.Json.Serialization;
 
 namespace N3.CqrsEs.Gemensam.Händelser
 {
@@ -16,12 +17,9 @@ namespace N3.CqrsEs.Gemensam.Händelser
         }
 
         public string KorrelationsIdentifierare { get; init; }
-        public IEnumerable<string> Historia { get; } = new List<string>();
 
+        [JsonIgnore]
         public string AggregatIdentifierare { get; init; }
-        public long Revision { get; init; }
-        public DateTimeOffset Tidsstämpel { get; init; }
-
         public int ÄrendeNummer { get; init; }
     }
 }

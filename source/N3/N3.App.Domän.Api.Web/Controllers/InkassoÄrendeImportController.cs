@@ -14,17 +14,17 @@ namespace N3.App.Domän.Api.Web.Controllers
     {
         private readonly ILogger<InkassoÄrendeImportController> _logger;
         private readonly IBus _bus;
-        private readonly IJobQueue _jobbKö;
+        private readonly IJobQueue _jobQueue;
 
         public InkassoÄrendeImportController(
             ILogger<InkassoÄrendeImportController> logger,
             IBus bus,
-            IJobQueue jobbKö
+            IJobQueue jobQueue
         )
         {
             _logger = logger;
             _bus = bus;
-            _jobbKö = jobbKö;
+            _jobQueue = jobQueue;
         }
 
         [HttpGet]
@@ -33,7 +33,7 @@ namespace N3.App.Domän.Api.Web.Controllers
         public async Task<IActionResult> HämtaStatusFörImportAvInkassoÄrenden()
         {
             using var logScope = _logger.BeginScope(HämtaStatusFörImportAvInkassoÄrenden);
-            var data = await _jobbKö.GetStatus<ImporteraInkassoÄrendeJobbData>();
+            var data = await _jobQueue.GetStatus<ImporteraInkassoÄrendeJobbData>();
             return Ok(data);
         }
 
@@ -46,7 +46,7 @@ namespace N3.App.Domän.Api.Web.Controllers
         )
         {
             using var logScope = _logger.BeginScope(HämtaStatusFörImportAvInkassoÄrende);
-            var data = await _jobbKö.GetStatus<ImporteraInkassoÄrendeJobbData>(
+            var data = await _jobQueue.GetStatus<ImporteraInkassoÄrendeJobbData>(
                 aktivitetsIdentifierare
             );
             return Ok(data);

@@ -74,7 +74,7 @@ namespace N3.CqrsEs.IntegrationTest
             var glref = new string[] { (string)UnikIdentifierare.Skapa() };
             var fakturor = new Faktura[] { Generatorer.BasGeneratorer.TestFakturor.Generate() };
             agg.SkapaÄrende(klientref, glref, fakturor);
-            await aggRepo.StoreAsync(agg);
+            await aggRepo.StoreAsync(agg, newStream: true);
 
             var agg2 = await aggRepo.LoadAsync<InkassoÄrende>(agg.Id);
             var ärendeNummer = faker.Random.Int(100, 99999);

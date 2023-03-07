@@ -20,6 +20,7 @@ namespace N3.CqrsEs.Ramverk
         public string Id { get; protected set; }
 
         // For protecting the state, i.e. conflict prevention
+        [JsonIgnore]
         public int Version { get; protected set; }
 
         // JsonIgnore - for making sure that it won't be stored in inline projection

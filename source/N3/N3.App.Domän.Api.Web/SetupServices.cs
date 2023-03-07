@@ -84,6 +84,7 @@ namespace N3.App.Domän.Api.Web
         {
             _ = services
                 .AddRebusHandler<ImporteraInkassoÄrendeMessageHandler>()
+                .AddRebusHandler<RegistreraNyInkassoKlientMessageHandler>()
                 .AddRebus(
                     builder =>
                     {
@@ -110,6 +111,9 @@ namespace N3.App.Domän.Api.Web
                                     r.TypeBased()
                                         // internal
                                         .Map<ImporteraInkassoÄrendeJobbKommando>(
+                                            Channels.N3DomainInternal
+                                        )
+                                        .Map<RegistreraNyInkassoKlientKommando>(
                                             Channels.N3DomainInternal
                                         )
                                         // common

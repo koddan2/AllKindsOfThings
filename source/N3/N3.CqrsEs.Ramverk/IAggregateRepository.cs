@@ -6,7 +6,8 @@ namespace N3.CqrsEs.SkrivModell.Domän
     {
         Task<T> LoadAsync<T>(string id, int? version = null, CancellationToken ct = default)
             where T : AbstraktAggregatRotBasKlass;
-        Task StoreAsync<T>(T aggregate, CancellationToken ct = default)
+
+        Task StoreAsync<T>(T aggregate, bool newStream = false, CancellationToken ct = default)
             where T : AbstraktAggregatRotBasKlass;
     }
 }

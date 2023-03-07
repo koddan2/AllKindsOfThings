@@ -15,17 +15,16 @@ namespace N3.CqrsEs.SkrivModell.Domän
 
         public string? FullkomligtNamn { get; private set; }
 
-        public async Task SkapaKlient(
-            IHändelseRegistrator händelseRegistrator,
-            string FullkomligtNamn
-        )
+        public void SkapaKlient(string FullkomligtNamn)
         {
             var händelse = new InkassoKlientSkapades(Id, FullkomligtNamn);
-            await händelseRegistrator.Registrera(
-                this.TillStrömIdentifierare(),
-                händelse,
-                HändelseModus.SkapaNy
-            );
+            Applicera(händelse);
+            AddUncommittedEvent(händelse);
+        }
+
+        private void Applicera(InkassoKlientSkapades händelse)
+        {
+            this.FullkomligtNamn = händelse.FullkomligtNamn;
         }
 
         ////internal void Ladda(IEnumerable<IHändelse> händelser)

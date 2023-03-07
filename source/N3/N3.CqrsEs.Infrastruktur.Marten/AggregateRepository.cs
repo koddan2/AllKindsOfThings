@@ -12,13 +12,17 @@ namespace N3.CqrsEs.SkrivModell.Domän
             this._store = store;
         }
 
-        public async Task StoreAsync<T>(T aggregate, CancellationToken ct = default)
+        public async Task StoreAsync<T>(
+            T aggregate,
+            bool newStream = false,
+            CancellationToken ct = default
+        )
             where T : AbstraktAggregatRotBasKlass
         {
             await using var session = _store.LightweightSession();
             // Take non-persisted events, push them to the event stream, indexed by the aggregate ID
             var events = aggregate.GetUncommittedEvents().ToArray();
-            if (aggregate.Version == events.Length)
+            if (newStream)
             {
                 _ = session.Events.StartStream<T>(aggregate.Id, events);
             }
@@ -29,6 +33,13 @@ namespace N3.CqrsEs.SkrivModell.Domän
             await session.SaveChangesAsync(ct);
             // Once successfully persisted, clear events from list of uncommitted events
             aggregate.ClearUncommittedEvents();
+        }
+
+        public async Task<bool> ExistsAsync<T>(string id)
+        {
+            await using var session = _store.LightweightSession();
+            var state = session.Events.FetchStreamState(id);
+            return state is not null;
         }
 
         public async Task<T> LoadAsync<T>(

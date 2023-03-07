@@ -10,6 +10,6 @@
         /// <summary>
         /// Detta är en sekvens med strängar som bör motsvara systembenämningar genom vilka detta meddelande har ruttats.
         /// </summary>
-        IEnumerable<string> Historia { get; }
+        ////IEnumerable<string> Historia { get; }
     }
 }

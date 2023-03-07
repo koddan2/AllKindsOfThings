@@ -42,7 +42,7 @@ namespace N3.CqrsEs.SkrivModell.KommandoHantering
                 gäldenärsReferenser: kommando.GäldenärsReferenser,
                 fakturor: kommando.Fakturor
             );
-            await _repo.StoreAsync(ärende);
+            await _repo.StoreAsync(ärende, newStream: true);
         }
 
         public async Task Hantera(TilldelaÄrendeNummerTillInkassoÄrendeKommando kommando)
