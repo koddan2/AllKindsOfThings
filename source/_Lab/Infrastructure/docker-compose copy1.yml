@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  envoy:
+    hostname: envoy
+    image: localhost/test-envoy:latest
+    build:
+      context: ./Services/envoy
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      # HTTP
+      - "${PORT_PROXY:-8080}:8080"
+      # HTTPS
+      - "${PORT_HTTPS:-8443}:8443"
+      # ADMIN
+      - 8001:8001
+  postgres:
+    hostname: postgres
+    image: docker.io/postgres:latest
+    # ports:
+    #   - "5432:5432/tcp"
+    volumes:
+      - test-postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  test-postgres:

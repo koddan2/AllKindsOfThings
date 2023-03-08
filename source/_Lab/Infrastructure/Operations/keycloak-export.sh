@@ -1,0 +1,1 @@
+podman exec -it infrastructure_keycloak_1 /opt/keycloak/bin/kc.sh export --dir /dump

@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  haproxy:
+    hostname: haproxy
+    image: localhost/kustom/haproxy:latest
+    build:
+      context: ./Services/haproxy
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - 5432:5432/tcp
+      - 21000:21000/tcp
+      # - 11000:11000/tcp
+    networks: 
+      - default
+
+  postgres:
+    hostname: postgres
+    image: docker.io/postgres:latest
+    # ports:
+    #   - "5432:5432/tcp"
+    environment:
+      - name=value
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - test-postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks: 
+      - default
+
+volumes:
+  test-postgres:
+
+networks: 
+  default:
