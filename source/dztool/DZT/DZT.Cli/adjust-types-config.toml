@@ -24,8 +24,8 @@ flags = { count_in_map = "1" }
 ## vanilla
 [[rules]]
 in_file = "types.xml"
-nominal_modify_div = 2
-min_modify_div = 2
+nominal_modify_div = 3
+min_modify_div = 3
 lifetime = 14400
 restock = 0
 
@@ -48,7 +48,7 @@ min = 1
 lifetime = 14400
 restock = 0
 category = "weapons"
-usages = ["Military"]
+usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 
 ## Morty / vanilla
@@ -186,8 +186,8 @@ flags = { count_in_map = "1" }
 ## MMG
 [[rules]]
 starts_with_case_insensitive = "MMG"
-nominal = 13
-min = 8
+nominal = 10
+min = 5
 lifetime = 14400
 restock = 0
 category = "clothes"
@@ -233,7 +233,7 @@ name_equals_case_insensitive = [
     "mcmillan_buttstock",
 ]
 nominal = 5
-min = 5
+min = 2
 lifetime = 14400
 restock = 0
 category = "weapons"
@@ -256,7 +256,7 @@ flags = { count_in_map = "1" }
 [[rules]]
 # starts_with = "SNAFU"
 in_file = "SNAFU_types.xml"
-nominal = 6
+nominal = 2
 min = 1
 lifetime = 14400
 restock = 0
@@ -276,8 +276,8 @@ name_equals_case_insensitive = [
     "SNAFU_LNormalized_Suppressor_Black",
     "SNAFU_LStandardized_Suppressor_Black",
 ]
-nominal = 4
-min = 2
+nominal = 1
+min = 1
 lifetime = 14400
 restock = 0
 flags = { count_in_map = "1" }
@@ -287,8 +287,8 @@ flags = { count_in_map = "1" }
 action = "insert"
 names = ["riflesling_quad_tan"]
 in_file = "generated_types.xml"
-nominal = 34
-min = 17
+nominal = 0
+min = 0
 lifetime = 14400
 restock = 0
 usages = ["Police", "Farm", "Hunting"]
@@ -360,7 +360,7 @@ name_equals_case_insensitive = [
     "SNAFU_HTrijicon",
     "SNAFU_HWalther",
 ]
-nominal = 2
+nominal = 1
 min = 1
 lifetime = 14400
 restock = 0
@@ -371,7 +371,7 @@ flags = { count_in_map = "1" }
 ## vanilla
 [[rules]]
 name_equals_case_insensitive = ["AmmoBox"]
-nominal = 10
+nominal = 4
 min = 2
 lifetime = 14400
 restock = 0
@@ -383,8 +383,8 @@ flags = { count_in_map = "1" }
 [[rules]]
 name_contains_substring_case_insensitive = ["AmmoBox_"]
 in_file = "types.xml"
-nominal = 80
-min = 20
+nominal = 50
+min = 10
 lifetime = 28800
 restock = 0
 usages = ["Military", "Police", "Farm", "Village", "Hunting"]
@@ -395,8 +395,8 @@ flags = { count_in_map = "1" }
 [[rules]]
 name_equals_case_insensitive = ["Ammo_"]
 in_file = "types.xml"
-nominal = 200
-min = 90
+nominal = 60
+min = 20
 lifetime = 28800
 restock = 0
 category = "weapons"
@@ -406,8 +406,8 @@ flags = { count_in_map = "1" }
 ## mmg
 [[rules]]
 name_contains_substring_case_insensitive = ["MMG_MK_III_Armor_"]
-nominal = 6
-min = 4
+nominal = 3
+min = 2
 lifetime = 14400
 restock = 0
 usages = ["Military", "Police"]
@@ -419,8 +419,8 @@ name_contains_substring_case_insensitive = [
     "MMG_MK_V_Armor_",
     "MMG_striker_helmet_",
 ]
-nominal = 3
-min = 2
+nominal = 1
+min = 1
 lifetime = 14400
 restock = 0
 usages = ["Military", "Police"]
