@@ -80,6 +80,15 @@ public class GenerateSplattedLoadout
         AssignInventoryCargo(splat, model);
         AssignSets(splat, model);
 
+
+        splat.Sets.Add(ExtraSets.Skorpion);
+        splat.Sets.Add(ExtraSets.Mp5k);
+        splat.Sets.Add(ExtraSets.Repeater);
+
+        var ij = splat.Sets.First(IsIj);
+        splat.Sets.Remove(ij);
+        splat.Sets.Add(ij);
+
         var outputPath = Path.Combine(_loadoutDir, OutputFileName);
         File.WriteAllText(
             outputPath,
@@ -511,9 +520,16 @@ public class GenerateSplattedLoadout
             {
                 if (set.ClassName == "WEAPON")
                 {
-                    // set.Chance = 0.23;
-                    // set.Chance = 0.11;
-                    set.Chance = _weaponChanceCategories.Get(CategoryValue.Minimal);
+                    if (IsIj(set))
+                    {
+                        set.Chance = 0.25;
+                    }
+                    else
+                    {
+                        // set.Chance = 0.23;
+                        // set.Chance = 0.11;
+                        set.Chance = _weaponChanceCategories.Get(CategoryValue.Minimal);
+                    }
                 }
             })
             .Where(set =>
@@ -529,6 +545,7 @@ public class GenerateSplattedLoadout
         splat.Sets.AddRange(_weaponSets.All);
     }
 
+    private static bool IsIj(LoadoutSet x) => x.InventoryAttachments?.FirstOrDefault()?.Items?.FirstOrDefault()?.ClassName.Contains("IJ") is true;
     private static void AssignSets(AiLoadoutRoot splat, AiLoadoutRoot item)
     {
         foreach (var set in item.Sets)
