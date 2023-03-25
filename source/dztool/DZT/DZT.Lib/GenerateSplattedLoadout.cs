@@ -80,10 +80,10 @@ public class GenerateSplattedLoadout
         AssignInventoryCargo(splat, model);
         AssignSets(splat, model);
 
-
         splat.Sets.Add(ExtraSets.Skorpion);
         splat.Sets.Add(ExtraSets.Mp5k);
         splat.Sets.Add(ExtraSets.Repeater);
+        splat.Sets.Add(ExtraSets.Bk12);
 
         var ij = splat.Sets.First(IsIj);
         splat.Sets.Remove(ij);

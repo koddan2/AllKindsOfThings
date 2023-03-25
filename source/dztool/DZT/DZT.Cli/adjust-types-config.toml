@@ -449,3 +449,15 @@ category = "clothes"
 usages = ["Military"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
+
+# FOG
+[[rules]]
+in_file = "FOG_Types.xml"
+nominal = 4
+min = 2
+lifetime = 14400
+restock = 0
+category = "clothes"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }

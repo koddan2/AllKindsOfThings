@@ -6,6 +6,8 @@ public class CleanUpProfile
     private readonly string _profileDirectoryName = "config";
     private readonly string _profileDirectory;
 
+    private long _totalRem = 0;
+
     public CleanUpProfile(string rootDir, string profileDirectoryName)
     {
         _rootDir = rootDir;
@@ -17,6 +19,7 @@ public class CleanUpProfile
     {
         CleanUpCoreDayZFiles();
         CleanUpAllLogs();
+        Console.WriteLine("Deleted a total of {0} kibibytes", _totalRem == 0 ? 0 : _totalRem / 1024);
     }
 
     private void CleanUpAllLogs()
@@ -41,7 +44,7 @@ public class CleanUpProfile
         foreach (var fileName in fileNames.ToArray())
         {
             var ext = Path.GetExtension(fileName).ToLower();
-            var ephemeralFile = ext is ".rpt" || ext is ".log" || ext is ".adm";
+            var ephemeralFile = ext is ".rpt" || ext is ".log" || ext is ".adm" || ext is ".mdmp";
             if (ephemeralFile)
             {
                 DoDelete(fileName);
@@ -49,8 +52,11 @@ public class CleanUpProfile
         }
     }
 
-    private static void DoDelete(string fileName)
+    private  void DoDelete(string fileName)
     {
+        var fi = new FileInfo(fileName);
+        var size = fi.Length;
+        _totalRem += size;
         File.Delete(fileName);
         Console.WriteLine("Deleted file: {0}", fileName);
     }

@@ -14,6 +14,9 @@ public class ExtraSets
     public static LoadoutSet Repeater = JsonSerializer.Deserialize<LoadoutSet>(
         File.ReadAllText(DataPath("repeater-set.json"))
     )!;
+    public static LoadoutSet Bk12 = JsonSerializer.Deserialize<LoadoutSet>(
+        File.ReadAllText(DataPath("bk12-set.json"))
+    )!;
 
     public static string EXE => Assembly.GetExecutingAssembly().Location;
     public static string CWD => Path.GetDirectoryName(EXE)!;
