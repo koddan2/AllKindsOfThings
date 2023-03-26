@@ -19,7 +19,10 @@ public class CleanUpProfile
     {
         CleanUpCoreDayZFiles();
         CleanUpAllLogs();
-        Console.WriteLine("Deleted a total of {0} kibibytes", _totalRem == 0 ? 0 : _totalRem / 1024);
+        Console.WriteLine(
+            "Deleted a total of {0} kibibytes",
+            _totalRem == 0 ? 0 : _totalRem / 1024
+        );
     }
 
     private void CleanUpAllLogs()
@@ -52,7 +55,7 @@ public class CleanUpProfile
         }
     }
 
-    private  void DoDelete(string fileName)
+    private void DoDelete(string fileName)
     {
         var fi = new FileInfo(fileName);
         var size = fi.Length;

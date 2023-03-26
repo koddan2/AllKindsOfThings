@@ -18,7 +18,7 @@ public class GenerateSplattedLoadout
     private readonly string _profileDirectoryName = "config";
 
     private readonly CategorizedDouble _weaponChanceCategories =
-        new(minimal: 0.001, small: 0.005, medium: 0.010, large: 0.025);
+        new(minimal: 0.01, small: 0.03, medium: 0.07, large: 0.15);
 
     public GenerateSplattedLoadout(
         ILogger logger,
@@ -196,20 +196,16 @@ public class GenerateSplattedLoadout
             var typesXmlFile in DayzFilesHelper.GetAllTypesXmlFileNames(_rootDir, _mpMissionName)
         )
         {
+            _logger.LogInformation("Processing {file}", typesXmlFile);
             var xd = XDocument.Load(typesXmlFile);
             var types = DzTypesXmlTypeElement.FromDocument(xd);
-            // if (typesXmlFile.Contains("SNAF"))
-            // {
-            //     var a = types.FirstOrDefault(x => x.NameUpper.Contains("50CAL"));
-            //     var b = a;
-            // }
             foreach (var type in types)
             {
-                // if (type.NameUpper.Contains("50CAL"))
-                // {
-                //     var a = 1;
-                // }
                 if (IsForbidden(type))
+                {
+                    continue;
+                }
+                else if (type.Nominal == 0)
                 {
                     continue;
                 }
@@ -248,35 +244,42 @@ public class GenerateSplattedLoadout
 
         double GetChance(DzTypesXmlTypeElement x)
         {
-            var thoseWithMoreChance = new[]
-            {
-                "50CAL",
-                "AMMO",
-                "SNAFU_AMMO_338",
-                "GCGN_AMMO_408CHEY",
-                "TTC_AMMOBOX_50BMG_10RND",
-                "TTC_AMMO_50BMG",
-                "TTC_AMMO_338",
-                "TTC_AMMOBOX_338MM_10RND"
-            };
+            // var thoseWithMoreChance = new[]
+            // {
+            //     "50CAL",
+            //     "AMMO",
+            //     "SNAFU_AMMO_338",
+            //     "GCGN_AMMO_408CHEY",
+            //     "TTC_AMMOBOX_50BMG_10RND",
+            //     "TTC_AMMO_50BMG",
+            //     "TTC_AMMO_338",
+            //     "TTC_AMMOBOX_338MM_10RND"
+            // };
 
             double result = 0;
             if (x.Flags.OrFail()["crafted"] == "1")
             {
                 result = 0.05;
             }
-            else if (thoseWithMoreChance.Any(s => x.NameUpper.Contains(s)))
-            {
-                result = 0.1;
-            }
+            // else if (thoseWithMoreChance.Any(s => x.NameUpper.Contains(s)))
+            // {
+            //     result = 0.1;
+            // }
             else if (IsSuppressor(x))
             {
                 result = 0.003;
             }
             else if (x.NameUpper.Contains("TTC") || x.NameUpper.Contains("SNAFU"))
             {
-                result = 0.01 * (((float)x.Nominal) / 9f);
-                result = Math.Clamp(result, 0.001, 0.05);
+                if (x.Nominal == 0)
+                {
+                    result = 0;
+                }
+                else
+                {
+                    result = 0.01 * (((float)x.Nominal) / 9f);
+                    result = Math.Clamp(result, 0.001, 0.05);
+                }
             }
             else
             {
@@ -545,7 +548,10 @@ public class GenerateSplattedLoadout
         splat.Sets.AddRange(_weaponSets.All);
     }
 
-    private static bool IsIj(LoadoutSet x) => x.InventoryAttachments?.FirstOrDefault()?.Items?.FirstOrDefault()?.ClassName.Contains("IJ") is true;
+    private static bool IsIj(LoadoutSet x) =>
+        x.InventoryAttachments?.FirstOrDefault()?.Items?.FirstOrDefault()?.ClassName.Contains("IJ")
+            is true;
+
     private static void AssignSets(AiLoadoutRoot splat, AiLoadoutRoot item)
     {
         foreach (var set in item.Sets)
@@ -573,17 +579,24 @@ public class WeaponSetDefs
     public IEnumerable<LoadoutSet> All =>
         new[]
         {
-            Awm,
-            Kiivari,
+            // Awm,
+            // Kiivari,
             // Aek545,
-            S_R700,
+            // S_R700,
             M_R700,
-            ScarH,
-            AK12,
-            AK19,
+            // ScarH,
+            // AK12,
+            // AK19,
             MMAKM,
             MMMk47,
         };
+
+    public LoadoutSet SNAFUSR25 =>
+        GetLoadoutSetWeapon(
+            "SNAFU_SR25_Gun",
+            _weaponChanceCategories.Get(CategoryValue.Minimal),
+            new[] { "Ammo_308Win", "Ammo_308Win", "Ammo_308Win", }
+        );
 
     public LoadoutSet MMMk47 =>
         GetLoadoutSetWeapon(

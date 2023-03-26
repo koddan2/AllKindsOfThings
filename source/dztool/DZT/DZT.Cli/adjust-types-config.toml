@@ -1,20 +1,44 @@
 title = "TOML cfg for adjust-types"
 
 ## Morty
-[[rules]]
-in_file = "Morty_types.xml"
-not_name_contains_substring_case_insensitive = ["suppressor", "_optic"]
-action = "remove"
-nominal = 0
-min = 0
-lifetime = 600
-restock = 0
+# [[rules]]
+# in_file = "Morty_types.xml"
+# not_name_contains_substring_case_insensitive = ["suppressor", "_optic"]
+# action = "remove"
+# nominal = 0
+# min = 0
+# lifetime = 600
+# restock = 0
 
 ## Morty
 [[rules]]
 in_file = "Morty_types.xml"
-nominal = 2
-min = 1
+nominal = 3
+min = 2
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## Morty :: optics
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["optic", "hamr"]
+nominal = 5
+min = 3
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## Morty :: ammo
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["ammo"]
+nominal = 40
+min = 10
 lifetime = 14400
 restock = 0
 usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
@@ -28,6 +52,26 @@ nominal_modify_div = 3
 min_modify_div = 3
 lifetime = 14400
 restock = 0
+
+[[rules]]
+in_file = "types.xml"
+name_equals_case_insensitive = [
+    "Izh18Shotgun",
+    "SawedoffIzh18Shotgun",
+    "Izh43Shotgun",
+    "SawedoffIzh43Shotgun",
+    "Izh18",
+    "SawedoffIzh18",
+    "MakarovIJ70",
+    "Mag_IJ70_8Rnd",
+]
+nominal = 70
+min = 30
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
+values = ["Tier1", "Tier2", "Tier3"]
+flags = { count_in_map = "1" }
 
 ## vanilla
 [[rules]]
@@ -460,4 +504,15 @@ restock = 0
 category = "clothes"
 usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## snafu
+[[rules]]
+in_file = "SNAFU_types.xml"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
+usages = []
+values = []
 flags = { count_in_map = "1" }
