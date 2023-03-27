@@ -71,14 +71,29 @@ flags = { count_in_map = "1" }
 ## vanilla
 [[rules]]
 in_file = "types.xml"
-nominal_modify_div = 3
-min_modify_div = 3
+nominal_modify_div = 2
+min_modify_div = 2
 lifetime = 14400
 restock = 0
 
 [[rules]]
 in_file = "types.xml"
-name_equals_case_insensitive = [
+name_contains_substring_case_insensitive = [
+    "AK",
+    "Mosin",
+    "SKS",
+]
+nominal = 20
+min = 14
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+in_file = "types.xml"
+name_contains_substring_case_insensitive = [
     "Izh18Shotgun",
     "SawedoffIzh18Shotgun",
     "Izh43Shotgun",
@@ -87,12 +102,17 @@ name_equals_case_insensitive = [
     "SawedoffIzh18",
     "MakarovIJ70",
     "Mag_IJ70_8Rnd",
+    "CZ",
+    "Scout",
+    "Magnum",
+    "Glock",
+    "Deagle",
 ]
-nominal = 70
-min = 30
+nominal = 55
+min = 25
 lifetime = 14400
 restock = 0
-usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
+usages = ["Hunting", "Village", "Town", "Farm"]
 values = ["Tier1", "Tier2", "Tier3"]
 flags = { count_in_map = "1" }
 
@@ -552,3 +572,8 @@ restock = 0
 usages = []
 values = []
 flags = { count_in_map = "1" }
+
+## AJ creatures
+[[rules]]
+in_file = "AJs_Creatures_Types.xml"
+restock = 0
