@@ -1,0 +1,78 @@
+{
+  "ClassName": "WEAPON",
+  "Chance": 0.5,
+  "Quantity": {
+    "Min": 0,
+    "Max": 0
+  },
+  "Health": [],
+  "InventoryAttachments": [
+    {
+      "SlotName": "Hands",
+      "Items": [
+        {
+          "ClassName": "UMP45",
+          "Chance": 1,
+          "Quantity": {
+            "Min": 0,
+            "Max": 0
+          },
+          "Health": [],
+          "InventoryAttachments": [
+            {
+              "SlotName": "",
+              "Items": [
+                {
+                  "ClassName": "Mag_UMP_25Rnd",
+                  "Chance": 1,
+                  "Quantity": {
+                    "Min": 0,
+                    "Max": 0
+                  },
+                  "Health": [],
+                  "InventoryAttachments": [],
+                  "InventoryCargo": [],
+                  "ConstructionPartsBuilt": [],
+                  "Sets": []
+                }
+              ]
+            }
+          ],
+          "InventoryCargo": [],
+          "ConstructionPartsBuilt": [],
+          "Sets": []
+        }
+      ]
+    }
+  ],
+  "InventoryCargo": [
+    {
+      "ClassName": "Mag_UMP_25Rnd",
+      "Chance": 1,
+      "Quantity": {
+        "Min": 0,
+        "Max": 0
+      },
+      "Health": [],
+      "InventoryAttachments": [],
+      "InventoryCargo": [],
+      "ConstructionPartsBuilt": [],
+      "Sets": []
+    },
+    {
+      "ClassName": "Mag_UMP_25Rnd",
+      "Chance": 0.15000000596046448,
+      "Quantity": {
+        "Min": 0,
+        "Max": 0
+      },
+      "Health": [],
+      "InventoryAttachments": [],
+      "InventoryCargo": [],
+      "ConstructionPartsBuilt": [],
+      "Sets": []
+    }
+  ],
+  "ConstructionPartsBuilt": [],
+  "Sets": []
+}

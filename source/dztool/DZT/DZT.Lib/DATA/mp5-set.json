@@ -25,6 +25,82 @@
               "Items": [
                 {
                   "// the mag": "",
+                  "ClassName": "MP5_Compensator",
+                  "Chance": 0.5,
+                  "Quantity": {
+                    "Min": 0,
+                    "Max": 0
+                  },
+                  "Health": [],
+                  "InventoryAttachments": [],
+                  "InventoryCargo": [],
+                  "ConstructionPartsBuilt": [],
+                  "Sets": []
+                }
+              ]
+            },
+            {
+              "SlotName": "",
+              "Items": [
+                {
+                  "// the mag": "",
+                  "ClassName": "MP5k_StockBttstck",
+                  "Chance": 0.5,
+                  "Quantity": {
+                    "Min": 0,
+                    "Max": 0
+                  },
+                  "Health": [],
+                  "InventoryAttachments": [],
+                  "InventoryCargo": [],
+                  "ConstructionPartsBuilt": [],
+                  "Sets": []
+                }
+              ]
+            },
+            {
+              "SlotName": "",
+              "Items": [
+                {
+                  "// the mag": "",
+                  "ClassName": "MP5_RailHndgrd",
+                  "Chance": 0.5,
+                  "Quantity": {
+                    "Min": 0,
+                    "Max": 0
+                  },
+                  "Health": [],
+                  "InventoryAttachments": [],
+                  "InventoryCargo": [],
+                  "ConstructionPartsBuilt": [],
+                  "Sets": []
+                }
+              ]
+            },
+            {
+              "SlotName": "",
+              "Items": [
+                {
+                  "// the mag": "",
+                  "ClassName": "MP5_PlasticHndgrd",
+                  "Chance": 0.5,
+                  "Quantity": {
+                    "Min": 0,
+                    "Max": 0
+                  },
+                  "Health": [],
+                  "InventoryAttachments": [],
+                  "InventoryCargo": [],
+                  "ConstructionPartsBuilt": [],
+                  "Sets": []
+                }
+              ]
+            },
+            {
+              "SlotName": "",
+              "Items": [
+                {
+                  "// the mag": "",
                   "ClassName": "Mag_MP5_30Rnd",
                   "Chance": 1,
                   "Quantity": {

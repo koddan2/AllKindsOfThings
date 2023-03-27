@@ -11,6 +11,9 @@ public class ExtraSets
     public static LoadoutSet Mp5k = JsonSerializer.Deserialize<LoadoutSet>(
         File.ReadAllText(DataPath("mp5-set.json"))
     )!;
+    public static LoadoutSet UMP = JsonSerializer.Deserialize<LoadoutSet>(
+        File.ReadAllText(DataPath("ump-set.json"))
+    )!;
     public static LoadoutSet Repeater = JsonSerializer.Deserialize<LoadoutSet>(
         File.ReadAllText(DataPath("repeater-set.json"))
     )!;

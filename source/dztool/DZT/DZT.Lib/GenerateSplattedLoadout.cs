@@ -81,6 +81,7 @@ public class GenerateSplattedLoadout
         AssignSets(splat, model);
 
         splat.Sets.Add(ExtraSets.Skorpion);
+        splat.Sets.Add(ExtraSets.UMP);
         splat.Sets.Add(ExtraSets.Mp5k);
         splat.Sets.Add(ExtraSets.Repeater);
         splat.Sets.Add(ExtraSets.Bk12);
