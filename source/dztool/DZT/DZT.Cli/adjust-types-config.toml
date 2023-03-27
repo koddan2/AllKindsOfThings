@@ -45,6 +45,29 @@ usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## Morty adjust I
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = [
+    "LeeEnfield",
+    "M1Garand",
+    "Deagle",
+    "PP91",
+    "MP7",
+    "STG44",
+    "BAR",
+    "44",
+    "98k",
+    "1903",
+]
+nominal = 20
+min = 8
+lifetime = 14400
+restock = 0
+usages = ["Hunting", "Village", "Town", "Farm"]
+values = ["Tier1", "Tier2", "Tier3"]
+flags = { count_in_map = "1" }
+
 ## vanilla
 [[rules]]
 in_file = "types.xml"
@@ -433,6 +456,19 @@ lifetime = 28800
 restock = 0
 usages = ["Military", "Police", "Farm", "Village", "Hunting"]
 category = "weapons"
+flags = { count_in_map = "1" }
+
+## vanilla
+[[rules]]
+name_contains_substring_case_insensitive = [
+    "Sedan",
+    "Hatchback",
+    "Truck_01",
+    "Truck_02",
+]
+in_file = "types.xml"
+lifetime = 3888000
+restock = 0
 flags = { count_in_map = "1" }
 
 ## vanilla

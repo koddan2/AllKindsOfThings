@@ -179,12 +179,13 @@ public class AdjustTypesXml
 
     private static void GeneralAdjustments(DzTypesXmlTypeElement type)
     {
+        return;
         var keepLifetime = type.Category == "containers";
         if (!keepLifetime)
         {
             type.Lifetime = Math.Max(
                 (int)TimeSpan.FromMinutes(15).TotalSeconds,
-                (int)type.Lifetime / 10
+                (int)type.Lifetime / 2
             );
         }
         type.Restock = 0;
