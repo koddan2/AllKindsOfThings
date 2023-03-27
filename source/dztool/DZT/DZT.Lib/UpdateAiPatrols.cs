@@ -78,7 +78,7 @@ public class UpdateAiPatrols
 
     public void Process()
     {
-        _settings.MVersion = 11;
+        _settings.MVersion = 12;
         _settings.Enabled = 1;
         _settings.AccuracyMin = 0.52;
         _settings.AccuracyMax = 0.82;
@@ -103,6 +103,12 @@ public class UpdateAiPatrols
                 "Land_Misc_FeedShack",
                 "Land_Misc_DeerStand2",
                 "Land_Misc_DeerStand1",
+                "Land_Barn_Metal_Big",
+                "Land_Barn_Wood1",
+                "Land_Barn_Wood2",
+                "Land_Farm_CowshedA",
+                "Land_Farm_CowshedB",
+                "Land_Farm_CowshedC",
             },
             p =>
             {
@@ -249,6 +255,9 @@ public class UpdateAiPatrols
                 p.Faction = "Mercenaries";
                 p.UnlimitedReload = 1;
                 p.Behaviour = "ALTERNATE";
+                p.Speed = "RANDOM";
+                p.Formation = "RANDOM";
+                p.FormationLooseness = 0.2d;
                 p.LoadoutFile = "SplattedLoadout";
                 p.ThreatDistanceLimit = -1;
                 p.DamageMultiplier = -1;
@@ -269,6 +278,9 @@ public class UpdateAiPatrols
                 p.Chance = 1.0;
                 p.NumberOfAI = -4;
 
+                p.Speed = "RANDOM";
+                p.Formation = "RANDOM";
+                p.FormationLooseness = 0.2d;
                 p.Faction = "Mercenaries";
                 p.UnlimitedReload = 1;
                 p.Behaviour = "ALTERNATE";

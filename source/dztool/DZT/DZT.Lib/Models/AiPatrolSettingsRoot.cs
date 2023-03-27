@@ -18,6 +18,9 @@ public class ObjectPatrol
     [JsonPropertyName("Formation")]
     public string Formation { get; set; }
 
+    [JsonPropertyName("FormationLooseness")]
+    public double FormationLooseness { get; set; } = 0;
+
     [JsonPropertyName("LoadoutFile")]
     public string LoadoutFile { get; set; }
 
@@ -89,6 +92,9 @@ public class Patrol
 
     [JsonPropertyName("Formation")]
     public string Formation { get; set; }
+
+    [JsonPropertyName("FormationLooseness")]
+    public double FormationLooseness { get; set; } = 0;
 
     [JsonPropertyName("LoadoutFile")]
     public string LoadoutFile { get; set; }
