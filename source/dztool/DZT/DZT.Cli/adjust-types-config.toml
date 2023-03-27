@@ -57,15 +57,52 @@ name_contains_substring_case_insensitive = [
     "STG44",
     "BAR",
     "44",
+    "UZI",
     "98k",
     "1903",
 ]
-nominal = 20
+nominal = 30
 min = 8
 lifetime = 14400
 restock = 0
 usages = ["Hunting", "Village", "Town", "Farm"]
 values = ["Tier1", "Tier2", "Tier3"]
+flags = { count_in_map = "1" }
+
+## Morty adjust mags
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["mag"]
+nominal = 55
+min = 8
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## Morty adjust mags
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["40rnd", "338mag"]
+nominal = 5
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military"]
+values = ["Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## Morty adjust mags
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["100rnd"]
+nominal = 1
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military"]
+values = ["Tier4"]
 flags = { count_in_map = "1" }
 
 ## vanilla
@@ -78,11 +115,7 @@ restock = 0
 
 [[rules]]
 in_file = "types.xml"
-name_contains_substring_case_insensitive = [
-    "AK",
-    "Mosin",
-    "SKS",
-]
+name_contains_substring_case_insensitive = ["AK", "Mosin", "SKS"]
 nominal = 20
 min = 14
 lifetime = 14400

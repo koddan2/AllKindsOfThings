@@ -82,11 +82,11 @@ public class UpdateAiPatrols
         _settings.Enabled = 1;
         _settings.AccuracyMin = 0.52;
         _settings.AccuracyMax = 0.82;
-        _settings.DespawnRadius = 1200;
+        _settings.DespawnRadius = 1000;
         _settings.DespawnTime = 20;
         _settings.RespawnTime = 700;
-        _settings.MinDistRadius = 80;
-        _settings.MaxDistRadius = 950;
+        _settings.MinDistRadius = 60;
+        _settings.MaxDistRadius = 750;
         _settings.ThreatDistanceLimit = 120;
         _settings.DamageMultiplier = 1.0;
 
