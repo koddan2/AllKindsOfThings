@@ -85,6 +85,7 @@ public class GenerateSplattedLoadout
         splat.Sets.Add(ExtraSets.Mp5k);
         splat.Sets.Add(ExtraSets.Repeater);
         splat.Sets.Add(ExtraSets.Bk12);
+        splat.Sets.Add(ExtraSets.CzPistol);
 
         var ij = splat.Sets.First(IsIj);
         splat.Sets.Remove(ij);

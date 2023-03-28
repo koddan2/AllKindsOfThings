@@ -8,6 +8,9 @@ public class ExtraSets
     public static LoadoutSet Skorpion = JsonSerializer.Deserialize<LoadoutSet>(
         File.ReadAllText(DataPath("skorpion-set.json"))
     )!;
+    public static LoadoutSet CzPistol = JsonSerializer.Deserialize<LoadoutSet>(
+        File.ReadAllText(DataPath("czpistol-set.json"))
+    )!;
     public static LoadoutSet Mp5k = JsonSerializer.Deserialize<LoadoutSet>(
         File.ReadAllText(DataPath("mp5-set.json"))
     )!;

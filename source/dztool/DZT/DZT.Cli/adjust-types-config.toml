@@ -21,6 +21,18 @@ usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## Morty :: exquisite
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["dmr", "akmod"]
+nominal = 1
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military"]
+values = ["Tier4"]
+flags = { count_in_map = "1" }
+
 ## Morty :: optics
 [[rules]]
 in_file = "Morty_types.xml"
@@ -103,6 +115,18 @@ lifetime = 14400
 restock = 0
 usages = ["Military"]
 values = ["Tier4"]
+flags = { count_in_map = "1" }
+
+## Morty adjust mags
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["digitan"]
+nominal = 0
+min = 0
+lifetime = 14400
+restock = 0
+usages = []
+values = []
 flags = { count_in_map = "1" }
 
 ## vanilla
@@ -591,6 +615,17 @@ min = 2
 lifetime = 14400
 restock = 0
 category = "clothes"
+usages = ["Military", "Police"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+in_file = "types.xml"
+name_equals_case_insensitive = ["VSS", "ASVAL", "Mag_VSS_10Rnd", "Mag_VAL_20Rnd"]
+nominal = 12
+min = 2
+lifetime = 14400
+restock = 0
 usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
