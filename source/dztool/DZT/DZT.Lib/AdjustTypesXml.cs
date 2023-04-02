@@ -230,13 +230,14 @@ public class AdjustTypesXmlConfigurationRule
     public List<string>? Tags { get; set; } = null;
 
     /// Names for insertion
-    public List<string> Names { get; set; } = new List<string>();
+    public List<string> Names { get; set; } = new();
     public string? InFile { get; set; }
+    public List<string> InFiles { get; set; } = new();
     public string? StartsWith { get; set; }
     public string? StartsWithCaseInsensitive { get; set; }
-    public List<string> NameEqualsCaseInsensitive { get; set; } = new List<string>();
-    public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
-    public List<string> NotNameContainsSubstringCaseInsensitive { get; set; } = new List<string>();
+    public List<string> NameEqualsCaseInsensitive { get; set; } = new();
+    public List<string> NameContainsSubstringCaseInsensitive { get; set; } = new();
+    public List<string> NotNameContainsSubstringCaseInsensitive { get; set; } = new();
 
     public override string ToString()
     {
@@ -327,6 +328,17 @@ public static class AdjustTypesXmlConfigurationExtensions
         if (rule.InFile is string inFile)
         {
             if (Path.GetFileName(pathToFile) == inFile)
+            {
+                match = true;
+            }
+            else
+            {
+                match = false;
+            }
+        }
+        if (rule.InFiles.Any())
+        {
+            if (rule.InFiles.Contains(Path.GetFileName(pathToFile)))
             {
                 match = true;
             }

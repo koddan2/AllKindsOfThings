@@ -279,13 +279,13 @@ public class GenerateSplattedLoadout
                 }
                 else
                 {
-                    result = 0.01 * (((float)x.Nominal) / 11f);
+                    result = 0.01 * (((float)x.Nominal) / 18f);
                     result = Math.Clamp(result, 0.001, 0.05);
                 }
             }
             else
             {
-                result = 0.01 * (((float)x.Nominal) / 8f);
+                result = 0.01 * (((float)x.Nominal) / 14f);
             }
             return result;
         }

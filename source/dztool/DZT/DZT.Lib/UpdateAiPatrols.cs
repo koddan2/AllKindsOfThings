@@ -28,10 +28,10 @@ public class UpdateAiPatrols
             // medium: 0.45,
             // large: 0.7);
             /// lagom
-            minimal: 0.002,
-            small: 0.04,
-            medium: 0.35,
-            large: 0.60
+            minimal: 0.0025,
+            small: 0.05,
+            medium: 0.25,
+            large: 0.75
         );
 
     double Chance(CategoryValue category, double modifier = 0d)
@@ -80,13 +80,13 @@ public class UpdateAiPatrols
     {
         _settings.MVersion = 12;
         _settings.Enabled = 1;
-        _settings.AccuracyMin = 0.52;
-        _settings.AccuracyMax = 0.82;
-        _settings.DespawnRadius = 1000;
+        _settings.AccuracyMin = 0.50;
+        _settings.AccuracyMax = 0.85;
+        _settings.DespawnRadius = 900;
         _settings.DespawnTime = 20;
         _settings.RespawnTime = 700;
         _settings.MinDistRadius = 60;
-        _settings.MaxDistRadius = 750;
+        _settings.MaxDistRadius = 650;
         _settings.ThreatDistanceLimit = 120;
         _settings.DamageMultiplier = 1.0;
 
@@ -94,45 +94,42 @@ public class UpdateAiPatrols
             "East",
             new[]
             {
+                // police
                 "Land_City_PoliceStation",
                 "Land_Village_PoliceStation",
-                "Land_Office_Municipal1",
-                "Land_Office_Municipal2",
-                "Land_Office1",
-                "Land_Office2",
-                "Land_Misc_FeedShack",
-                "Land_Misc_DeerStand2",
-                "Land_Misc_DeerStand1",
-                "Land_Barn_Metal_Big",
-                "Land_Barn_Wood1",
-                "Land_Barn_Wood2",
-                "Land_Farm_CowshedA",
-                "Land_Farm_CowshedB",
-                "Land_Farm_CowshedC",
+                // super markets
+                "Land_City_Store",
+                "Land_City_Store_WithStairs",
+                // health care
+                "Land_City_Hospital",
+                "Land_Village_HealthCare",
+                // construction
+"Land_Construction_Crane",
             },
             p =>
             {
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = Chance(CategoryValue.Medium, 0.1);
+                p.Chance = Chance(CategoryValue.Large, 0);
             }
         );
         AddObjectPatrol(
             "East",
             new[]
             {
-                "Land_City_Hospital",
-                "Land_Village_HealthCare",
                 "Land_Village_store",
                 "Land_Power_Station",
-                "Land_City_Store",
-                "Land_City_Store_WithStairs",
+                "Land_Power_Transformer_Build",
+                // rail
+                "Land_Rail_Station_Big",
+                "Land_Rail_Station_Small",
+                "Land_Rail_Warehouse_Small"
             },
             p =>
             {
-                p.NumberOfAI = -6;
+                p.NumberOfAI = -4;
                 p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = Chance(CategoryValue.Medium, 0.1);
+                p.Chance = Chance(CategoryValue.Medium, 0);
             }
         );
 
@@ -143,7 +140,7 @@ public class UpdateAiPatrols
             {
                 p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = Chance(CategoryValue.Medium);
+                p.Chance = Chance(CategoryValue.Medium, 0.2);
                 p.NumberOfAI = -4;
             }
         );
@@ -153,7 +150,7 @@ public class UpdateAiPatrols
             new[] { "Land_City_FireStation" },
             p =>
             {
-                p.Chance = Chance(CategoryValue.Medium);
+                p.Chance = Chance(CategoryValue.Medium, 0.2);
                 p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
                 p.NumberOfAI = -4;
@@ -162,13 +159,15 @@ public class UpdateAiPatrols
 
         AddObjectPatrol(
             "East",
-            new[] { "Land_City_Stand_Grocery", "Land_House_1B01_Pub", },
+            new[] {
+
+                 "Land_City_Stand_Grocery", "Land_House_1B01_Pub", },
             p =>
             {
                 p.Faction = "Raiders";
                 p.LoadoutFile = "SplattedLoadout";
                 p.NumberOfAI = -4;
-                p.Chance = Chance(CategoryValue.Medium);
+                p.Chance = Chance(CategoryValue.Small, 0.1);
             }
         );
 
@@ -192,8 +191,8 @@ public class UpdateAiPatrols
 
         var objectsForPatrolRest = new[]
         {
-            structureClassNames["**Industrial**"],
-            structureClassNames["**Specific**"],
+            // structureClassNames["**Industrial**"],
+            // structureClassNames["**Specific**"],
             structureClassNames["**Military**"],
         }
             .SelectMany(x => x)
@@ -214,7 +213,16 @@ public class UpdateAiPatrols
 
         AddObjectPatrol(
             "East",
-            new[] { "Land_Misc_FeedShack", "Land_Misc_DeerStand2", "Land_Misc_DeerStand1", },
+            new[]
+            {
+                "Land_Church1_Yellow",
+                "Land_Chapel",
+                "Land_Church2_2",
+                "Land_Church3",
+                "Land_Misc_FeedShack",
+                "Land_Misc_DeerStand2",
+                "Land_Misc_DeerStand1",
+            },
             p =>
             {
                 p.Faction = "Mercenaries";
@@ -231,7 +239,7 @@ public class UpdateAiPatrols
             {
                 p.Faction = "East";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = Chance(CategoryValue.Minimal);
+                p.Chance = Chance(CategoryValue.Small);
                 p.NumberOfAI = -3;
             }
         );
@@ -243,7 +251,7 @@ public class UpdateAiPatrols
             {
                 p.Faction = "West";
                 p.LoadoutFile = "SplattedLoadout";
-                p.Chance = Chance(CategoryValue.Minimal);
+                p.Chance = Chance(CategoryValue.Small);
                 p.NumberOfAI = -3;
             }
         );

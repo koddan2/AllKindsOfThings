@@ -73,7 +73,7 @@ name_contains_substring_case_insensitive = [
     "98k",
     "1903",
 ]
-nominal = 30
+nominal = 55
 min = 8
 lifetime = 14400
 restock = 0
@@ -81,46 +81,10 @@ usages = ["Hunting", "Village", "Town", "Farm"]
 values = ["Tier1", "Tier2", "Tier3"]
 flags = { count_in_map = "1" }
 
-## Morty adjust mags
+## Morty adjust camo
 [[rules]]
 in_file = "Morty_types.xml"
-name_contains_substring_case_insensitive = ["mag"]
-nominal = 55
-min = 8
-lifetime = 14400
-restock = 0
-usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
-values = ["Tier1", "Tier2", "Tier3", "Tier4"]
-flags = { count_in_map = "1" }
-
-## Morty adjust mags
-[[rules]]
-in_file = "Morty_types.xml"
-name_contains_substring_case_insensitive = ["40rnd", "338mag"]
-nominal = 5
-min = 1
-lifetime = 14400
-restock = 0
-usages = ["Military"]
-values = ["Tier3", "Tier4"]
-flags = { count_in_map = "1" }
-
-## Morty adjust mags
-[[rules]]
-in_file = "Morty_types.xml"
-name_contains_substring_case_insensitive = ["100rnd"]
-nominal = 1
-min = 1
-lifetime = 14400
-restock = 0
-usages = ["Military"]
-values = ["Tier4"]
-flags = { count_in_map = "1" }
-
-## Morty adjust mags
-[[rules]]
-in_file = "Morty_types.xml"
-name_contains_substring_case_insensitive = ["digitan"]
+name_contains_substring_case_insensitive = ["digitan", "d_tan"]
 nominal = 0
 min = 0
 lifetime = 14400
@@ -132,15 +96,15 @@ flags = { count_in_map = "1" }
 ## vanilla
 [[rules]]
 in_file = "types.xml"
-nominal_modify_div = 2
-min_modify_div = 2
+nominal_modify_div = 1.5
+min_modify_div = 1.5
 lifetime = 14400
 restock = 0
 
 [[rules]]
 in_file = "types.xml"
 name_contains_substring_case_insensitive = ["AK", "Mosin", "SKS"]
-nominal = 20
+nominal = 35
 min = 14
 lifetime = 14400
 restock = 0
@@ -177,7 +141,7 @@ flags = { count_in_map = "1" }
 [[rules]]
 in_file = "types.xml"
 name_equals_case_insensitive = ["pot", "WeaponCleaningKit", "PortableGasStove"]
-nominal = 40
+nominal = 85
 min = 30
 lifetime = 14400
 restock = 0
@@ -645,3 +609,61 @@ flags = { count_in_map = "1" }
 [[rules]]
 in_file = "AJs_Creatures_Types.xml"
 restock = 0
+
+[[rules]]
+in_files = ["types.xml", "Morty_types.xml"]
+name_contains_substring_case_insensitive = ["mag"]
+nominal = 35
+min = 8
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["mag"]
+nominal = 18
+min = 8
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Village", "Town", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## Morty adjust mags
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["40rnd", "338mag"]
+nominal = 5
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military"]
+values = ["Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## Morty adjust mags
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["60rnd"]
+nominal = 3
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military"]
+values = ["Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## Morty adjust mags
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["100rnd"]
+nominal = 1
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military"]
+values = ["Tier4"]
+flags = { count_in_map = "1" }
