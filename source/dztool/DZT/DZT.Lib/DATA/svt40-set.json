@@ -1,0 +1,13 @@
+{
+  "weapon": {
+    "name": "TTC_SVT40",
+    "attachments": [
+      { "name": "TTC_SVT40_Bayonet" },
+      { "name": "TTC_SVT40_Optic" }
+    ]
+  },
+  "mag": {
+    "name": "TTC_Mag_SVT40_10rnd"
+  },
+  "ammo": ["Ammo_762x54"]
+}

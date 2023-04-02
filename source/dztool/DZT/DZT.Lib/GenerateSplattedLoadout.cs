@@ -86,6 +86,11 @@ public class GenerateSplattedLoadout
         splat.Sets.Add(ExtraSets.Repeater);
         splat.Sets.Add(ExtraSets.Bk12);
         splat.Sets.Add(ExtraSets.CzPistol);
+        splat.Sets.Add(ExtraSets.MP7);
+        splat.Sets.Add(ExtraSets.MPX);
+        splat.Sets.Add(ExtraSets.TTCUZI);
+        splat.Sets.Add(ExtraSets.SVT40);
+        splat.Sets.Add(ExtraSets.AVS36);
 
         var ij = splat.Sets.First(IsIj);
         splat.Sets.Remove(ij);
@@ -378,14 +383,14 @@ public class GenerateSplattedLoadout
                 "MMG_MK_III_Armor_green",
                 "MMG_MK_V_Armor_green",
                 "MMG_tt_Vest_police",
-                // "JuggernautLVL5_Suit",
-                // "JuggernautLVL5_Tan",
+                "JuggernautLVL5_Suit",
+                "JuggernautLVL5_Tan",
                 "JuggernautLVL5_Black",
-                // "JuggernautLVL5_Winter",
-                // "JuggernautLVL1_Suit",
-                // "JuggernautLVL1_Suit_Tan",
+                "JuggernautLVL5_Winter",
+                "JuggernautLVL1_Suit",
+                "JuggernautLVL1_Suit_Tan",
                 "JuggernautLVL1_Suit_Black",
-                // "JuggernautLVL1_Suit_Winter",
+                "JuggernautLVL1_Suit_Winter",
             },
             ["Back"] = new[]
             {

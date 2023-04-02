@@ -1,0 +1,10 @@
+{
+  "weapon": {
+    "name": "TTC_MPX",
+    "attachments": [{ "name": "TTC_MPXMCXSPEAR_Bttstck" }]
+  },
+  "mag": {
+    "name": "TTC_MPX_Mag_30rnd"
+  },
+  "ammo": ["Ammo_9x19"]
+}

@@ -1,0 +1,11 @@
+{
+  "weapon": {
+    "name": "TTC_MP7A1",
+    "attachments": [
+    ]
+  },
+  "mag": {
+    "name": "TTC_MP7A1_Mag_40rnd"
+  },
+  "ammo": ["TTC_Ammo_4630"]
+}

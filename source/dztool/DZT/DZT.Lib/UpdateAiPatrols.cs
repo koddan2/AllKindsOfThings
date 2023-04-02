@@ -28,7 +28,7 @@ public class UpdateAiPatrols
             // medium: 0.45,
             // large: 0.7);
             /// lagom
-            minimal: 0.0025,
+            minimal: 0.01,
             small: 0.05,
             medium: 0.25,
             large: 0.75
@@ -104,7 +104,7 @@ public class UpdateAiPatrols
                 "Land_City_Hospital",
                 "Land_Village_HealthCare",
                 // construction
-"Land_Construction_Crane",
+                "Land_Construction_Crane",
             },
             p =>
             {
@@ -159,9 +159,7 @@ public class UpdateAiPatrols
 
         AddObjectPatrol(
             "East",
-            new[] {
-
-                 "Land_City_Stand_Grocery", "Land_House_1B01_Pub", },
+            new[] { "Land_City_Stand_Grocery", "Land_House_1B01_Pub", },
             p =>
             {
                 p.Faction = "Raiders";
@@ -191,8 +189,8 @@ public class UpdateAiPatrols
 
         var objectsForPatrolRest = new[]
         {
-            // structureClassNames["**Industrial**"],
-            // structureClassNames["**Specific**"],
+            structureClassNames["**Industrial**"],
+            structureClassNames["**Specific**"],
             structureClassNames["**Military**"],
         }
             .SelectMany(x => x)
@@ -270,6 +268,10 @@ public class UpdateAiPatrols
                 p.ThreatDistanceLimit = -1;
                 p.DamageMultiplier = -1;
                 p.RespawnTime = -2;
+                // object patrols must be more restricted in area where they spawn
+                p.MinDistRadius = 50;
+                p.MaxDistRadius = 350;
+                p.DespawnRadius = 500;
             });
 
         _settings.Patrols.AddRange(

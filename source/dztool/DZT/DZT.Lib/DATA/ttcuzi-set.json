@@ -1,0 +1,11 @@
+{
+  "weapon": {
+    "name": "TTC_UZI",
+    "attachments": [
+    ]
+  },
+  "mag": {
+    "name": "TTC_UZI_Mag_30rnd"
+  },
+  "ammo": ["Ammo_9x19"]
+}

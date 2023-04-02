@@ -133,7 +133,7 @@ nominal = 55
 min = 25
 lifetime = 14400
 restock = 0
-usages = ["Hunting", "Village", "Town", "Farm"]
+usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office"]
 values = ["Tier1", "Tier2", "Tier3"]
 flags = { count_in_map = "1" }
 
@@ -141,7 +141,7 @@ flags = { count_in_map = "1" }
 [[rules]]
 in_file = "types.xml"
 name_equals_case_insensitive = ["pot", "WeaponCleaningKit", "PortableGasStove"]
-nominal = 85
+nominal = 45
 min = 30
 lifetime = 14400
 restock = 0
@@ -495,7 +495,7 @@ nominal = 50
 min = 10
 lifetime = 28800
 restock = 0
-usages = ["Military", "Police", "Farm", "Village", "Hunting"]
+usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office", "Firefighter", "Prison", "Medic"]
 category = "weapons"
 flags = { count_in_map = "1" }
 
@@ -521,7 +521,7 @@ min = 20
 lifetime = 28800
 restock = 0
 category = "weapons"
-usages = ["Military", "Police", "Farm", "Village", "Hunting"]
+usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office", "Firefighter", "Prison", "Medic"]
 flags = { count_in_map = "1" }
 
 ## mmg
@@ -666,4 +666,15 @@ lifetime = 14400
 restock = 0
 usages = ["Military"]
 values = ["Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_contains_substring_case_insensitive = ["riflesling"]
+# in_file = "types.xml"
+nominal = 120
+min = 20
+lifetime = 28800
+restock = 0
+category = "weapons"
+usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office", "Firefighter", "Prison", "Medic"]
 flags = { count_in_map = "1" }
