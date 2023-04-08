@@ -1,0 +1,12 @@
+{
+  "chance": 0.02,
+  "weapon": {
+    "name": "Snafu_pkp_Black_GUN",
+    "attachments": [
+    ]
+  },
+  "mag": {
+    "name": "Snafu_pkp_250RND_Mag"
+  },
+  "ammo": ["Ammo_762x54"]
+}

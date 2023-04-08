@@ -46,6 +46,9 @@ public class ExtraSets
     public static LoadoutSet SVT40 = MakeLoadoutSetFromProprietaryFormat("svt40-set.json");
     public static LoadoutSet AVS36 = MakeLoadoutSetFromProprietaryFormat("avs36-set.json");
 
+    public static LoadoutSet PKP = MakeLoadoutSetFromProprietaryFormat("pkp-set.json");
+    public static LoadoutSet SR25 = MakeLoadoutSetFromProprietaryFormat("sr25snafu-set.json");
+
     // public record ProprietaryFormat();
     private static LoadoutSet MakeLoadoutSetFromProprietaryFormat(string setFilePath)
     {
@@ -55,9 +58,11 @@ public class ExtraSets
         var mag = jnode["mag"]?["name"]?.GetValue<string>();
         var ammo = jnode["ammo"]?[0]?.GetValue<string>();
 
+        var chance = jnode["chance"]?.GetValue<double?>() ?? 0.2;
+
         return new LoadoutSet
         {
-            Chance = 0.2,
+            Chance = chance,
             ClassName = "WEAPON",
             Health = new List<Health>
             {

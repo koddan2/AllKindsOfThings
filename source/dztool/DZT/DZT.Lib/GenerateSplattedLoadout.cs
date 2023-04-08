@@ -91,6 +91,8 @@ public class GenerateSplattedLoadout
         splat.Sets.Add(ExtraSets.TTCUZI);
         splat.Sets.Add(ExtraSets.SVT40);
         splat.Sets.Add(ExtraSets.AVS36);
+        splat.Sets.Add(ExtraSets.PKP);
+        splat.Sets.Add(ExtraSets.SR25);
 
         var ij = splat.Sets.First(IsIj);
         splat.Sets.Remove(ij);

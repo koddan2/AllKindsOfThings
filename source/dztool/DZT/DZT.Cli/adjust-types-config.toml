@@ -617,6 +617,17 @@ values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
 [[rules]]
+in_files = ["Morty_types.xml"]
+name_contains_substring_case_insensitive = ["stanag"]
+nominal = 6
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military"]
+values = ["Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
 in_file = "Morty_types.xml"
 name_contains_substring_case_insensitive = ["mag"]
 nominal = 18
@@ -641,8 +652,8 @@ flags = { count_in_map = "1" }
 
 ## Morty adjust mags
 [[rules]]
-in_file = "Morty_types.xml"
-name_contains_substring_case_insensitive = ["60rnd"]
+in_files = ["Morty_types.xml", "types.xml"]
+name_contains_substring_case_insensitive = ["60rnd", "75rnd"]
 nominal = 3
 min = 1
 lifetime = 14400
@@ -672,4 +683,12 @@ lifetime = 28800
 restock = 0
 category = "weapons"
 usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office", "Firefighter", "Prison", "Medic"]
+flags = { count_in_map = "1" }
+
+## Morty adjust mags
+[[rules]]
+in_file = "Morty_types.xml"
+name_contains_substring_case_insensitive = ["300", "277", "spear", "338", "50bmg"]
+usages = ["Military"]
+values = ["Tier4"]
 flags = { count_in_map = "1" }

@@ -1,0 +1,13 @@
+{
+  "chance": 0.05,
+  "weapon": {
+    "name": "SNAFU_SR25_Gun",
+    "attachments": [
+      {"name": "SNAFU_SR25_Supp"}
+    ]
+  },
+  "mag": {
+    "name": "SNAFU_SR25_Mag"
+  },
+  "ammo": ["Ammo_308Win"]
+}
