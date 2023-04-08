@@ -49,7 +49,7 @@ flags = { count_in_map = "1" }
 [[rules]]
 in_file = "Morty_types.xml"
 name_contains_substring_case_insensitive = ["ammo"]
-nominal = 40
+nominal = 60
 min = 10
 lifetime = 14400
 restock = 0
@@ -72,6 +72,11 @@ name_contains_substring_case_insensitive = [
     "UZI",
     "98k",
     "1903",
+    "Mossberg",
+    "Mas36",
+    "Maverick",
+    "320",
+    "Kimber",
 ]
 nominal = 55
 min = 8
@@ -190,16 +195,6 @@ restock = 0
 category = "weapons"
 usages = ["Police", "Military"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
-
-## advanced weapon scopes
-[[rules]] # PILAD is bugged
-starts_with = "AD_"
-name_contains_substring_case_insensitive = ["pilad"]
-action = "remove"
-lifetime = 600
-restock = 0
-usages = []
-values = []
 
 ## expansion
 [[rules]]
@@ -612,8 +607,8 @@ restock = 0
 
 [[rules]]
 in_files = ["types.xml", "Morty_types.xml"]
-name_contains_substring_case_insensitive = ["mag"]
-nominal = 35
+name_contains_substring_case_insensitive = ["mag", "stanag"]
+nominal = 45
 min = 8
 lifetime = 14400
 restock = 0
