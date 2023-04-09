@@ -1,0 +1,9 @@
+{
+  "chance": 0.08,
+  "weapon": {
+    "name": "TTC_Winchester1873",
+    "attachments": [
+    ]
+  },
+  "ammo": ["TTC_Ammo_4570"]
+}

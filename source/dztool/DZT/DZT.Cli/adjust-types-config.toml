@@ -370,6 +370,47 @@ flags = { count_in_map = "1" }
 
 ## snafu
 [[rules]]
+# starts_with = "SNAFU"
+in_file = "SNAFU_types.xml"
+nominal = 2
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## snafu
+[[rules]]
+name_equals_case_insensitive = [
+    "SNAFU_AWM_Gun",
+    "SNAFU_AWM_Mag",
+    "SNAFU_Ammo_338",
+    "SNAFUKivaari_338_Supp",
+    "SNAFU_MPX_Suppressor_Black",
+    "SNAFU_Agram_Suppressor_Black",
+    "SNAFU_LNormalized_Suppressor_Black",
+    "SNAFU_LStandardized_Suppressor_Black",
+]
+nominal = 1
+min = 1
+lifetime = 14400
+restock = 0
+flags = { count_in_map = "1" }
+
+## snafu :: clear stuff 1
+[[rules]]
+in_file = "SNAFU_types.xml"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
+usages = []
+values = []
+flags = { count_in_map = "1" }
+
+## snafu
+[[rules]]
 name_equals_case_insensitive = [
     "SNAFU_AKAimpoint_ACO",
     "SNAFU_AKAimpoint_M5",
@@ -429,36 +470,6 @@ lifetime = 14400
 restock = 0
 usages = ["Military", "Police", "Hunting"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
-flags = { count_in_map = "1" }
-
-## snafu
-[[rules]]
-# starts_with = "SNAFU"
-in_file = "SNAFU_types.xml"
-nominal = 2
-min = 1
-lifetime = 14400
-restock = 0
-usages = ["Military", "Police", "Hunting", "Farm"]
-values = ["Tier1", "Tier2", "Tier3", "Tier4"]
-flags = { count_in_map = "1" }
-
-## snafu
-[[rules]]
-name_equals_case_insensitive = [
-    "SNAFU_AWM_Gun",
-    "SNAFU_AWM_Mag",
-    "SNAFU_Ammo_338",
-    "SNAFUKivaari_338_Supp",
-    "SNAFU_MPX_Suppressor_Black",
-    "SNAFU_Agram_Suppressor_Black",
-    "SNAFU_LNormalized_Suppressor_Black",
-    "SNAFU_LStandardized_Suppressor_Black",
-]
-nominal = 1
-min = 1
-lifetime = 14400
-restock = 0
 flags = { count_in_map = "1" }
 
 ## expansion
@@ -625,17 +636,6 @@ usages = ["Military", "Police"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
-## snafu
-[[rules]]
-in_file = "SNAFU_types.xml"
-nominal = 0
-min = 0
-lifetime = 600
-restock = 0
-usages = []
-values = []
-flags = { count_in_map = "1" }
-
 ## AJ creatures
 [[rules]]
 in_file = "AJs_Creatures_Types.xml"
@@ -698,11 +698,11 @@ usages = ["Military"]
 values = ["Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
-## Morty adjust mags
+## Morty adjust weps conta
 [[rules]]
 in_files = ["Morty_types.xml", "SNAFU_types.xml"]
 name_contains_substring_case_insensitive = ["100rnd", "m82", "beowulf"]
-nominal = 1
+nominal = 3
 min = 1
 lifetime = 14400
 restock = 0
@@ -712,7 +712,7 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 in_files = ["Morty_types.xml", "SNAFU_types.xml"]
-name_contains_substring_case_insensitive = ["m82_5rnd"]
+name_contains_substring_case_insensitive = ["m82_5rnd", "50b"]
 nominal = 10
 min = 1
 lifetime = 14400
@@ -754,7 +754,7 @@ names = [
     "rifleholster_TTsKO_mung",
 ]
 in_file = "generated_types.xml"
-nominal = 200
+nominal = 140
 min = 20
 lifetime = 14400
 restock = 0
@@ -787,6 +787,14 @@ names = [
     "quad_Ronin_Helmet",
     "quad_Ronin_Gold",
     "Quad_ArmourPlate",
+    "6b13Vest_FloraBrown",
+    "6b13Vest_PixelGreen",
+    "6b13Vest_PixelBlack",
+    "Quad_SCARL",
+    "Quad_SLR",
+    "tacticalbelt_quad_black",
+    "tacticalbelt_quad_green",
+    "tacticalbelt_quad_tan",
 ]
 in_file = "generated_types.xml"
 nominal = 4

@@ -46,6 +46,8 @@ public class ExtraSets
     public static LoadoutSet SVT40 = MakeLoadoutSetFromProprietaryFormat("svt40-set.json");
     public static LoadoutSet AVS36 = MakeLoadoutSetFromProprietaryFormat("avs36-set.json");
 
+    public static LoadoutSet Marlin = MakeLoadoutSetFromProprietaryFormat("marlin-set.json");
+
     public static LoadoutSet PKP = MakeLoadoutSetFromProprietaryFormat("pkp-set.json");
     public static LoadoutSet SR25 = MakeLoadoutSetFromProprietaryFormat("sr25snafu-set.json");
 
@@ -157,7 +159,7 @@ public class ExtraSets
                 },
                 new InventoryCargoModel
                 {
-                    Chance = 0.5,
+                    Chance = 0.2,
                     ClassName = ammo.OrFail(),
                     Quantity = GenerateSplattedLoadout.DefaultQuantity
                 }

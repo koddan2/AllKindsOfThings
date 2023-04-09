@@ -92,6 +92,7 @@ public class GenerateSplattedLoadout
         splat.Sets.Add(ExtraSets.TTCUZI);
         splat.Sets.Add(ExtraSets.SVT40);
         splat.Sets.Add(ExtraSets.AVS36);
+        splat.Sets.Add(ExtraSets.Marlin);
         splat.Sets.Add(ExtraSets.PKP);
         splat.Sets.Add(ExtraSets.SR25);
 
@@ -399,6 +400,9 @@ public class GenerateSplattedLoadout
                 "quad_gen2_Suit",
                 "quad_Gen2_Black",
                 "quad_Gen2_Green",
+                "6b13Vest_FloraBrown",
+                "6b13Vest_PixelGreen",
+                "6b13Vest_PixelBlack",
             },
             ["Back"] = new[]
             {
@@ -424,6 +428,9 @@ public class GenerateSplattedLoadout
                 "mmg_cargobelt_black",
                 "mmg_cargobelt_green",
                 "mmg_cargobelt_tan",
+                "tacticalbelt_quad_black",
+                "tacticalbelt_quad_green",
+                "tacticalbelt_quad_tan",
             },
             ["Headgear"] = new[]
             {
@@ -434,6 +441,9 @@ public class GenerateSplattedLoadout
                 "MMG_striker_helmet_green",
                 "mmg_armored_helmet_green",
                 "MMG_tactical_helmet_police",
+                "quad_Ronin_Helmet",
+                "quad_Ronin_Gold",
+                "Quad_ArmourPlate",
             },
             ["Body"] = new[]
             {
