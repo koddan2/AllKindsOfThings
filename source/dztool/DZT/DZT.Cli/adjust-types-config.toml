@@ -692,3 +692,10 @@ name_contains_substring_case_insensitive = ["300", "277", "spear", "338", "50bmg
 usages = ["Military"]
 values = ["Tier4"]
 flags = { count_in_map = "1" }
+
+[[rules]]
+name_contains_substring_case_insensitive = ["sling"]
+nominal = 0
+min = 0
+lifetime = 0
+restock = 0
