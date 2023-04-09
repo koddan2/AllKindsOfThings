@@ -9,6 +9,7 @@ namespace DZT.Lib;
 
 public class GenerateSplattedLoadout
 {
+    internal static Quantity DefaultQuantity = new Quantity { Min = 0.06, Max = 0.86 };
     private readonly string _loadoutDir;
     private readonly SpawnableTypesHelper _spawnableTypesHelper;
     private readonly WeaponSetDefs _weaponSets;
@@ -170,8 +171,10 @@ public class GenerateSplattedLoadout
 
         var forbid0 =
             type.Category == "containers"
+            || type.Usages.Any(usage => usage == "ContaminatedArea")
             || (type.Category == "clothes" && !type.NameUpper.Contains("POUCH"))
             || type.Tags?.Contains("floor") is true
+            || type.Tags?.Contains("skip-ai") is true
             || type.Flags?["crafted"] == "1";
         if (forbid0)
         {
@@ -286,13 +289,13 @@ public class GenerateSplattedLoadout
                 }
                 else
                 {
-                    result = 0.01 * (((float)x.Nominal) / 18f);
+                    result = 0.01 * (((float)x.Nominal) / 15f);
                     result = Math.Clamp(result, 0.001, 0.05);
                 }
             }
             else
             {
-                result = 0.01 * (((float)x.Nominal) / 14f);
+                result = 0.01 * (((float)x.Nominal) / 11f);
             }
             return result;
         }
@@ -304,7 +307,7 @@ public class GenerateSplattedLoadout
                     ClassName = x.Name,
                     Chance = GetChance(x),
                     Sets = new List<LoadoutSet>(),
-                    Quantity = new Quantity { Min = 0, Max = 0 },
+                    Quantity = DefaultQuantity,
                     Health = new List<Health>
                     {
                         new Health
@@ -393,6 +396,9 @@ public class GenerateSplattedLoadout
                 "JuggernautLVL1_Suit_Tan",
                 "JuggernautLVL1_Suit_Black",
                 "JuggernautLVL1_Suit_Winter",
+                "quad_gen2_Suit",
+                "quad_Gen2_Black",
+                "quad_Gen2_Green",
             },
             ["Back"] = new[]
             {
@@ -408,6 +414,8 @@ public class GenerateSplattedLoadout
                 "MMG_mmps_bag_green",
                 "bag_6B38_black_mung",
                 "bag_6B38_LETO_mung",
+                "rifleholster_black_mung",
+                "rifleholster_TTsKO_mung",
             },
             ["Hips"] = new[]
             {
@@ -676,7 +684,15 @@ public class WeaponSetDefs
             .SelectMany(x => x.Items);
         var additionalMags = possibleAttachments
             .Where(y => y.ClassName.ToUpper().Contains("MAG"))
-            .Select(y => new InventoryCargoModel { Chance = 1, ClassName = y.ClassName, })
+            .Select(
+                y =>
+                    new InventoryCargoModel
+                    {
+                        Chance = 1,
+                        ClassName = y.ClassName,
+                        Quantity = GenerateSplattedLoadout.DefaultQuantity
+                    }
+            )
             .ToList();
 
         if (additionalMags.Count == 1)
@@ -685,7 +701,13 @@ public class WeaponSetDefs
         }
 
         var extraInventoryCargo = extraInventory.Select(
-            extra => new InventoryCargoModel { Chance = 1, ClassName = extra, }
+            extra =>
+                new InventoryCargoModel
+                {
+                    Chance = 1,
+                    ClassName = extra,
+                    Quantity = GenerateSplattedLoadout.DefaultQuantity
+                }
         );
         var inventoryCargo = additionalMags.Concat(extraInventoryCargo).ToList();
         return new LoadoutSet

@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Linq;
+using System.Reflection;
+using System.Text.Json;
 using System.Xml.Linq;
 using DZT.Lib.Helpers;
 using DZT.Lib.Models;
@@ -124,6 +126,10 @@ public class AdjustTypesXml
         }
 
         ProcessInsertionsByConfiguration(xd, inputFilePath);
+        foreach (var postAction in PostActions)
+        {
+            postAction?.Invoke();
+        }
 
         using var fs = FileManagement.Utf8WithoutBomWriter(inputFilePath);
         xd.Save(fs);
@@ -148,6 +154,8 @@ public class AdjustTypesXml
         }
     }
 
+    private List<Action> PostActions = new();
+
     private void ProcessByConfiguration(DzTypesXmlTypeElement type, XDocument _, string pathToFile)
     {
         foreach (var rule in _configuration.Rules)
@@ -155,6 +163,16 @@ public class AdjustTypesXml
             if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Insert)
             {
                 continue;
+            }
+            else if (rule.Action == AdjustTypesXmlConfigurationRuleAction.Clear)
+            {
+                if (rule.Matches(type, pathToFile))
+                    PostActions.Add(() =>
+                    {
+                        var reAddName = type.Name;
+                        type.Element.RemoveAll();
+                        type.Element.SetAttributeValue("name", reAddName);
+                    });
             }
             else if ( /**/
                 rule.Action is AdjustTypesXmlConfigurationRuleAction.Update
@@ -209,6 +227,8 @@ public enum AdjustTypesXmlConfigurationRuleAction
     Insert = 2,
 
     Update = 3,
+
+    Clear = 4,
 }
 
 public class AdjustTypesXmlConfigurationRule

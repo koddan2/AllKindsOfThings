@@ -1,5 +1,5 @@
 {
-  "chance": 0.05,
+  "chance": 0.03,
   "weapon": {
     "name": "SNAFU_SR25_Gun",
     "attachments": [

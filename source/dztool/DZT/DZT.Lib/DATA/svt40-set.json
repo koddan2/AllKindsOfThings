@@ -1,4 +1,5 @@
 {
+  "chance": 0.04,
   "weapon": {
     "name": "TTC_SVT40",
     "attachments": [

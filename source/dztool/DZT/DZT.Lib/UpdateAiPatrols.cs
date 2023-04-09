@@ -28,10 +28,10 @@ public class UpdateAiPatrols
             // medium: 0.45,
             // large: 0.7);
             /// lagom
-            minimal: 0.01,
-            small: 0.05,
-            medium: 0.25,
-            large: 0.75
+            minimal: 0.005,
+            small: 0.025,
+            medium: 0.125,
+            large: 0.400
         );
 
     double Chance(CategoryValue category, double modifier = 0d)

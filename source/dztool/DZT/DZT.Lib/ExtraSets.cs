@@ -118,7 +118,12 @@ public class ExtraSets
                                                 SlotName = "",
                                                 Items = new List<Item>
                                                 {
-                                                    new Item { ClassName = att, }
+                                                    new Item
+                                                    {
+                                                        ClassName = att,
+                                                        Quantity =
+                                                            GenerateSplattedLoadout.DefaultQuantity,
+                                                    }
                                                 }
                                             }
                                         );
@@ -132,10 +137,30 @@ public class ExtraSets
             InventoryCargo = new List<InventoryCargoModel>
             {
                 mag is null
-                    ? new InventoryCargoModel { Chance = 1, ClassName = ammo.OrFail() }
-                    : new InventoryCargoModel { Chance = 1, ClassName = mag.OrFail() },
-                new InventoryCargoModel { Chance = 1, ClassName = ammo.OrFail() },
-                new InventoryCargoModel { Chance = 0.5, ClassName = ammo.OrFail() }
+                    ? new InventoryCargoModel
+                    {
+                        Chance = 1,
+                        ClassName = ammo.OrFail(),
+                        Quantity = GenerateSplattedLoadout.DefaultQuantity
+                    }
+                    : new InventoryCargoModel
+                    {
+                        Chance = 1,
+                        ClassName = mag.OrFail(),
+                        Quantity = GenerateSplattedLoadout.DefaultQuantity
+                    },
+                new InventoryCargoModel
+                {
+                    Chance = 1,
+                    ClassName = ammo.OrFail(),
+                    Quantity = GenerateSplattedLoadout.DefaultQuantity
+                },
+                new InventoryCargoModel
+                {
+                    Chance = 0.5,
+                    ClassName = ammo.OrFail(),
+                    Quantity = GenerateSplattedLoadout.DefaultQuantity
+                }
             }
         };
     }

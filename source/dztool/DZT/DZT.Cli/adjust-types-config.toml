@@ -1,16 +1,6 @@
 title = "TOML cfg for adjust-types"
 
 ## Morty
-# [[rules]]
-# in_file = "Morty_types.xml"
-# not_name_contains_substring_case_insensitive = ["suppressor", "_optic"]
-# action = "remove"
-# nominal = 0
-# min = 0
-# lifetime = 600
-# restock = 0
-
-## Morty
 [[rules]]
 in_file = "Morty_types.xml"
 nominal = 3
@@ -67,7 +57,7 @@ name_contains_substring_case_insensitive = [
     "PP91",
     "MP7",
     "STG44",
-    "BAR",
+    "TTC_BAR",
     "44",
     "UZI",
     "98k",
@@ -78,7 +68,7 @@ name_contains_substring_case_insensitive = [
     "320",
     "Kimber",
 ]
-nominal = 55
+nominal = 65
 min = 8
 lifetime = 14400
 restock = 0
@@ -138,7 +128,19 @@ nominal = 55
 min = 25
 lifetime = 14400
 restock = 0
-usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office"]
+usages = [
+    "Military",
+    "Police",
+    "Farm",
+    "Village",
+    "Town",
+    "Hunting",
+    "School",
+    "Industrial",
+    "Coast",
+    "Lunapark",
+    "Office",
+]
 values = ["Tier1", "Tier2", "Tier3"]
 flags = { count_in_map = "1" }
 
@@ -327,6 +329,17 @@ category = "clothes"
 usages = ["Military", "Police", "Hunting", "Farm"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
+## munghard
+[[rules]]
+name_contains_substring_case_insensitive = ["rifleholster"]
+nominal = 140
+min = 8
+lifetime = 14400
+restock = 0
+category = "clothes"
+usages = ["Military", "Police", "Hunting", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
 
 ## munghard
 [[rules]]
@@ -347,59 +360,6 @@ flags = { count_in_map = "1" }
 ## snafu
 [[rules]]
 in_file = "SNAFU_types.xml"
-nominal = 0
-min = 0
-lifetime = 600
-restock = 0
-usages = []
-values = []
-flags = { count_in_map = "1" }
-
-## snafu
-[[rules]]
-# starts_with = "SNAFU"
-in_file = "SNAFU_types.xml"
-nominal = 2
-min = 1
-lifetime = 14400
-restock = 0
-usages = ["Military", "Police", "Hunting", "Farm"]
-values = ["Tier1", "Tier2", "Tier3", "Tier4"]
-flags = { count_in_map = "1" }
-
-## snafu
-[[rules]]
-name_equals_case_insensitive = [
-    "SNAFU_AWM_Gun",
-    "SNAFU_AWM_Mag",
-    "SNAFU_Ammo_338",
-    "SNAFUKivaari_338_Supp",
-    "SNAFU_MPX_Suppressor_Black",
-    "SNAFU_Agram_Suppressor_Black",
-    "SNAFU_LNormalized_Suppressor_Black",
-    "SNAFU_LStandardized_Suppressor_Black",
-]
-nominal = 1
-min = 1
-lifetime = 14400
-restock = 0
-flags = { count_in_map = "1" }
-
-## quad
-[[rules]]
-action = "insert"
-names = ["riflesling_quad_tan"]
-in_file = "generated_types.xml"
-nominal = 0
-min = 0
-lifetime = 14400
-restock = 0
-usages = ["Police", "Farm", "Hunting"]
-flags = { count_in_map = "1" }
-
-## expansion
-[[rules]]
-in_file = "expansion_types.xml"
 nominal = 0
 min = 0
 lifetime = 600
@@ -471,6 +431,47 @@ usages = ["Military", "Police", "Hunting"]
 values = ["Tier1", "Tier2", "Tier3", "Tier4"]
 flags = { count_in_map = "1" }
 
+## snafu
+[[rules]]
+# starts_with = "SNAFU"
+in_file = "SNAFU_types.xml"
+nominal = 2
+min = 1
+lifetime = 14400
+restock = 0
+usages = ["Military", "Police", "Hunting", "Farm"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+## snafu
+[[rules]]
+name_equals_case_insensitive = [
+    "SNAFU_AWM_Gun",
+    "SNAFU_AWM_Mag",
+    "SNAFU_Ammo_338",
+    "SNAFUKivaari_338_Supp",
+    "SNAFU_MPX_Suppressor_Black",
+    "SNAFU_Agram_Suppressor_Black",
+    "SNAFU_LNormalized_Suppressor_Black",
+    "SNAFU_LStandardized_Suppressor_Black",
+]
+nominal = 1
+min = 1
+lifetime = 14400
+restock = 0
+flags = { count_in_map = "1" }
+
+## expansion
+[[rules]]
+in_file = "expansion_types.xml"
+nominal = 0
+min = 0
+lifetime = 600
+restock = 0
+usages = []
+values = []
+flags = { count_in_map = "1" }
+
 ## vanilla
 [[rules]]
 name_equals_case_insensitive = ["AmmoBox"]
@@ -490,7 +491,22 @@ nominal = 50
 min = 10
 lifetime = 28800
 restock = 0
-usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office", "Firefighter", "Prison", "Medic"]
+usages = [
+    "Military",
+    "Police",
+    "Farm",
+    "Village",
+    "Town",
+    "Hunting",
+    "School",
+    "Industrial",
+    "Coast",
+    "Lunapark",
+    "Office",
+    "Firefighter",
+    "Prison",
+    "Medic",
+]
 category = "weapons"
 flags = { count_in_map = "1" }
 
@@ -516,7 +532,22 @@ min = 20
 lifetime = 28800
 restock = 0
 category = "weapons"
-usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office", "Firefighter", "Prison", "Medic"]
+usages = [
+    "Military",
+    "Police",
+    "Farm",
+    "Village",
+    "Town",
+    "Hunting",
+    "School",
+    "Industrial",
+    "Coast",
+    "Lunapark",
+    "Office",
+    "Firefighter",
+    "Prison",
+    "Medic",
+]
 flags = { count_in_map = "1" }
 
 ## mmg
@@ -580,7 +611,12 @@ flags = { count_in_map = "1" }
 
 [[rules]]
 in_file = "types.xml"
-name_equals_case_insensitive = ["VSS", "ASVAL", "Mag_VSS_10Rnd", "Mag_VAL_20Rnd"]
+name_equals_case_insensitive = [
+    "VSS",
+    "ASVAL",
+    "Mag_VSS_10Rnd",
+    "Mag_VAL_20Rnd",
+]
 nominal = 12
 min = 2
 lifetime = 14400
@@ -664,38 +700,111 @@ flags = { count_in_map = "1" }
 
 ## Morty adjust mags
 [[rules]]
-in_file = "Morty_types.xml"
-name_contains_substring_case_insensitive = ["100rnd"]
+in_files = ["Morty_types.xml", "SNAFU_types.xml"]
+name_contains_substring_case_insensitive = ["100rnd", "m82", "beowulf"]
 nominal = 1
 min = 1
 lifetime = 14400
 restock = 0
-usages = ["Military"]
+usages = ["ContaminatedArea"]
 values = ["Tier4"]
 flags = { count_in_map = "1" }
 
 [[rules]]
-name_contains_substring_case_insensitive = ["riflesling"]
-# in_file = "types.xml"
-nominal = 120
-min = 20
-lifetime = 28800
+in_files = ["Morty_types.xml", "SNAFU_types.xml"]
+name_contains_substring_case_insensitive = ["m82_5rnd"]
+nominal = 10
+min = 1
+lifetime = 14400
 restock = 0
-category = "weapons"
-usages = ["Military", "Police", "Farm", "Village", "Town", "Hunting", "School", "Industrial", "Coast", "Lunapark", "Office", "Firefighter", "Prison", "Medic"]
+usages = ["ContaminatedArea"]
+values = ["Tier4"]
 flags = { count_in_map = "1" }
 
 ## Morty adjust mags
 [[rules]]
 in_file = "Morty_types.xml"
-name_contains_substring_case_insensitive = ["300", "277", "spear", "338", "50bmg"]
+name_contains_substring_case_insensitive = [
+    "300",
+    "277",
+    "spear",
+    "338",
+    "50bmg",
+]
 usages = ["Military"]
 values = ["Tier4"]
 flags = { count_in_map = "1" }
 
 [[rules]]
 name_contains_substring_case_insensitive = ["sling"]
+# action = "clear"
 nominal = 0
 min = 0
+restock = 6000
 lifetime = 0
+
+
+## quad
+[[rules]]
+action = "insert"
+names = [
+    "riflesling_quad_green",
+    "rifleslingfront_quad_green",
+    "rifleslingback_quad_green",
+    "rifleholster_TTsKO_mung",
+]
+in_file = "generated_types.xml"
+nominal = 200
+min = 20
+lifetime = 14400
 restock = 0
+usages = [
+    "Military",
+    "Police",
+    "Farm",
+    "Village",
+    "Town",
+    "Hunting",
+    "School",
+    "Industrial",
+    "Coast",
+    "Lunapark",
+    "Office",
+]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+action = "insert"
+names = [
+    "quad_gen2_Suit",
+    "quad_Gen2_Black",
+    "quad_Gen2_Green",
+    "TacticalPouch_Green",
+    "TacticalPouch_Black",
+    "TacticalPouch_Tan",
+    "TacticalPouch_Flora",
+    "quad_Ronin_Helmet",
+    "quad_Ronin_Gold",
+    "Quad_ArmourPlate",
+]
+in_file = "generated_types.xml"
+nominal = 4
+min = 2
+lifetime = 14400
+restock = 0
+usages = [
+    "Military",
+    "Police",
+    "Farm",
+    "Village",
+    "Town",
+    "Hunting",
+    "School",
+    "Industrial",
+    "Coast",
+    "Lunapark",
+    "Office",
+]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+flags = { count_in_map = "1" }
