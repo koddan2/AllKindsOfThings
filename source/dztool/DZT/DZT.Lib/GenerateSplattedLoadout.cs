@@ -298,7 +298,8 @@ public class GenerateSplattedLoadout
             {
                 result = 0.01 * (((float)x.Nominal) / 11f);
             }
-            return result;
+
+            return Math.Clamp(result, 0.001, 0.08);
         }
 
         var extras = cargoCandidates.Select(
