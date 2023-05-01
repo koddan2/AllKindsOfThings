@@ -9,7 +9,7 @@ namespace DZT.Lib;
 
 public class GenerateSplattedLoadout
 {
-    internal static Quantity DefaultQuantity = new Quantity { Min = 0.06, Max = 0.86 };
+    internal static Quantity DefaultQuantity = new Quantity { Min = 0.01, Max = 0.8 };
     private readonly string _loadoutDir;
     private readonly SpawnableTypesHelper _spawnableTypesHelper;
     private readonly WeaponSetDefs _weaponSets;
@@ -172,11 +172,13 @@ public class GenerateSplattedLoadout
 
         var forbid0 =
             type.Category == "containers"
+            || type.Category == "bags"
             || type.Usages.Any(usage => usage == "ContaminatedArea")
             || (type.Category == "clothes" && !type.NameUpper.Contains("POUCH"))
             || type.Tags?.Contains("floor") is true
             || type.Tags?.Contains("skip-ai") is true
-            || type.Flags?["crafted"] == "1";
+            || type.Flags?["crafted"] == "1"
+            ;
         if (forbid0)
         {
             return true;
@@ -192,9 +194,10 @@ public class GenerateSplattedLoadout
 
         var hasCategory = !type.Category.IsNullOrEmpty();
         var hasUsage = type.Usages?.Length > 0;
+        var hasTags = type.Tags?.Length > 0;
         var hasNominal = type.Nominal > 0;
 
-        if (hasCategory || hasUsage || hasNominal)
+        if (hasCategory || hasUsage || hasTags || hasNominal)
         {
             return false;
         }
@@ -290,13 +293,13 @@ public class GenerateSplattedLoadout
                 }
                 else
                 {
-                    result = 0.01 * (((float)x.Nominal) / 15f);
+                    result = 0.01 * (((float)x.Nominal) / 7f);
                     result = Math.Clamp(result, 0.001, 0.05);
                 }
             }
             else
             {
-                result = 0.01 * (((float)x.Nominal) / 11f);
+                result = 0.01 * (((float)x.Nominal) / 4f);
             }
 
             return Math.Clamp(result, 0.001, 0.08);

@@ -1,0 +1,225 @@
+title = "TOML cfg for adjust-types for NAMALSK"
+
+[[rules]]
+starts_with = ""
+lifetime = 3600
+restock = 60
+usages = []
+flags = { count_in_map = 1 }
+
+[[rules]]
+starts_with_case_insensitive = "jugger"
+lifetime = 14400
+restock = 0
+min = 0
+nominal = 1
+values = ["Tier6"]
+category = "clothes"
+tags = ["military"]
+
+[[rules]]
+starts_with_case_insensitive = "mmg"
+lifetime = 3600
+category = "clothes"
+tags = ["military"]
+values = ["Tier3", "Tier4", "Tier5", "Tier6"]
+min = 1
+nominal = 1
+
+[[rules]]
+starts_with_case_insensitive = "mmg"
+name_contains_substring_case_insensitive = ["mk_iii", "mk_v"]
+lifetime = 3600
+category = "clothes"
+tags = ["military"]
+values = ["Tier4", "Tier5", "Tier6"]
+min = 1
+nominal = 1
+
+[[rules]]
+starts_with_case_insensitive = "mmg"
+name_contains_substring_case_insensitive = "belt"
+min = 2
+nominal = 5
+
+[[rules]]
+in_file = "FOG_Types.xml"
+lifetime = 3600
+category = "clothes"
+tags = ["military", "hunting", "police", "farm", "firefighter", "fishing"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4", "Tier5", "Tier6"]
+min = 1
+nominal = 1
+
+[[rules]]
+name_contains_substring_case_insensitive = "pistolsuppressor"
+lifetime = 3600
+category = "weapons"
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+tags = [
+    "civilian",
+    "military",
+    "hunting",
+    "police",
+    "industrial",
+    "farm",
+    "medical",
+    "firefighter",
+    "fishing",
+    "seaice",
+    "seasonalevent",
+]
+min = 4
+nominal = 8
+
+[[rules]]
+in_files = ["Morty_types.xml"]
+min = 1
+nominal = 1
+tags = ["military"]
+category = "rifles"
+values = ["Tier4", "Tier5", "Tier6"]
+
+[[rules]]
+in_files = ["Morty_types.xml"]
+name_contains_substring_case_insensitive = ["magnum", "deagle"]
+category = "pistols"
+
+[[rules]]
+in_files = ["Morty_types.xml"]
+name_contains_substring_case_insensitive = ["upc", "digitan", "_tan", "tan_"]
+min = 0
+nominal = 0
+tags = []
+values = []
+
+[[rules]]
+in_files = ["Morty_types.xml"]
+name_contains_substring_case_insensitive = ["ammo"]
+min = 7
+nominal = 5
+category = "weapons"
+tags = ["military"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4", "Tier5", "Tier6"]
+
+[[rules]]
+in_files = ["Morty_types.xml"]
+name_contains_substring_case_insensitive = ["50ae", "44mag", "792", "8mm", "303", "3006"]
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+tags = [
+    "civilian",
+    "hunting",
+    "police",
+    "farm",
+]
+
+[[rules]]
+in_files = ["Morty_types.xml", "types.xml"]
+nominal = 9
+min = 2
+name_contains_substring_case_insensitive = [
+    "LeeEnfield",
+    "M1Garand",
+    "Deagle",
+    "PP91",
+    "MP7",
+    "STG44",
+    "TTC_BAR",
+    "44",
+    "UZI",
+    "98k",
+    "1903",
+    "Mossberg",
+    "Mas36",
+    "Maverick",
+    "320",
+    "Kimber",
+    "303",
+    "3006",
+]
+category = "rifles"
+values = ["Tier1", "Tier2", "Tier3", "Tier4"]
+tags = [
+    "civilian",
+    "military",
+    "hunting",
+    "police",
+    "industrial",
+    "farm",
+    "medical",
+    "firefighter",
+    "fishing",
+    "seaice",
+    "seasonalevent",
+]
+
+[[rules]]
+in_files = ["windstride_types.xml", "mung_types.xml"]
+category = "clothes"
+tags = ["civilian", "farm", "fishing"]
+
+[[rules]]
+in_files = ["windstride_types.xml"]
+name_contains_substring_case_insensitive = ["tactic", "milit", "defender"]
+values = ["Tier1", "Tier2", "Tier3"]
+tags = ["military", "police"]
+
+## quad I
+[[rules]]
+action = "insert"
+in_file = "generated_types.xml"
+names = [
+    "quad_gen2_Suit",
+    "quad_Gen2_Black",
+    "quad_Gen2_Green",
+    "quad_Ronin_Helmet",
+    "quad_Ronin_Gold",
+    "Quad_ArmourPlate",
+    "6b13Vest_FloraBrown",
+    "6b13Vest_PixelGreen",
+    "6b13Vest_PixelBlack",
+]
+nominal = 1
+min = 1
+lifetime = 3600
+restock = 0
+values = ["Tier4", "Tier5", "Tier6"]
+category = "clothes"
+tags = ["military"]
+flags = { count_in_map = "1" }
+
+## quad II
+[[rules]]
+action = "insert"
+in_file = "generated_types.xml"
+names = [
+    "riflesling_quad_green",
+    "rifleslingfront_quad_green",
+    "rifleslingback_quad_green",
+    "rifleholster_TTsKO_mung",
+    "TacticalPouch_Green",
+    "TacticalPouch_Black",
+    "TacticalPouch_Tan",
+    "TacticalPouch_Flora",
+    "tacticalbelt_quad_black",
+    "tacticalbelt_quad_green",
+    "tacticalbelt_quad_tan",
+]
+nominal = 7
+min = 1
+lifetime = 3600
+restock = 0
+values = ["Tier1", "Tier2", "Tier3", "Tier4", "Tier5", "Tier6"]
+category = "clothes"
+tags = ["military"]
+flags = { count_in_map = "1" }
+
+[[rules]]
+name_contains_substring_case_insensitive = ["filament"]
+nominal = 4
+min = 3
+lifetime = 7200
+
+[[rules]]
+name_contains_substring_case_insensitive = ["barrel"]
+lifetime = 1700000

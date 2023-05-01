@@ -15,6 +15,38 @@
             "stopAtEntry": false
         },
         {
+            "name": "DZT.Cli NAM generate-splatted-ai-loadout",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net7.0/DZT.Cli.dll",
+            "args": [
+                "generate-splatted-ai-loadout",
+                "-r=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer",
+                "-p=nam-profile",
+                "-m=hardcore.namalsk"
+            ],
+            "cwd": "${workspaceFolder}/DZT/DZT.Cli",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "DZT.Cli NAM adjust-types",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/DZT/DZT.Cli/bin/Debug/net7.0/DZT.Cli.dll",
+            "args": [
+                "adjust-types",
+                "-c=adjust-types-NAM-config.toml",
+                "-r=C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer",
+                "-m=hardcore.namalsk"
+            ],
+            "cwd": "${workspaceFolder}/DZT/DZT.Cli",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": "DZT.Cli generate-splatted-ai-loadout",
             "type": "coreclr",
             "request": "launch",

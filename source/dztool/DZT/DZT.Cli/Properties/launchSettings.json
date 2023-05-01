@@ -4,13 +4,25 @@
       "commandName": "Project",
       "commandLineArgs": "clean-up-profile -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -p=\"config\""
     },
+    "DZT.Cli NAM (clean-up-profile)": {
+      "commandName": "Project",
+      "commandLineArgs": "clean-up-profile -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -p=\"nam-profile\""
+    },
     "DZT.Cli (generate-splatted-ai-loadout)": {
       "commandName": "Project",
       "commandLineArgs": "generate-splatted-ai-loadout -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -m=\"dayzOffline.chernarusplus\""
     },
+    "DZT.Cli NAM (generate-splatted-ai-loadout)": {
+      "commandName": "Project",
+      "commandLineArgs": "generate-splatted-ai-loadout -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -m=\"hardcore.namalsk\" -p=nam-profile"
+    },
     "DZT.Cli (manipulate-territory)": {
       "commandName": "Project",
       "commandLineArgs": "manipulate-territory -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -m=dayzOffline.chernarusplus -e=bear --set-dmin=1 --set-dmax=3"
+    },
+    "DZT.Cli NAM (manipulate-territory zombies)": {
+      "commandName": "Project",
+      "commandLineArgs": "manipulate-territory -r=\"C:\\Program Files (x86)\\Steam\\steamapps\\common\\DayZServer\" -m=hardcore.namalsk -e=zombie --multiply-by=0,7"
     },
     "DZT.Cli (update-ai-patrols)": {
       "commandName": "Project",
